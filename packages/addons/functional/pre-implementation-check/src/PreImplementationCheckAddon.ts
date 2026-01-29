@@ -62,12 +62,12 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
    *
    * Ahora usa el sistema mejorado de detección proactiva.
    */
-  static detectComponentFromMessage(message: string): string[] {
+  static async detectComponentFromMessage(message: string): Promise<string[]> {
     // Usar sistema mejorado de detección proactiva
     try {
-      const {
-        detectComponentsProactively,
-      } = require('@autorun/core/helpers/proactiveDetection');
+      const { detectComponentsProactively } = await import(
+        '@autorun/core/helpers/proactiveDetection.js'
+      );
       const result = detectComponentsProactively(message);
       return result.components.map((c: { name: string }) => c.name);
     } catch (error) {
@@ -113,9 +113,9 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     }
   ): Promise<string[]> {
     try {
-      const {
-        getContextualChecklist,
-      } = require('@autorun/core/helpers/proactiveDetection');
+      const { getContextualChecklist } = await import(
+        '@autorun/core/helpers/proactiveDetection.js'
+      );
       return getContextualChecklist(componentName, context);
     } catch (error) {
       // Fallback a checklist básico
@@ -143,9 +143,9 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     instructions: string;
   } | null> {
     try {
-      const {
-        suggestNextStep,
-      } = require('@autorun/core/helpers/proactiveDetection');
+      const { suggestNextStep } = await import(
+        '@autorun/core/helpers/proactiveDetection.js'
+      );
       return suggestNextStep(componentName, completedSteps, context);
     } catch (error) {
       return null;
@@ -254,14 +254,14 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     // ⭐ NUEVO: Obtener automáticamente plan basado en historias de Storybook
     let storyBasedPlan = null;
     try {
-      const {
-        getStoryBasedImplementationPlan,
-      } = require('@autorun/core/helpers/componentHelpers');
+      const { getStoryBasedImplementationPlan } = await import(
+        '@autorun/core/helpers/componentHelpers.js'
+      );
       console.log(
         `\n📚 [Pre-Implementation Check] Obteniendo plan basado en historias para: ${componentName}`
       );
 
-      const componentId = this.getStorybookId(componentName);
+      const componentId = await this.getStorybookId(componentName);
       const planResult = await getStoryBasedImplementationPlan(
         componentName,
         componentId
@@ -319,6 +319,7 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     }
 
     if (!check.allowed) {
+      const storybookId = await this.getStorybookId(componentName);
       const errorMessage = `
 🚨🚨🚨 PRE-IMPLEMENTATION CHECK: IMPLEMENTACIÓN BLOQUEADA 🚨🚨🚨
 
@@ -335,7 +336,7 @@ ${storyBasedPlan ? `\n📚 Plan basado en historias obtenido: ${storyBasedPlan.t
 📚 Pasos obligatorios:
 1. Consultar Storybook en Vercel (PRIMERO)
    - URL: https://ubits-storybook10.vercel.app/
-   - Buscar componente: ${this.getStorybookId(componentName)}
+   - Buscar componente: ${storybookId}
    - Revisar pestaña "Code" y "Controls"
    - Volver al template después de consultar
 
@@ -344,7 +345,7 @@ ${storyBasedPlan ? `\n📚 Plan basado en historias obtenido: ${storyBasedPlan.t
    - Usar mcp_storybook_getComponentsProps(['${componentName}'])
 
 3. Consultar documentación específica
-   - Leer docs/referencia/componentes/${this.getDocFileName(componentName)}
+   - Leer docs/referencia/componentes/${await this.getDocFileName(componentName)}
    - Leer docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md
 
 4. Comparar versiones
@@ -672,9 +673,9 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
     if (!allowed) {
       // ⭐ MEJORADO: Usar sistema de mensajes de error mejorados
       try {
-        const {
-          generateContextualErrorMessage,
-        } = require('@autorun/core/helpers/errorMessages');
+        const { generateContextualErrorMessage } = await import(
+          '@autorun/core/helpers/errorMessages.js'
+        );
         const errorMessage = await generateContextualErrorMessage(
           'checklist-incomplete',
           {
@@ -687,6 +688,7 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
         console.error(errorMessage);
       } catch (error) {
         // Fallback a mensaje básico si el sistema mejorado no está disponible
+        const storybookId = await this.getStorybookId(componentName);
         const errorMessage = `
 🚨🚨🚨 PRE-IMPLEMENTATION CHECK: IMPLEMENTACIÓN BLOQUEADA 🚨🚨🚨
 
@@ -701,7 +703,7 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
 📚 Pasos obligatorios:
 1. Consultar Storybook en Vercel (PRIMERO)
    - URL: https://ubits-storybook10.vercel.app/
-   - Buscar componente: ${this.getStorybookId(componentName)}
+   - Buscar componente: ${storybookId}
    - Revisar pestaña "Code" y "Controls"
    - Volver al template después de consultar
 
@@ -710,7 +712,7 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
    - Usar mcp_storybook_getComponentsProps(['${componentName}'])
 
 3. Consultar documentación específica
-   - Leer docs/referencia/componentes/${this.getDocFileName(componentName)}
+   - Leer docs/referencia/componentes/${await this.getDocFileName(componentName)}
    - Leer docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md
 
 4. Comparar versiones
@@ -777,12 +779,12 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
   /**
    * Obtiene el ID de Storybook para un componente
    */
-  private getStorybookId(componentName: string): string {
+  private async getStorybookId(componentName: string): Promise<string> {
     // ⚠️ CRÍTICO: Usar mapComponentNameToStorybookId del core para consistencia
     try {
-      const {
-        mapComponentNameToStorybookId,
-      } = require('@autorun/core/helpers/storybookStories');
+      const { mapComponentNameToStorybookId } = await import(
+        '@autorun/core/helpers/storybookStories.js'
+      );
       return mapComponentNameToStorybookId(componentName);
     } catch (error) {
       // Fallback si no está disponible
@@ -805,12 +807,12 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
   /**
    * Obtiene el nombre del archivo de documentación para un componente
    */
-  private getDocFileName(componentName: string): string {
+  private async getDocFileName(componentName: string): Promise<string> {
     // ⚠️ CRÍTICO: Usar mapComponentNameToDocFile del core para consistencia
     try {
-      const {
-        mapComponentNameToDocFile,
-      } = require('@autorun/core/helpers/componentHelpers');
+      const { mapComponentNameToDocFile } = await import(
+        '@autorun/core/helpers/componentHelpers.js'
+      );
       return mapComponentNameToDocFile(componentName) + '.md';
     } catch (error) {
       // Fallback si no está disponible
@@ -840,7 +842,7 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
       return null;
     }
 
-    const storybookId = this.getStorybookId(componentName);
+    const storybookId = await this.getStorybookId(componentName);
 
     console.log(
       `🔍 Pre-Implementation Check: Intentando consultar Storybook MCP para '${componentName}' (ID: ${storybookId})...`
@@ -886,7 +888,7 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
       return this.componentDocumentation.get(componentName);
     }
 
-    const docFileName = this.getDocFileName(componentName);
+    const docFileName = await this.getDocFileName(componentName);
     const docPath = path.join(
       process.cwd(),
       'docs/referencia/componentes',
@@ -1112,14 +1114,14 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
         // ⭐ NUEVO: Obtener automáticamente plan basado en historias de Storybook
         let storyBasedPlan = null;
         try {
-          const {
-            getStoryBasedImplementationPlan,
-          } = require('@autorun/core/helpers/componentHelpers');
+          const { getStoryBasedImplementationPlan } = await import(
+            '@autorun/core/helpers/componentHelpers.js'
+          );
           console.log(
             `\n📚 Pre-Implementation Check: Obteniendo plan basado en historias para: ${componentName}`
           );
 
-          const componentId = this.getStorybookId(componentName);
+          const componentId = await this.getStorybookId(componentName);
           const planResult = await getStoryBasedImplementationPlan(
             componentName,
             componentId
@@ -1165,8 +1167,9 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
           console.log(
             `💡 Pre-Implementation Check: Para consultar Storybook MCP automáticamente, el agente debe usar:`
           );
+          const storybookIdForLog = await this.getStorybookId(componentName);
           console.log(
-            `   mcp_storybook_getComponentsProps(['${this.getStorybookId(componentName)}'])`
+            `   mcp_storybook_getComponentsProps(['${storybookIdForLog}'])`
           );
           console.log(
             `   Esto se implementará cuando las herramientas MCP estén disponibles en Node.js`
@@ -1198,8 +1201,9 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
           console.log(
             `⚠️ Pre-Implementation Check: No se pudo cargar documentación para '${componentName}'`
           );
+          const docFileName = await this.getDocFileName(componentName);
           console.log(
-            `   Verifica que existe: docs/referencia/componentes/${this.getDocFileName(componentName)}`
+            `   Verifica que existe: docs/referencia/componentes/${docFileName}`
           );
         }
 
@@ -1407,10 +1411,11 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
    */
   async checkDocumentationUsage(componentName: string): Promise<boolean> {
     try {
+      const docFileName = await this.getDocFileName(componentName);
       const docPath = path.join(
         process.cwd(),
         'docs/referencia/componentes',
-        `${this.mapComponentNameToDocFile(componentName)}.md`
+        docFileName
       );
 
       // Verificar si el archivo existe y fue leído recientemente
@@ -1500,11 +1505,11 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
 
     // Crear nuevo plan
     try {
-      const {
-        getStoryBasedImplementationPlan,
-      } = require('@autorun/core/helpers/componentHelpers');
+      const { getStoryBasedImplementationPlan } = await import(
+        '@autorun/core/helpers/componentHelpers.js'
+      );
       const componentIdToUse =
-        componentId || this.getStorybookId(componentName);
+        componentId || (await this.getStorybookId(componentName));
       const planResult = await getStoryBasedImplementationPlan(
         componentName,
         componentIdToUse

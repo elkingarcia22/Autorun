@@ -118,6 +118,85 @@ interface TabItem {
 
 ---
 
+## 📄 Estructura HTML Generada
+
+El componente `window.createTabs()` genera el siguiente HTML dinámicamente:
+
+### HTML Base
+
+```html
+<div class="ubits-tabs">
+  <button class="ubits-tab ubits-tab--active" data-tab-id="tab-1">
+    <i class="fas fa-list"></i>
+    <span class="ubits-tab__label">Lista de encuestas</span>
+  </button>
+  <button class="ubits-tab" data-tab-id="tab-2">
+    <i class="far fa-chart-bar"></i>
+    <span class="ubits-tab__label">Datos demográficos</span>
+  </button>
+</div>
+```
+
+### Estructura Detallada
+
+**Contenedor Principal:**
+- `<div class="ubits-tabs">` - Contenedor principal de los tabs
+
+**Cada Tab:**
+- `<button class="ubits-tab">` - Botón del tab (sin prefijo `--active` si está inactivo)
+- `<button class="ubits-tab ubits-tab--active">` - Botón del tab activo (con prefijo `--active`)
+- `data-tab-id="tab-id"` - Atributo con el ID del tab (usado para identificar el tab clickeado)
+- `<i class="fas fa-icono">` - Icono del tab activo (usa `fas` para solid)
+- `<i class="far fa-icono">` - Icono del tab inactivo (usa `far` para regular)
+- `<span class="ubits-tab__label">Label</span>` - Texto del tab
+
+### Ejemplo Completo con 2 Tabs
+
+```html
+<!-- Contenedor donde se renderizarán los tabs -->
+<div id="tabs-implementation-container"></div>
+
+<!-- HTML generado por window.createTabs() -->
+<div class="ubits-tabs">
+  <!-- Tab Activo -->
+  <button class="ubits-tab ubits-tab--active" data-tab-id="tab-lista-encuestas">
+    <i class="fas fa-list"></i>
+    <span class="ubits-tab__label">Lista de encuestas</span>
+  </button>
+  
+  <!-- Tab Inactivo -->
+  <button class="ubits-tab" data-tab-id="tab-datos-demograficos">
+    <i class="far fa-chart-bar"></i>
+    <span class="ubits-tab__label">Datos demográficos</span>
+  </button>
+</div>
+```
+
+### Notas Importantes sobre el HTML
+
+1. **Iconos:**
+   - Tab activo: `fas fa-icono` (solid)
+   - Tab inactivo: `far fa-icono` (regular)
+   - El componente automáticamente agrega los prefijos `fas`/`far` según el estado
+
+2. **Clases CSS:**
+   - `.ubits-tabs` - Contenedor principal
+   - `.ubits-tab` - Botón de cada tab
+   - `.ubits-tab--active` - Tab activo (fondo blanco + línea rosa)
+   - `.ubits-tab__label` - Texto del tab
+
+3. **Atributos:**
+   - `data-tab-id` - ID único del tab (usado para identificar el tab clickeado)
+   - `data-url` - URL opcional para navegación (si se proporciona)
+   - `data-has-click-handler` - Indica si el tab tiene un handler onClick personalizado
+
+4. **Generación Dinámica:**
+   - El HTML se genera completamente por JavaScript
+   - No hay HTML estático inicial
+   - Se inserta dentro del contenedor especificado (`containerId`)
+
+---
+
 ## 💡 Ejemplos Prácticos
 
 ### Ejemplo 1: Tabs Básico sin Iconos

@@ -43,11 +43,15 @@ export function extractCodeFromDocsSnapshot(
       .filter(Boolean)
       .join(' ');
 
-    // ⚠️ MEJORADO: Buscar código con patrones más amplios
+    // ⚠️ MEJORADO: Buscar código con patrones más amplios (incluyendo DataTable)
     const codePatterns = [
       /window\.UBITS\.\w+\.create/,
       /window\.create\w+/,
+      /createDataTable/,
+      /createRadioButton/,
       /containerId\s*:/,
+      /columns\s*:/,
+      /rows\s*:/,
       /label\s*:/,
       /value\s*:/,
       /name\s*:/,
@@ -58,8 +62,9 @@ export function extractCodeFromDocsSnapshot(
       /onChange\s*:/,
       /<div[^>]*id="[^"]*container[^"]*"/,
       /<div[^>]*id="[^"]*radio[^"]*"/,
+      /<div[^>]*id="[^"]*table[^"]*"/,
       /RadioButton/,
-      /createRadioButton/,
+      /DataTable/,
     ];
 
     const hasCode = codePatterns.some((pattern) => pattern.test(allText));
@@ -72,8 +77,11 @@ export function extractCodeFromDocsSnapshot(
       // Verificar que sea un bloque de código válido (no solo un fragmento)
       const isCompleteCodeBlock =
         codeBlock.includes('containerId') ||
+        codeBlock.includes('columns') ||
+        codeBlock.includes('rows') ||
         codeBlock.includes('window.UBITS') ||
         codeBlock.includes('create(') ||
+        codeBlock.includes('createDataTable') ||
         (codeBlock.includes('label') && codeBlock.includes('value'));
 
       if (isCompleteCodeBlock && !codeBlocks.includes(codeBlock)) {
@@ -89,8 +97,12 @@ export function extractCodeFromDocsSnapshot(
       if (
         text.includes('window.UBITS') ||
         text.includes('create(') ||
+        text.includes('createDataTable') ||
         text.includes('containerId') ||
+        text.includes('columns') ||
+        text.includes('rows') ||
         text.includes('RadioButton') ||
+        text.includes('DataTable') ||
         (text.includes('label') && text.includes('value'))
       ) {
         const cleaned = text.trim();

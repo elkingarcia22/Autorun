@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejemplo: RadioButton - Template Básico</title>
+  
+  <!-- CSS Local -->
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/components/radio-button.css">
+</head>
+<body>
+  <div class="content-area" style="padding: 24px; max-width: 1200px; margin: 0 auto;">
+    <h1>Ejemplo: RadioButton</h1>
+    <p>Este ejemplo muestra cómo usar RadioButton en el template básico.</p>
+    
+    <!-- Contenedor para RadioButtons -->
+    <div id="radiobutton-group-tipo" style="display: flex; flex-direction: column; gap: 16px; margin-top: 24px;"></div>
+    
+    <!-- Área de debug -->
+    <div id="radiobutton-debug" style="margin-top: 20px; padding: 12px; background: #f5f5f5; border-radius: 4px; font-size: 12px; color: #666;">
+      <strong>Debug:</strong> <span id="radiobutton-debug-text">Esperando inicialización...</span>
+    </div>
+  </div>
+
+  <!-- JS Local -->
+  <script src="../js/components/radio-button.js"></script>
+  <script>
+    // Inicialización simple y directa
+    (function() {
+      function initRadioButtons() {
+        if (!window.UBITS || !window.UBITS.RadioButton) {
+          setTimeout(initRadioButtons, 100);
+          return;
+        }
+
+        // Handler para cambios
+        function handleChange(event) {
+          const selectedValue = event.target.value;
+          const debugText = document.getElementById('radiobutton-debug-text');
+          if (debugText) {
+            debugText.textContent = `Opción seleccionada: ${selectedValue}`;
+          }
+          console.log('RadioButton cambiado:', selectedValue);
+        }
+
+        // Crear RadioButtons
+        const options = [
+          {
+            containerId: 'radiobutton-group-tipo',
+            label: 'Encuesta de Satisfacción',
+            complementaryText: 'Mide el nivel de satisfacción',
+            value: 'satisfaccion',
+            name: 'tipo-encuesta',
+            checked: true,
+            onChange: handleChange
+          },
+          {
+            containerId: 'radiobutton-group-tipo',
+            label: 'Encuesta de Evaluación',
+            complementaryText: 'Evalúa desempeño',
+            value: 'evaluacion',
+            name: 'tipo-encuesta',
+            checked: false,
+            onChange: handleChange
+          },
+          {
+            containerId: 'radiobutton-group-tipo',
+            label: 'Encuesta de Feedback',
+            complementaryText: 'Recopila comentarios',
+            value: 'feedback',
+            name: 'tipo-encuesta',
+            checked: false,
+            onChange: handleChange
+          }
+        ];
+
+        options.forEach((opt) => {
+          try {
+            window.UBITS.RadioButton.create(opt);
+            console.log(`✅ RadioButton creado: ${opt.label}`);
+          } catch (error) {
+            console.error(`❌ Error al crear RadioButton: ${opt.label}`, error);
+          }
+        });
+
+        // Actualizar debug
+        const debugText = document.getElementById('radiobutton-debug-text');
+        if (debugText) {
+          debugText.textContent = `✅ ${options.length} RadioButton(s) inicializado(s)`;
+        }
+      }
+
+      // Inicializar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initRadioButtons);
+      } else {
+        initRadioButtons();
+      }
+    })();
+  </script>
+</body>
+</html>
+

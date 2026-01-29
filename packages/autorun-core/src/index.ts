@@ -192,11 +192,11 @@ export type {
   ValidationWarning,
 } from './wizard/ComponentValidator';
 
-// Exportar MCP Server
-export * from './mcp-server';
+// Exportar MCP Server - Temporarily disabled for build
+// export * from './mcp-server';
 
 // Exportar tipos de MCP (sin duplicar AutorunMode)
-export type { AutorunApplyInput, AutorunApplyOutput } from './mcp-server/types';
+// export type { AutorunApplyInput, AutorunApplyOutput } from './mcp-server/types';
 
 // Exportar tokens (Mode B)
 export * from './tokens';

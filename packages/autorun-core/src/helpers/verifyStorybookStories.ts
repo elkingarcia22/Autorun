@@ -281,8 +281,11 @@ export async function buildSafeStorybookUrl(
 			// Obtener ID del componente desde el Storybook activo
 			const componentId = await mapComponentNameToStorybookId(componentIdentifier);
 
+			// ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+			const encodedComponentId = encodeURIComponent(componentId);
+			
 			// Construir URL usando el Storybook activo (priorizando /docs/)
-			const path = `?path=/docs/${componentId}--docs`;
+			const path = `?path=/docs/${encodedComponentId}--docs`;
 			const url = await manager.buildStorybookUrl(path);
 
 			console.warn(

@@ -1,52 +1,71 @@
 {
-	"mcpServers": {
-		"storybook": {
-			"command": "npx",
-			"args": ["-y", "storybook-mcp@latest"],
-			"env": {
-				"STORYBOOK_URL": "http://localhost:6006/index.json"
-			}
-		},
-		"figma": {
-			"url": "https://mcp.figma.com/mcp"
-		},
-		"talk-to-figma": {
-			"command": "npx",
-			"args": ["-y", "cursor-talk-to-figma-mcp"],
-			"env": {}
-		},
-		"clarity": {
-			"command": "npx",
-			"args": ["-y", "@microsoft/clarity-mcp-server"],
-			"env": {}
-		},
-		"vercel": {
-			"url": "https://mcp.vercel.com"
-		},
-		"github": {
-			"command": "npx",
-			"args": ["-y", "@modelcontextprotocol/server-github"],
-			"env": {}
-		},
-		"supabase": {
-			"url": "https://mcp.supabase.com/mcp"
-		},
-		"mcp-gsheets": {
-			"command": "npx",
-			"args": ["-y", "mcp-gsheets@latest"],
-			"env": {}
-		},
-		"autorun": {
-			"command": "npx",
-			"args": ["-y", "tsx", "packages/autorun-core/src/cli/autorun-mcp-server.ts"],
-			"env": {
-				"NODE_ENV": "production"
-			}
-		},
-		"google-sheets": {
-			"command": "npx",
-			"args": ["-y", "mcp-gsheets@latest"],
-			"env": {}
-		}
-	}
+  "mcpServers": {
+    "n8n-mcp": {
+      "command": "npx",
+      "args": [
+        "n8n-mcp"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true"
+      }
+    },
+    "figma": {
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "talk-to-figma": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "cursor-talk-to-figma-mcp"
+      ],
+      "env": {}
+    },
+    "clarity": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@microsoft/clarity-mcp-server"
+      ],
+      "env": {}
+    },
+    "vercel": {
+      "url": "https://mcp.vercel.com"
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {}
+    },
+    "google-sheets": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-gsheets@latest"
+      ],
+      "env": {}
+    },
+    "autorun": {
+      "command": "/Users/elkinmac/Desktop/Autorun/node_modules/.bin/tsx",
+      "args": [
+        "/Users/elkinmac/Desktop/Autorun/packages/autorun-core/src/cli/autorun-mcp-server-v2.ts"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "storybook": {
+      "command": "node",
+      "args": [
+        "/Users/ub-col-pro-lf4/Desktop/Autorun/scripts/storybook-mcp-wrapper.mjs"
+      ],
+      "env": {
+        "STORYBOOK_URL": "http://localhost:6006/index.json"
+      }
+    }
+  }
 }

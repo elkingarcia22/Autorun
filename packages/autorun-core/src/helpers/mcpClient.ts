@@ -41,72 +41,103 @@ export class MCPClient extends EventEmitter {
       reject: (error: any) => void;
     }
   >();
+  private connected = false;
+  private connecting = false;
+  private connectPromise: Promise<void> | null = null;
 
   /**
    * ✅ Conecta al servidor MCP
    */
   async connect(serverName: string): Promise<void> {
-    // Obtener configuración del servidor MCP desde .cursor/mcp.json
-    const mcpConfigPath = path.join(process.cwd(), '.cursor', 'mcp.json');
+    if (this.connected) return;
+    if (this.connecting) return this.connectPromise!;
 
-    try {
-      const configContent = await fs.readFile(mcpConfigPath, 'utf-8');
-      const config = JSON.parse(configContent);
+    this.connecting = true;
+    this.connectPromise = (async () => {
+      // Obtener configuración del servidor MCP desde .cursor/mcp.json
+      const mcpConfigPath = path.join(process.cwd(), '.cursor', 'mcp.json');
 
-      const serverConfig = config.mcpServers?.[serverName];
-      if (!serverConfig) {
-        throw new Error(
-          `Servidor MCP "${serverName}" no encontrado en configuración`
-        );
-      }
+      try {
+        const configContent = await fs.readFile(mcpConfigPath, 'utf-8');
+        const config = JSON.parse(configContent);
 
-      // Iniciar proceso del servidor MCP
-      const { command, args = [], env = {} } = serverConfig;
+        const serverConfig = config.mcpServers?.[serverName];
+        if (!serverConfig) {
+          throw new Error(
+            `Servidor MCP "${serverName}" no encontrado en configuración`
+          );
+        }
 
-      this.process = spawn(command, args, {
-        stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, ...env },
-      });
+        // Iniciar proceso del servidor MCP
+        const { command, args = [], env = {} } = serverConfig;
 
-      // Manejar stdout (respuestas)
-      let buffer = '';
-      this.process.stdout.on('data', (data: Buffer) => {
-        buffer += data.toString();
+        console.error(`[MCP Client] Spawning ${command} ${args.join(' ')}`);
 
-        // Parsear respuestas JSON-RPC
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Guardar línea incompleta
+        this.process = spawn(command, args, {
+          stdio: ['pipe', 'pipe', 'pipe'],
+          env: { ...process.env, ...env },
+        });
 
-        for (const line of lines) {
-          if (line.trim()) {
-            try {
-              const response: MCPResponse = JSON.parse(line);
-              this.handleResponse(response);
-            } catch (error) {
-              // Ignorar líneas que no son JSON válido
+        // Manejar stdout (respuestas)
+        let buffer = '';
+        this.process.stdout.on('data', (data: Buffer) => {
+          buffer += data.toString();
+
+          // Parsear respuestas JSON-RPC
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; // Guardar línea incompleta
+
+          for (const line of lines) {
+            if (line.trim()) {
+              try {
+                const response: MCPResponse = JSON.parse(line);
+                this.handleResponse(response);
+              } catch (error) {
+                // Ignorar líneas que no son JSON válido
+              }
             }
           }
-        }
-      });
+        });
 
-      // Manejar stderr (logs)
-      this.process.stderr.on('data', (data: Buffer) => {
-        // Los servidores MCP usan stderr para logs
-        // No hacer nada, solo escuchar
-      });
+        // Manejar stderr (logs)
+        this.process.stderr.on('data', (data: Buffer) => {
+          // Los servidores MCP usan stderr para logs
+          // Redirigir al stderr del proceso padre para visibilidad
+          process.stderr.write(`[MCP Server ${serverName}] ${data.toString()}`);
+        });
 
-      // Manejar cierre del proceso
-      this.process.on('close', (code: number) => {
-        this.emit('close', code);
-      });
+        // Manejar cierre del proceso
+        this.process.on('close', (code: number) => {
+          console.error(
+            `[MCP Client] Server ${serverName} closed with code ${code}`
+          );
+          this.connected = false;
+          this.connecting = false;
+          this.emit('close', code);
+        });
 
-      // Esperar a que el servidor esté listo
-      await this.waitForReady();
-    } catch (error: any) {
-      throw new Error(
-        `Error conectando al servidor MCP "${serverName}": ${error.message}`
-      );
-    }
+        this.process.on('error', (err: Error) => {
+          console.error(
+            `[MCP Client] Server ${serverName} error: ${err.message}`
+          );
+          this.connected = false;
+          this.connecting = false;
+        });
+
+        // Esperar a que el servidor esté listo
+        await this.waitForReady();
+        this.connected = true;
+        this.connecting = false;
+        console.error(`[MCP Client] Connected to ${serverName}`);
+      } catch (error: any) {
+        this.connecting = false;
+        throw new Error(
+          `Error conectando al servidor MCP "${serverName}": ${error.message}`
+        );
+      }
+    })();
+
+    return this.connectPromise;
   }
 
   /**
@@ -116,7 +147,7 @@ export class MCPClient extends EventEmitter {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('Timeout esperando servidor MCP'));
-      }, 10000); // 10 segundos
+      }, 15000); // Aumentado a 15 segundos
 
       // Intentar llamar a initialize
       this.callMethod('initialize', {
@@ -164,13 +195,17 @@ export class MCPClient extends EventEmitter {
       const requestLine = JSON.stringify(request) + '\n';
       this.process.stdin.write(requestLine);
 
-      // Timeout de 30 segundos
-      setTimeout(() => {
+      // Timeout aumentado a 60 segundos para operaciones lentas como Playwright
+      const timeout = setTimeout(() => {
         if (this.pendingRequests.has(request.id)) {
           this.pendingRequests.delete(request.id);
-          reject(new Error(`Timeout esperando respuesta para ${method}`));
+          reject(
+            new Error(
+              `Timeout esperando respuesta para ${method} (${request.id})`
+            )
+          );
         }
-      }, 30000);
+      }, 60000);
     });
   }
 
@@ -200,9 +235,14 @@ export class MCPClient extends EventEmitter {
       this.process.kill();
       this.process = null;
     }
+    this.connected = false;
+    this.connecting = false;
     this.pendingRequests.clear();
   }
 }
+
+// Singleton instances for common servers
+const clients = new Map<string, MCPClient>();
 
 /**
  * ✅ Helper para llamar tool de Storybook MCP
@@ -211,7 +251,11 @@ export async function callStorybookMCPTool(
   toolName: string,
   args: any
 ): Promise<any> {
-  const client = new MCPClient();
+  let client = clients.get('storybook');
+  if (!client) {
+    client = new MCPClient();
+    clients.set('storybook', client);
+  }
 
   try {
     // ⚠️ CRÍTICO: El servidor MCP debe ser "storybook" (no "storybook-ubits")
@@ -233,7 +277,15 @@ export async function callStorybookMCPTool(
     });
 
     return result;
-  } finally {
-    client.disconnect();
+  } catch (error) {
+    // Si hay un error de conexión, intentar reconectar la próxima vez
+    if (
+      error.message.includes('No conectado') ||
+      error.message.includes('closed')
+    ) {
+      clients.delete('storybook');
+    }
+    throw error;
   }
+  // ⚠️ NOTA: No desconectamos para reutilizar la conexión
 }

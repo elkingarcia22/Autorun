@@ -163,16 +163,77 @@ export class HtmlPrototypeAdapter {
           storybookId,
         });
 
-        // 4. Insertar contenedor en .content-area (dentro del anchor CONTENT)
-        // Buscar .content-area dentro del contenido (buscar hasta el cierre de </main> o </div>)
+        // 4. Insertar contenedor en .content-area (o después de #top-nav-container)
+        // Buscar .content-area dentro del contenido
         const contentAreaMatch = content.match(
           /(<div[^>]*class=["']content-area["'][^>]*>)([\s\S]*?)(<\/div>\s*<\/main>|<\/div>\s*<\/div>|<\/div>\s*$)/m
         );
-        if (contentAreaMatch) {
+
+        // ⭐ NUEVO: Priorizar inserción después de #top-nav-container si existe
+        const topNavMatch = content.match(
+          /<div[^>]*id=["']top-nav-container["'][^>]*>\s*<\/div>/
+        );
+
+        if (topNavMatch) {
+          console.log(
+            `   ✅ [HtmlPrototypeAdapter] Insertando después de #top-nav-container`
+          );
+
+          // Wrap the container in watermarks for compliance
+          const containerWithWatermark = emitWatermark(
+            {
+              v: 2,
+              mode: 'prototypeTokens',
+              components: [storybookId],
+              storybookId,
+            } as any,
+            containerHTML
+          ).wrappedContent;
+
+          const newContentWithContainer = content.replace(
+            topNavMatch[0],
+            `${topNavMatch[0]}\n\n                ${containerWithWatermark}`
+          );
+
+          // 5. Insertar script de inicialización en anchor SCRIPTS
+          if (anchors.scripts) {
+            const scriptWithWatermark = emitWatermark(
+              {
+                v: 2,
+                mode: 'prototypeTokens',
+                components: [storybookId],
+                storybookId,
+              } as any,
+              `<script>\n${executableScript}\n</script>`
+            );
+
+            const finalContent = newContentWithContainer.replace(
+              anchors.scripts,
+              `${anchors.scripts}\n${scriptWithWatermark.wrappedContent}`
+            );
+
+            await fs.writeFile(filePath, finalContent, 'utf-8');
+            console.log(
+              `   ✅ [HtmlPrototypeAdapter] Componente ${componentName} insertado después de SubNav`
+            );
+            return;
+          }
+        } else if (contentAreaMatch) {
+          // Wrap the container in watermarks for compliance
+          const containerWithWatermark = emitWatermark(
+            {
+              v: 2,
+              mode: 'prototypeTokens',
+              components: [storybookId],
+              storybookId,
+            } as any,
+            containerHTML
+          ).wrappedContent;
+
           // Insertar contenedor dentro de .content-area
           const contentAreaWithContainer = contentAreaMatch[0].replace(
             contentAreaMatch[2],
-            `${contentAreaMatch[2]}\n                ${containerHTML}`
+            `${contentAreaMatch[2]}\n                ${containerWithWatermark}`
           );
           const newContentWithContainer = content.replace(
             contentAreaMatch[0],

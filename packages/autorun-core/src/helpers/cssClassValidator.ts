@@ -40,20 +40,34 @@ export function extractCSSClasses(html: string): string[] {
 
 /**
  * Obtiene el prefijo de clase esperado para un componente
+ * 
+ * ⭐ NUEVO: Usa clases extraídas desde Storybook como prioridad
+ * Fallback a mapeos hardcodeados solo si falla
  */
-export function getComponentClassPrefix(componentId: string): string {
-  // Normalizar componentId para obtener prefijo
-  // Ej: "⚙️-functional-drawer" → "ubits-drawer"
-  // Ej: "🧩-ux-button" → "ubits-button"
-  // Ej: "🧩-ux-radio" → "ubits-radio-button"
+export async function getComponentClassPrefix(
+  componentId: string
+): Promise<string> {
+  // ⭐ NUEVO: Intentar obtener clase principal desde Storybook
+  try {
+    const { StorybookCSSExtractor } = await import('./storybookCSSExtractor');
+    const mainClass = await StorybookCSSExtractor.getMainClass(componentId);
+    if (mainClass) {
+      return mainClass;
+    }
+  } catch (error: any) {
+    console.warn(
+      `⚠️ [CSS Validator] Error obteniendo clase desde Storybook, usando fallback: ${error.message}`
+    );
+  }
 
+  // Fallback: Normalizar componentId para obtener prefijo (temporal, hasta eliminar completamente)
   const normalized = componentId
     .replace(/^[🧩⚙️]/g, '') // Remover emojis
     .replace(/^functional-/, '')
     .replace(/^ux-/, '')
     .toLowerCase();
 
-  // Mapeo especial para componentes conocidos
+  // Mapeo especial para componentes conocidos (temporal)
   const specialMappings: Record<string, string> = {
     radio: 'ubits-radio-button',
     'radio-button': 'ubits-radio-button',
@@ -156,8 +170,8 @@ export async function validateCSSClasses(
   const allClasses = extractCSSClasses(html);
   console.log(`   📋 Clases encontradas: ${allClasses.length}`);
 
-  // 2. Obtener prefijo del componente
-  const componentPrefix = getComponentClassPrefix(componentId);
+  // 2. Obtener prefijo del componente (ahora async)
+  const componentPrefix = await getComponentClassPrefix(componentId);
   console.log(`   🎯 Prefijo del componente: ${componentPrefix}`);
 
   // 3. Filtrar solo clases del componente

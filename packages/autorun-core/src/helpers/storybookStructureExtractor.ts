@@ -41,7 +41,9 @@ export async function extractStructureFromStorybook(
 			checkAvailability: false,
 		});
 		const baseUrl = baseUrlResult.url.replace(/\/$/, '');
-		const storybookUrl = `${baseUrl}/?path=/story/${options.componentId}--${options.storyName || 'default'}`;
+		// ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+		const encodedComponentId = encodeURIComponent(options.componentId);
+		const storybookUrl = `${baseUrl}/?path=/story/${encodedComponentId}--${options.storyName || 'default'}`;
 
 		// 2. Obtener HTML de la página
 		const html = await fetchStorybookPage(storybookUrl);

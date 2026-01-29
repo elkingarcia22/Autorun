@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "lastUpdate": 1768333516336,
+  "components": {
+    "navegación-subnav-subnav": {
+      "componentId": "navegación-subnav",
+      "componentName": "SubNav",
+      "lastUpdate": 1768333511150,
+      "variants": [],
+      "types": [],
+      "properties": []
+    }
+  }
+}

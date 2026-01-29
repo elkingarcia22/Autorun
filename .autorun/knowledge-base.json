@@ -1,0 +1,51 @@
+{
+    "implementations": [
+        {
+            "id": "tabs-encuestas-2026-01-29",
+            "component": "Tabs",
+            "file": "canvas-administrador-encuestas-2026-01-29.html",
+            "date": "2026-01-29",
+            "context": "Tabs debajo de SubNav para filtrar encuestas",
+            "html": "<div id=\"tabs-container\"></div>",
+            "javascript": "window.createTabs({ tabs: [{ id: 'tab-activas', label: 'Activas', icon: 'fa-regular fa-check-circle', active: true }], activeTabId: 'tab-activas', onTabChange: function(tabId) { console.log('Tab cambiado:', tabId); }}, 'tabs-container');",
+            "css_loaded": "tabs.css already in head",
+            "errors_found": [
+                "Usé window.UBITS.Tabs.create (INCORRECTO)",
+                "Iconos sin prefijo fa-regular (sin iconos visibles)"
+            ],
+            "solutions": [
+                "Usar window.createTabs() directamente",
+                "Formato iconos: 'fa-regular fa-icon-name'"
+            ],
+            "time_taken_minutes": 25,
+            "success": true,
+            "notes": "Función correcta es window.createTabs(), NO window.UBITS.Tabs.create. Iconos requieren prefijo fa-regular."
+        }
+    ],
+    "patterns": {
+        "Tabs": {
+            "function": "window.createTabs()",
+            "container": "div with unique id",
+            "icon_format": "fa-regular fa-icon-name",
+            "common_errors": [
+                "usar window.UBITS.Tabs.create en vez de window.createTabs",
+                "olvidar prefijo fa-regular en iconos"
+            ],
+            "typical_props": [
+                "tabs array",
+                "activeTabId",
+                "onTabChange callback"
+            ]
+        }
+    },
+    "metadata": {
+        "total_implementations": 1,
+        "unique_components": 1,
+        "total_errors_found": 2,
+        "total_errors_fixed": 2,
+        "average_success_rate": 100,
+        "total_time_saved": 0,
+        "last_updated": "2026-01-29T21:18:00Z",
+        "version": "1.0.0"
+    }
+}

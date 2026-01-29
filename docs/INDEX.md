@@ -1,14 +1,31 @@
 # 📚 Índice Maestro de Documentación - Autorun
 
-Índice centralizado de toda la documentación del proyecto Autorun.
+**Última actualización:** 2026-01-29  
+**Versión:** 2.0.0 (Migración a Antigravity)
+
+> ⭐ **NUEVO:** Proyecto migrado a Antigravity. Reglas ahora modularizadas en `.agent/rules/`
+
+> **⚠️ MCP SERVER DEPRECATED**  
+> El MCP Server de Autorun está deprecado. Usa Workflows y Skills en `.agent/`  
+> **Ver guía:** [MIGRATION.md](../MIGRATION.md)
 
 ---
 
 ## 🚀 Inicio Rápido
 
+### Para Nuevos Usuarios:
+
 - **[GETTING-STARTED.md](../GETTING-STARTED.md)** - ⭐ Empezar en 5 minutos
 - **[QUICK-START.md](../QUICK-START.md)** - Solución de problemas
-- **[INDEX.md](../INDEX.md)** - Flujo de inicialización
+- **[README.md](../README.md)** - Visión general del proyecto
+
+### Para Usuarios de Antigravity:
+
+- **[.agent/rules/index.md](../.agent/rules/index.md)** - ⚠️ **OBLIGATORIO** Reglas modularizadas
+- **[.agent/workflows/README.md](../.agent/workflows/README.md)** - Workflows (reemplazan MCP)
+- **[.agent/skills/README.md](../.agent/skills/README.md)** - Skills reutilizables
+- **[MIGRATION.md](../MIGRATION.md)** - 🔄 Migrar de MCP a Workflows/Skills
+
 
 ---
 
@@ -223,13 +240,22 @@ Documentación de add-ons:
 
 ---
 
-## 🎯 Reglas y Configuración
+## 🎯 Reglas y Configuración (⭐ NUEVO en Antigravity)
 
-- **[.cursorrules](../.cursorrules)** - ⚠️ Reglas principales (simplificado)
-- **[.cursor/rules/](../.cursor/rules/)** - Reglas organizadas por módulos
-- **[.cursor/rules/index.md](../.cursor/rules/index.md)** - Índice de reglas
+### Reglas Modularizadas (`.agent/rules/`):
+
+- **[.agent/rules/index.md](../.agent/rules/index.md)** - Índice completo de reglas
+- **[.agent/rules/00-inicio.md](../.agent/rules/00-inicio.md)** - Verificación inicial (OBLIGATORIO)
+- **[.agent/rules/01-deteccion-imagen.md](../.agent/rules/01-deteccion-imagen.md)** - Sistema de triggers
+- **[.agent/rules/02-componentes.md](../.agent/rules/02-componentes.md)** - Uso de componentes UBITS
+- **[.agent/rules/03-implementacion.md](../.agent/rules/03-implementacion.md)** - Proceso de implementación
+- **[.agent/rules/04-errores.md](../.agent/rules/04-errores.md)** - Errores comunes
+
+### Archivo Principal:
+
+- **[.cursorrules](../.cursorrules)** - ⚠️ Índice simplificado (reducido de 962 → 130 líneas)
 
 ---
 
-**Última actualización:** 2025-01-03
-
+**Última actualización:** 2026-01-29  
+**Versión:** 2.0.0 (Migración a Antigravity)

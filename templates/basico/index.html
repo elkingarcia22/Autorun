@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Básico UBITS - Backend Listo</title>
+  
+  <!-- CSS Local -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <!-- Agregar CSS de componentes según necesidad -->
+  <!-- <link rel="stylesheet" href="css/components/radio-button.css"> -->
+  <!-- <link rel="stylesheet" href="css/components/button.css"> -->
+  
+  <style>
+    /* Estilos básicos para el template */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--modifiers-normal-color-light-bg-1, #ffffff);
+      color: var(--ubits-fg-1-high, #000000);
+    }
+    
+    .content-area {
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    h2 {
+      margin-top: 32px;
+      margin-bottom: 16px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    p {
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    
+    .section {
+      margin-bottom: 32px;
+      padding: 24px;
+      background: var(--modifiers-normal-color-light-bg-1, #ffffff);
+      border-radius: 8px;
+      border: 1px solid var(--ubits-border-color, #e0e0e0);
+    }
+    
+    .code-block {
+      background: #f5f5f5;
+      padding: 16px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+    
+    .info-box {
+      padding: 16px;
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      border-radius: 4px;
+      margin: 16px 0;
+    }
+    
+    .warning-box {
+      padding: 16px;
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      border-radius: 4px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="content-area">
+    <h1>Template Básico UBITS</h1>
+    <p>Este template es simplificado y no usa ContentManager dinámico. Ideal para backend que necesita frontend listo para usar.</p>
+    
+    <div class="info-box">
+      <strong>ℹ️ Información:</strong> Este template no requiere interceptaciones ni sistemas de gestión dinámica. Los componentes se inicializan directamente.
+    </div>
+    
+    <div class="section">
+      <h2>Características</h2>
+      <ul>
+        <li>✅ Sin ContentManager dinámico</li>
+        <li>✅ CSS local (no externo)</li>
+        <li>✅ JS local (no externo)</li>
+        <li>✅ Inicialización directa</li>
+        <li>✅ Sin interceptaciones necesarias</li>
+      </ul>
+    </div>
+    
+    <div class="section">
+      <h2>Uso Básico</h2>
+      <p>Para usar un componente:</p>
+      <ol>
+        <li>Copiar el CSS del componente a <code>css/components/</code></li>
+        <li>Copiar el JS del componente a <code>js/components/</code></li>
+        <li>Agregar el link CSS en el <code>&lt;head&gt;</code></li>
+        <li>Agregar el script JS antes del cierre de <code>&lt;body&gt;</code></li>
+        <li>Crear contenedor en el HTML</li>
+        <li>Inicializar el componente con JavaScript</li>
+      </ol>
+    </div>
+    
+    <div class="section">
+      <h2>Ejemplo: RadioButton</h2>
+      <p>Ver ejemplo completo en: <code>examples/radio-button.html</code></p>
+      
+      <div class="code-block">
+&lt;!-- HTML --&gt;
+&lt;div id="radiobutton-group"&gt;&lt;/div&gt;
+
+&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="css/components/radio-button.css"&gt;
+
+&lt;!-- JS --&gt;
+&lt;script src="js/components/radio-button.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.UBITS.RadioButton.create({
+    containerId: 'radiobutton-group',
+    label: 'Opción 1',
+    value: 'opcion1',
+    name: 'grupo',
+    checked: true
+  });
+&lt;/script&gt;
+      </div>
+    </div>
+    
+    <div class="warning-box">
+      <strong>⚠️ Nota:</strong> Este template NO usa ContentManager, por lo que el contenido es estático. Los componentes se inicializan directamente sin interceptaciones.
+    </div>
+    
+    <!-- Contenedores para componentes (descomentar según necesidad) -->
+    <!-- 
+    <div class="section">
+      <h2>RadioButton</h2>
+      <div id="radiobutton-group-tipo" style="display: flex; flex-direction: column; gap: 16px;"></div>
+    </div>
+    -->
+  </div>
+
+  <!-- JS Local -->
+  <!-- Agregar JS de componentes según necesidad -->
+  <!-- 
+  <script src="js/components/radio-button.js"></script>
+  <script>
+    // Ejemplo de inicialización:
+    (function() {
+      function initRadioButtons() {
+        if (!window.UBITS || !window.UBITS.RadioButton) {
+          setTimeout(initRadioButtons, 100);
+          return;
+        }
+
+        function handleChange(event) {
+          const selectedValue = event.target.value;
+          console.log('Opción seleccionada:', selectedValue);
+        }
+
+        const options = [
+          {
+            containerId: 'radiobutton-group-tipo',
+            label: 'Opción 1',
+            value: 'opcion1',
+            name: 'grupo',
+            checked: true,
+            onChange: handleChange
+          },
+          {
+            containerId: 'radiobutton-group-tipo',
+            label: 'Opción 2',
+            value: 'opcion2',
+            name: 'grupo',
+            checked: false,
+            onChange: handleChange
+          }
+        ];
+
+        options.forEach((opt) => {
+          window.UBITS.RadioButton.create(opt);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initRadioButtons);
+      } else {
+        initRadioButtons();
+      }
+    })();
+  </script>
+  -->
+</body>
+</html>

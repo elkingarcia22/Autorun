@@ -124,7 +124,7 @@ export async function autoCallStorybookMCP(
         './storybookMCPNameMapper.js'
       );
       const mcpComponentName =
-        storybookIdToComponentName(storybookId) || componentName;
+        (await storybookIdToComponentName(storybookId)) || componentName;
 
       console.log(`📚 [Storybook MCP Auto Caller] El agente DEBE ejecutar:`);
       console.log(`   call_mcp_tool({`);

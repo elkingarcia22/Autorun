@@ -1,292 +1,6 @@
-# 🎯 Reglas Principales - Autorun
+# 🎯 Reglas Principales - Autorun (Antigravity)
 
-> **⚠️ IMPORTANTE:** Este archivo es un índice simplificado. Para detalles completos, ver `.cursor/rules/` y `QUICK-REFERENCE.md`
-
----
-
-## ⚠️⚠️⚠️ CRÍTICO: INICIALIZAR AUTORUN PRIMERO ⚠️⚠️⚠️
-
-**🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA SESIÓN 🚨**
-
-## 🔍🔍🔍 EJECUCIÓN AUTOMÁTICA AL INICIO (PASO 5 - OBLIGATORIO) ⚠️ OBLIGATORIO ⭐ NUEVO
-
-**🚨 ESTA ES LA QUINTA ACCIÓN: EJECUTAR handleUserMessage() SIEMPRE (OBLIGATORIO) 🚨**
-
-**⚠️ ORDEN DE EJECUCIÓN:**
-1. **PASO 1:** Detectar wizard state (usar `processWizardStateForAgent()`) ← **PRIMERO**
-2. **PASO 2:** Inicializar AutorunHub (si hay wizard o no está inicializado)
-3. **PASO 3:** Abrir browser interno de Cursor (si hay wizard)
-4. **PASO 4:** Verificar estado
-5. **PASO 5:** Ejecutar handleUserMessage() ← **ESTE PASO** (SIEMPRE OBLIGATORIO)
-
-**Ver orden completo:** `docs/guias/configuracion/ORDEN-EJECUCION-INICIO-SESION.md` - ⚠️ **OBLIGATORIO**
-
-**⚠️ CRÍTICO:** Este paso DEBE ejecutarse SIEMPRE al inicio de cada mensaje, sin excepción. No importa si hay palabras clave de implementación o no. Esto garantiza:
-- ✅ Detección automática de componentes (incluyendo múltiples componentes)
-- ✅ Verificación de triggers de palabras clave
-- ✅ Verificación con Pre-Implementation Check
-- ✅ Obtención de plan basado en historias (si aplica)
-- ✅ Bloqueo si faltan pasos o fases
-- ✅ Preparación automática de mensajes MCP para todos los componentes detectados
-
-**⚠️ ANTES de handleUserMessage(), SIEMPRE verificar wizard state:**
-
-```typescript
-// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje (ANTES de handleUserMessage)
-import { processWizardStateForAgent } from '@autorun/core';
-
-const wizardResult = await processWizardStateForAgent();
-if (wizardResult.success && wizardResult.url) {
-  // 1. Inicializar AutorunHub (ya se hizo en processWizardStateForAgent)
-  // 2. Abrir browser interno de Cursor
-  await call_mcp_tool({
-    server: 'cursor-ide-browser',
-    toolName: 'browser_navigate',
-    arguments: { url: wizardResult.url }
-  });
-  await call_mcp_tool({
-    server: 'cursor-ide-browser',
-    toolName: 'browser_snapshot'
-  });
-  // 3. Limpiar archivo de estado
-  await run_terminal_cmd({ command: 'rm -f .autorun/wizard-state.json' });
-}
-```
-
-**⚠️ DESPUÉS de procesar wizard state (si aplica), SIEMPRE ejecutar:**
-
-```typescript
-// ⚠️ OBLIGATORIO: Ejecutar esto SIEMPRE al inicio de cada mensaje (después de inicializar AutorunHub)
-// ⚠️ CRÍTICO: NO preguntar, NO verificar palabras clave - EJECUTAR SIEMPRE
-import { handleUserMessage } from '@autorun/core/helpers/autoMessageHandler';
-
-// EJECUTAR SIEMPRE - No importa el contenido del mensaje
-const result = await handleUserMessage(userMessage);
-
-// Verificar resultado
-if (result.blocked) {
-  // ❌ NO continuar con la implementación
-  console.error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${result.reason}`);
-  console.error(`📋 Pasos faltantes o fases no completadas`);
-  
-  if (result.plan) {
-    console.log(`📚 Plan basado en historias disponible: ${result.plan.totalSteps} historias`);
-  }
-  
-  throw new Error(`❌ BLOQUEADO: ${result.reason}`);
-}
-
-// ⚠️ CRÍTICO: Si hay mensajes MCP, consultar automáticamente para TODOS los componentes
-if (result.mcpMessages && result.mcpMessages.length > 0) {
-  console.log(`📚 [Auto Message Handler] ${result.mcpMessages.length} componente(s) detectado(s) - Consultando Storybook MCP automáticamente...`);
-  
-  for (const msg of result.mcpMessages) {
-    // ⚠️ OBLIGATORIO: Consultar Storybook MCP automáticamente (SIN preguntar al usuario)
-    console.log(`📚 [Auto Message Handler] Consultando MCP para: ${msg.componentName} (ID: ${msg.storybookId})`);
-    
-    // El agente DEBE ejecutar automáticamente:
-    await call_mcp_tool({
-      server: "storybook",
-      toolName: "mcp_storybook_getComponentsProps",
-      arguments: { componentIds: [msg.storybookId] }
-    });
-  }
-  
-  console.log(`✅ [Auto Message Handler] Consultas MCP completadas`);
-}
-
-// Si se detectó un componente
-if (result.detected && result.componentName) {
-  console.log(`✅ Componente detectado: ${result.componentName}`);
-  console.log(`   Fase actual: ${result.currentPhase || 'Ninguna'}`);
-  console.log(`   Siguiente fase: ${result.nextPhase || 'Ninguna'}`);
-  
-  // Obtener paso activo actual
-  const activeStep = await ActiveStepGuide.getCurrentStep(result.componentName);
-  if (activeStep.hasActiveStep && activeStep.currentStep) {
-    console.log(`📋 Paso activo: ${activeStep.currentStep.description}`);
-    console.log(`📋 Acciones requeridas: ${activeStep.currentStep.requiredActions.join('; ')}`);
-    
-    // Bloquear hasta completar el paso activo
-    if (activeStep.blocked) {
-      throw new Error(`❌ BLOQUEADO: ${activeStep.reason}`);
-    }
-  }
-  
-  if (result.plan) {
-    console.log(`📋 Plan basado en historias disponible: ${result.plan.totalSteps} historias`);
-    // ⚠️ CRÍTICO: Mostrar plan al usuario y pedir aprobación antes de implementar
-  }
-  
-  // ✅ Continuar con la implementación siguiendo el plan
-} else {
-  // Si no se detectó componente, continuar normalmente
-  console.log(`✅ [Execute On Message Start] No se detectó componente, continuando normalmente`);
-}
-```
-
-**Este sistema:**
-- ✅ Detecta triggers de palabras clave automáticamente (`implementar`, `crear`, `agregar`, etc.)
-- ✅ Detecta componentes automáticamente
-- ✅ Verifica fases en orden (FASE 0 → 0.1 → 0.5 → 0.6 → 1 → 2)
-- ✅ Obtiene plan basado en historias
-- ✅ Muestra paso activo actual con acciones requeridas
-- ✅ Bloquea si faltan pasos o fases
-- ✅ Guía paso a paso la implementación
-
-**Ver guías completas:**
-- `docs/guias/implementacion/GUIA-SISTEMA-PASO-A-PASO-AUTOMATICO.md` - ⚠️ **OBLIGATORIO**
-- `docs/guias/implementacion/GUIA-SISTEMA-TRIGGERS-AUTOMATICOS.md` - ⚠️ **OBLIGATORIO**
-- `docs/analisis/RESUMEN-COMPLETO-SISTEMA-BLINDADO-AUTORUN.md` - ⚠️ **OBLIGATORIO**
-
-**Este sistema detecta automáticamente MÁS DE 80 COMPONENTES de ambos Storybooks:**
-
-### Componentes Básicos:
-- ✅ Button, ButtonAI, ButtonGroup, Avatar, Badge, Chip, Skeleton, Spinner, StatusTag, Tag, Scrollbar
-
-### Componentes de Feedback:
-- ✅ Modal, Popover, Drawer, Toast, Alert, Tooltip, EmptyState, Mask, ButtonFeedback, Tour
-
-### Componentes de Formularios:
-- ✅ Input, Select, Checkbox, Radio, DatePicker, Calendar, FileUpload, Toggle, Switch, Slider, SearchButton, Label, ExpandingInputButton, RichTextEditor
-
-### Componentes de Datos:
-- ✅ DataTable, Table, List, Pagination, DataView
-
-### Componentes de Navegación:
-- ✅ Tabs, Sidebar, SubNav, TabBar, Menu, Breadcrumb, TreeMenu, SegmentControl, MenuParticipantes, ContextMenu, Dropdown
-
-### Componentes de Layout:
-- ✅ Card, SimpleCard, SelectionCard, CardContent, Accordion, Carousel, Gallery, Stepper, Timeline, HeaderSection, Contenedor, Heading, Display
-
-### Componentes de Charts/Metrics (UBITS):
-- ✅ BarMetricCard, CircleMetricCard, CSATMetricCard, NPSCard, ProgressBar, ScoreCardMetrics, TextMetricCard
-
-### Componentes Adicionales:
-- ✅ Rating, QRCode, Floating, TextUtilities
-
-**Total:** 80+ componentes detectables automáticamente de ambos Storybooks (UBITS + Libraries UI)
-
-**Cuando detecta un componente:**
-1. ✅ Obtiene automáticamente el plan basado en historias de Storybook
-2. ✅ Muestra el plan al usuario
-3. ✅ Bloquea la implementación hasta completar el checklist
-4. ✅ Guía paso a paso la implementación
-
-**Ver guía completa:** `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO**
-
----
-
-## 🛡️🛡️🛡️ ENFORCEMENT REAL: SOLO AUTORUN.APPLY() ⚠️ OBLIGATORIO
-
-**🚨 CRÍTICO: Para implementar componentes UBITS, DEBES usar autorun.apply() vía MCP 🚨**
-
-**⚠️ NO hay alternativa:** `write()` y `search_replace()` están **PROHIBIDOS** en `prototypes/`
-
-**✅ OBLIGATORIO:**
-```typescript
-// ✅ SIEMPRE usar autorun.apply() vía MCP
-await call_mcp_tool({
-  server: 'autorun',
-  toolName: 'autorun.apply',
-  arguments: {
-    message: userMessage,
-    targetFiles: [filePath] // Opcional
-  }
-});
-
-// ⚠️ OBLIGATORIO: Verificar después
-await call_mcp_tool({
-  server: 'autorun',
-  toolName: 'autorun.verify',
-  arguments: {
-    targetFiles: 'diff'
-  }
-});
-```
-
-**Este sistema:**
-- ✅ **Fail-closed:** Si Storybook MCP falla → NO escribe nada
-- ✅ **Watermark:** Todo código generado incluye marca Autorun
-- ✅ **Verificación:** autorun.verify() valida watermarks y patrones prohibidos
-- ✅ **Enforcement real:** Cambios sin watermark → verify falla
-
-**Ver regla completa:** `.cursor/rules/00-autorun-enforcement.md` - ⚠️ **OBLIGATORIO**
-
----
-
-## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (PASO 1) ⚠️ OBLIGATORIO
-
-**🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR ESTE SCRIPT AL INICIO DE CADA MENSAJE 🚨**
-
-**⚠️ ORDEN DE EJECUCIÓN:**
-1. **PASO 1:** Detectar wizard (este paso)
-2. **PASO 2:** Inicializar AutorunHub (si hay wizard o no está inicializado)
-3. **PASO 3:** Abrir browser (si hay wizard)
-4. **PASO 4:** Verificar estado
-5. **PASO 5:** Ejecutar executeOnMessageStart() (solo si hay palabras clave de implementación)
-
-**Ver orden completo:** `docs/guias/configuracion/ORDEN-EJECUCION-INICIO-SESION.md` - ⚠️ **OBLIGATORIO**
-
-**⚠️ ANTES de cualquier otra cosa, SIEMPRE ejecutar el script de detección:**
-
-```javascript
-// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje
-const result = await run_terminal_cmd({
-  command: 'node scripts/detect-wizard-state.js',
-  is_background: false
-});
-
-// ⚠️ SI el output contiene [AUTORUN_WIZARD_STATE_DETECTED]true[/AUTORUN_WIZARD_STATE_DETECTED]:
-// O si contiene [AUTORUN_TEMPLATE_DETECTED]true[/AUTORUN_TEMPLATE_DETECTED]:
-// EJECUTAR INMEDIATAMENTE (sin preguntar) en este orden:
-
-// 1. Extraer URL de [AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL] del output
-const urlMatch = result.stdout.match(/\[AUTORUN_BROWSER_URL\](.+?)\[\/AUTORUN_BROWSER_URL\]/);
-const url = urlMatch ? urlMatch[1] : null;
-
-// 2. Inicializar AutorunHub PRIMERO
-if (url) {
-  await run_terminal_cmd({
-    command: 'npm run autorun:init-hub',
-    is_background: false
-  });
-  
-  // 3. Abrir browser con la URL
-  await mcp_cursor-ide-browser_browser_navigate({ url });
-  await mcp_cursor-ide-browser_browser_snapshot();
-  
- // 4. Limpiar archivo de estado (solo si existe)
-  await run_terminal_cmd({
- command: 'rm -f .autorun/wizard-state.json',
-    is_background: false
-  });
-}
-```
-
-### Comando Obligatorio (si no hay archivo de estado):
-```bash
-npm run autorun:init-hub
-```
-
-**O usando run_terminal_cmd:**
-```typescript
-await run_terminal_cmd({
-  command: 'npm run autorun:init-hub',
-  is_background: false
-});
-```
-
-**DEBES ver en la salida:**
-- ✅ "🚀 Inicializando AutorunHub..."
-- ✅ "✅ AutorunHub inicializado correctamente"
-- ✅ "📊 Estado de Autorun:"
-- ✅ "   - Inicializado: ✅"
-- ✅ "   - File Watching: ✅ activo"
-
-**Si NO ves estos logs:** Ejecutar `npm run init` primero
-
-**Ver detalles completos:** `.cursor/rules/00-inicio.md`
+> **⚠️ IMPORTANTE:** Este archivo es un índice simplificado. Para detalles completos, ver `.agent/rules/`
 
 ---
 
@@ -294,518 +8,117 @@ await run_terminal_cmd({
 
 **ANTES de usar CUALQUIER herramienta, DEBES:**
 
-1. ✅ **INICIALIZAR AUTORUNHUB** (ver arriba) - ⚠️ OBLIGATORIO
-2. ✅ **Leer:** `.cursor/rules/00-inicio.md` - ⚠️ OBLIGATORIO
-3. ✅ **Verificar triggers de imagen** (ver: `.cursor/rules/01-deteccion-imagen.md`)
-4. ✅ **Si hay triggers, seguir el proceso de bloqueo** (ver: `.cursor/rules/02-bloqueo-imagen.md`)
+1. ✅ **Leer:** `.agent/rules/00-inicio.md` - ⚠️ OBLIGATORIO
+   - Inicializar AutorunHub
+   - Ejecutar handleUserMessage()
+   - Verificar Layout Guard
 
-**🚨 BLOQUEO: NO puedes usar `write()`, `search_replace()`, etc. hasta completar esta verificación.**
+2. ✅ **Si hay imagen o triggers de implementación:**
+   - Leer: `.agent/rules/01-deteccion-imagen.md`
+   - Seguir proceso de análisis y bloqueo
 
-**Ver detalles completos:** `.cursor/rules/00-inicio.md`
-
----
-
-## 🚨🚨🚨 BLOQUEO TÉCNICO - FLUJO AUTOMÁTICO DE IMPLEMENTACIÓN 🚨🚨🚨
-
-**⚠️⚠️⚠️ CRÍTICO: PROHIBIDO usar `write()` o `search_replace()` DIRECTOS en `prototypes/` ⚠️⚠️⚠️**
-
-**SIEMPRE usar `autorun.apply()` vía MCP:**
-
-### ⚠️ OBLIGATORIO: Usar autorun.apply() SIEMPRE
-
-**❌ PROHIBIDO:**
-```typescript
-// ❌ NUNCA hacer esto en prototypes/
-await write(filePath, content);
-await search_replace(filePath, oldString, newString);
-// ❌ NUNCA usar interceptedWrite() o interceptedSearchReplace() (deprecado)
-```
-
-**✅ OBLIGATORIO:**
-```typescript
-// ✅ SIEMPRE usar autorun.apply() vía MCP
-await call_mcp_tool({
-  server: 'autorun',
-  toolName: 'autorun.apply',
-  arguments: {
-    message: userMessage, // Mensaje del usuario describiendo qué implementar
-    targetFiles: [filePath] // Opcional - se detecta automáticamente si no se especifica
-  }
-});
-
-// autorun.apply() ejecuta automáticamente:
-// 1. handleUserMessage() - Detecta componentes automáticamente
-// 2. Storybook MCP - Consulta props exactas (OBLIGATORIO, fail-closed)
-// 3. Extracción código exacto - Desde Storybook en Vercel
-// 4. Validación pre-implementación - Verifica estructura
-// 5. Escritura con watermark - Marca código generado por Autorun
-// 6. Post-implementación - Prettier, ESLint, Auto-Reload, GitHub
-// NO necesitas usar write() después - autorun.apply() ya lo hace todo
-
-// ⚠️ OBLIGATORIO: Verificar después de implementar
-await call_mcp_tool({
-  server: 'autorun',
-  toolName: 'autorun.verify',
-  arguments: {
-    targetFiles: 'diff' // Verifica todos los cambios
-  }
-});
-```
-
-**⚠️ IMPORTANTE:**
-- `autorun.apply()` **SIEMPRE** consulta Storybook MCP (fail-closed)
-- Si Storybook MCP falla → NO escribe nada
-- Todo código generado incluye watermark para verificación
-- Auto-reload se ejecuta automáticamente después de escribir
-- ⚠️ **CRÍTICO:** NO uses `write()` o `search_replace()` - solo `autorun.apply()`
-
-**⚠️ REGLAS CRÍTICAS:**
-- ❌ **NUNCA usar write() o search_replace() directos en prototypes/**
-- ✅ **SIEMPRE usar autorun.apply() vía MCP para implementar componentes**
-- ✅ **SIEMPRE verificar con autorun.verify() después de implementar**
-- ✅ **SI autorun.apply() falla → NO usar write() como fallback**
-- ✅ **SI Storybook MCP no está disponible → NO implementar, solo reportar error**
-
-**Ver regla completa:** `.cursor/rules/00-autorun-enforcement.md` - ⚠️ **OBLIGATORIO**
-
-**Ver detalles completos:** `.cursor/rules/04-implementacion.md`
-
----
-
-## 🔄 FLUJO OBLIGATORIO: TRIGGERS → DETECCIÓN → FASES → PLAN → CHECKLIST → IMPLEMENTACIÓN
-
-**⚠️ CRÍTICO: SIEMPRE seguir este flujo para cualquier implementación:**
-
-0. **🎯 TRIGGERS AUTOMÁTICOS** - Sistema detecta palabras clave automáticamente (`implementar`, `crear`, `agregar`, etc.) (⭐ NUEVO)
-1. **🔍 DETECCIÓN AUTOMÁTICA** - Detectar componente automáticamente al inicio del mensaje (⭐ NUEVO)
-2. **📋 PASO ACTIVO** - Obtener paso activo actual con ActiveStepGuide (⭐ NUEVO)
-3. **🔍 VALIDACIÓN DE FASES** - Validar orden de fases con PhaseValidator (FASE 0 → 0.1 → 0.5 → 0.6 → 1 → 2) (⭐ NUEVO)
-4. **🔍 ANÁLISIS** - Analizar primero (componentes, iconos, spacing, estructura)
-5. **📋 PLAN** - Crear plan detallado y mostrarlo al usuario (obtenido automáticamente si se detectó componente)
-6. **✅ CHECKLIST** - Crear checklist para cada componente/tarea
-7. **🛠️ IMPLEMENTACIÓN** - Implementar paso a paso, UNA tarea a la vez
-8. **✅ MARCAR FASE COMPLETADA** - Marcar fase como completada con PhaseValidator.markPhaseCompleted() (⭐ NUEVO)
-
-**❌ NUNCA:** Implementar todo de una vez sin detección, análisis y plan.
-
-**Ver:** 
-- `docs/guias/implementacion/GUIA-SISTEMA-TRIGGERS-AUTOMATICOS.md` - ⚠️ **OBLIGATORIO** (triggers automáticos)
-- `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO** (detección automática)
-- `docs/guias/implementacion/GUIA-SISTEMA-PASO-A-PASO-AUTOMATICO.md` - ⚠️ **OBLIGATORIO** (sistema paso a paso)
-- `docs/guias/FLUJO-COMPLETO-ANALISIS-PLAN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO** (flujo completo)
-- `docs/analisis/RESUMEN-COMPLETO-SISTEMA-BLINDADO-AUTORUN.md` - ⚠️ **OBLIGATORIO** (sistema completo blindado)
+3. ✅ **Para implementar componentes:**
+   - Leer: `.agent/rules/03-implementacion.md`
+   - Usar SOLO `autorun.apply()` (NO `write()` ni `search_replace()`)
 
 ---
 
 ## 📚 REGLAS ORGANIZADAS POR MÓDULOS
 
-### 🚨 Detección de Imágenes
-**Ver:** `.cursor/rules/01-deteccion-imagen.md` - Detección automática y proceso de bloqueo
+La documentación completa está en `.agent/rules/`:
 
-### 🎯 Reglas de Componentes UBITS
-**Ver:** `.cursor/rules/03-componentes.md` - Reglas para usar componentes UBITS correctamente
+- **[00-inicio.md](.agent/rules/00-inicio.md)** - Verificación inicial (OBLIGATORIO)
+- **[01-deteccion-imagen.md](.agent/rules/01-deteccion-imagen.md)** - Sistema de triggers
+- **[02-componentes.md](.agent/rules/02-componentes.md)** - Uso de componentes  UBITS (80+)
+- **[03-implementacion.md](.agent/rules/03-implementacion.md)** - Proceso de implementación
+- **[04-errores.md](.agent/rules/04-errores.md)** - Errores comunes y soluciones
 
-### 📚 Cuándo Consultar Storybook
-**Ver:** `docs/guias/CUANDO-CONSULTAR-STORYBOOK.md` - ⚠️ **OBLIGATORIO:** Consultar Storybook una vez por cada historia/funcionalidad (NO solo una vez al inicio)
-
-### 🛠️ Reglas de Implementación
-**Ver:** `.cursor/rules/04-implementacion.md` - Proceso de implementación paso a paso
-
-### 🚨 Errores Comunes
-**Ver:** `.cursor/rules/05-errores.md` - Lista completa de errores a evitar
-
-### 🤖 Implementación Automática
-**Ver:** `.cursor/rules/06-implementacion-automatica.md` - Proceso automático que carga documentación y reglas al implementar componentes
-
-**Ver índice completo:** `.cursor/rules/index.md`
+**Ver índice completo:** `.agent/rules/index.md`
 
 ---
 
-## 🔌 USO OBLIGATORIO DE MCPs Y ADD-ONS
+## 🚨 REGLAS CRÍTICAS (Resumen)
 
-### ⚠️⚠️⚠️ REGLA CRÍTICA: CONSULTAR STORYBOOK MCP AUTOMÁTICAMENTE ⚠️⚠️⚠️
+### ✅ SIEMPRE:
 
-**CUANDO VEAS EN LOS LOGS:**
-```
-[AUTORUN_STORYBOOK_MCP]ComponentName:storybookId[/AUTORUN_STORYBOOK_MCP]
-```
+- Ejecutar `handleUserMessage()` al inicio de cada sesión
+- Usar `autorun.apply()` vía MCP para implementar componentes
+- Consultar Storybook MCP antes de implementar
+- Crear plan detallado y pedir aprobación
+- Implementar UNA tarea a la vez
+- Verificar con `autorun.verify()` después
 
-**DEBES ejecutar automáticamente (SIN preguntar):**
+### ❌ NUNCA:
+
+- Usar `write()` o `search_replace()` en `prototypes/` → **BLOQUEADO**
+- Agregar margin/padding a componentes UBITS
+- Implementar sin consultar Storybook
+- Implementar todo de golpe sin plan
+- Modificar estilos de componentes directamente
+
+---
+
+## 🔌 MCPs DISPONIBLES
+
+### Storybook MCP (OBLIGATORIO para componentes)
+
 ```typescript
-// 1. Consultar Storybook MCP (OBLIGATORIO antes de autorun.apply())
-const mcpResult = await call_mcp_tool({
-    server: "storybook", // ⚠️ Servidor unificado
-    toolName: "mcp_storybook_getComponentsProps",
-    arguments: { componentIds: [storybookId] }
-});
-
-// 2. Consultar Storybook en Vercel
-await browser_navigate({ 
-    url: `https://ubits-storybook10.vercel.app/?path=/story/${storybookId}--default` 
-});
-await browser_snapshot();
-
-// 3. Revisar pestaña "Code" para estructura HTML exacta
-// 4. Revisar pestaña "Controls" para props disponibles
-
-// 5. ⚠️ CRÍTICO: Después de consultar Storybook MCP, usar autorun.apply()
+// SIEMPRE consultar antes de implementar
 await call_mcp_tool({
-  server: 'autorun',
-  toolName: 'autorun.apply',
-  arguments: {
-    message: userMessage,
-    targetFiles: [filePath]
-  }
+  server: "storybook",
+  toolName: "mcp_storybook_getComponentsProps",
+  arguments: { componentIds: [componentId] }
 });
 ```
 
-**⚠️ REGLAS CRÍTICAS:**
-- ✅ **SIEMPRE consultar Storybook MCP** cuando veas el mensaje
-- ✅ **SIEMPRE consultar Storybook en Vercel** después del MCP
-- ✅ **SIEMPRE usar autorun.apply()** después de consultar Storybook
-- ✅ **NO usar write() o search_replace()** - solo autorun.apply()
-- ✅ **NO preguntar al usuario** - ejecutar automáticamente
-- ✅ **NO continuar con la implementación** hasta consultar ambos
-
-**Ver guía completa:** `.cursor/rules/00-autorun-enforcement.md` - ⚠️ **OBLIGATORIO**
+**Ver más MCPs disponibles:** `.agent/rules/03-implementacion.md`
 
 ---
 
-### ⚠️ REGLA CRÍTICA: SIEMPRE USAR MCPs DISPONIBLES Y VERIFICAR STORYBOOK EN VERCEL
+## 🔄 FLUJO OBLIGATORIO
 
-**ANTES de buscar cualquier componente en Storybook, DEBES:**
+```
+🔍 ANÁLISIS → 📋 PLAN → ✅ CHECKLIST → 🛠️ IMPLEMENTACIÓN → ✅ VERIFICACIÓN
+```
 
-1. **⚠️ CRÍTICO: Consultar catálogo PRIMERO:** ⚠️ OBLIGATORIO
-   - ✅ **Leer:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
-   - ✅ **Buscar componente por nombre o descripción**
-   - ✅ **Obtener ID de Storybook sugerido**
-
-2. **⚠️ CRÍTICO: Usar descubrimiento automático:** ⚠️ OBLIGATORIO
-   - ✅ **Usar:** `getCorrectStorybookId()` o `mapAndValidateComponentNameToStorybookId()`
-   - ✅ **Validar que el ID existe antes de usarlo**
-   - ✅ **Construir URL con ID descubierto (NO hardcodeada)**
-   - ❌ **NUNCA buscar directamente en Storybook sin descubrimiento automático**
-
-**ANTES de implementar cualquier componente UBITS, DEBES:**
-
-1. **⚠️ CRÍTICO: Consultar Storybook en Vercel (versión más reciente):** ⚠️ PRIMERO
-   - ✅ **URL PRINCIPAL:** `https://ubits-storybook10.vercel.app/` - ⚠️ **SIEMPRE apunta al deployment más reciente**
-   - ✅ **Construir URL con ID descubierto:** `?path=/story/${componentId}--default`
-   - ✅ **Guardar URL del template ANTES de navegar** (para volver después)
-   - ✅ **Revisar pestaña "Code" y "Controls"**
-   - ✅ **⚠️ OBLIGATORIO: Volver automáticamente al template DESPUÉS de consultar**
-
-2. **Consultar Storybook MCP (con ID descubierto):**
-   - ✅ Usar `mcp_storybook_getComponentList` para listar componentes (server: "storybook")
-   - ✅ Usar `mcp_storybook_getComponentsProps` con ID descubierto para obtener props exactas (server: "storybook")
-
-3. **Usar información exacta:**
-   - ✅ Implementar con props exactas obtenidas del Storybook en Vercel
-   - ✅ Usar tokens exactos obtenidos del Storybook
-   - ✅ Seguir estructura exacta del componente
-
-**Ver guías completas:**
-- `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
-- `docs/guias/implementacion/GUIA-BUSQUEDA-COMPONENTES-STORYBOOK-CORRECTA.md` - ⚠️ **OBLIGATORIO**
-
-### MCPs Disponibles:
-- **Storybook MCP** ⭐ - Consultar componentes UBITS (props, tokens, estructura)
-- **Figma MCP** - Consultar tokens de diseño desde Figma
-- **Supabase MCP** - Consultar esquemas de base de datos
-- **GitHub MCP** - Consultar código de componentes
-- **Vercel MCP** - Consultar deployments y proyectos
-
-**NO implementar componentes sin consultar MCPs primero.**
+**Ver flujo completo:** `.agent/rules/03-implementacion.md`
 
 ---
 
-## ⚠️⚠️⚠️ REGLA CRÍTICA: DETECCIÓN AUTOMÁTICA DE OPERACIONES COMUNES ⚠️⚠️⚠️
+## 📖 DOCUMENTACIÓN ADICIONAL
 
-**✅ SISTEMA IMPLEMENTADO Y FUNCIONANDO AUTOMÁTICAMENTE**
-
-**El sistema detecta AUTOMÁTICAMENTE operaciones comunes y BLOQUEA si no se consultaron las guías obligatorias.**
-
-### **Operaciones Detectadas Automáticamente:**
-
-1. **Eliminar HeaderSection** → Debe consultar `GUIA-ELIMINAR-HEADERSECTION.md` ⚠️ OBLIGATORIO
-2. **Interceptar ContentManager** → Debe consultar `GUIA-CONTENTMANAGER-UPDATECONTENT.md` ⚠️ OBLIGATORIO
-3. **Modificar .content-area** → Debe consultar `GUIA-CONTENTMANAGER-UPDATECONTENT.md` ⚠️ OBLIGATORIO
-4. **Agregar componentes UBITS** → Debe consultar `CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` ⚠️ OBLIGATORIO
-5. **Agregar estilos a componentes** → Debe consultar `GUIA-ERRORES-COMUNES-UBITS.md` (Error #53, #55) ⚠️ ADVERTENCIA
-
-**Ver guía completa:** `docs/guias/implementacion/GUIA-SISTEMA-PREVENCION-ERRORES-AUTOMATICO.md` - ⚠️ **OBLIGATORIO**
-
----
-
-## ⚠️⚠️⚠️ REGLA CRÍTICA: LECTURA AUTOMÁTICA DE GUIAS ⚠️⚠️⚠️
-
-**✅ SISTEMA IMPLEMENTADO Y FUNCIONANDO AUTOMÁTICAMENTE**
-
-**El sistema carga automáticamente las guías necesarias antes de permitir cualquier implementación.**
-
-### **Guías que se Cargarán Automáticamente:**
-
-**Guías Generales (SIEMPRE):**
-- ✅ `docs/guias/FLUJO-COMPLETO-ANALISIS-PLAN-IMPLEMENTACION.md`
-- ✅ `docs/guias/implementacion/ESTRATEGIA-IMPLEMENTACION-SIN-ERRORES.md`
-- ✅ `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md`
-- ✅ `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md`
-- ✅ `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md`
-
-**Guías Específicas (por componente):**
-- ✅ Se cargan automáticamente según el componente detectado
-
-### **Cómo Funciona:**
-
-1. **Detección automática:** El sistema detecta cuando se va a implementar un componente
-2. **Carga automática:** Carga todas las guías necesarias (generales + específicas)
-3. **Verificación:** Verifica que se cargaron correctamente
-4. **Bloqueo:** Bloquea la implementación si las guías obligatorias no se pudieron cargar
-
-### **Flujo Obligatorio (se verifica automáticamente):**
-```
-🔍 ANÁLISIS → 📋 PLAN → ✅ CHECKLIST → 🛠️ IMPLEMENTACIÓN
-```
-
-### **Consultar Storybook (OBLIGATORIO):**
-- ✅ Storybook en Vercel PRIMERO: `https://ubits-storybook10.vercel.app/`
-- ✅ Storybook MCP (server: "storybook"): `mcp_storybook_getComponentsProps(['component-id'])`
-- ✅ **Usar descubrimiento automático de IDs:** `mapAndValidateComponentNameToStorybookId()` (descubre automáticamente el ID correcto)
-- ✅ **Después de consultar:** Usar `autorun.apply()` vía MCP (server: "autorun")
-
-### **Sistema de Descubrimiento Automático de IDs:**
-- ✅ **SIEMPRE usar:** `await mapAndValidateComponentNameToStorybookId(componentName)` en lugar de mapeo directo
-- ✅ **Verificar IDs:** El sistema descubre automáticamente los IDs correctos desde Storybook
-- ✅ **Generar inventario:** `npm run generate-storybook-inventory` para ver todos los componentes disponibles
-
-**Ver:** 
-- `docs/guias/implementacion/GUIA-SISTEMA-LECTURA-AUTOMATICA-IMPLEMENTADO.md` - ⚠️ **OBLIGATORIO**
-- `docs/guias/implementacion/GUIA-ERROR-IDS-STORYBOOK-INEXISTENTES.md` - ⚠️ **OBLIGATORIO** (previene errores de IDs inexistentes)
-
----
-
-## ⚠️⚠️⚠️ REGLA CRÍTICA: IMPLEMENTACIÓN AUTOMÁTICA POR HISTORIAS DE STORYBOOK ⭐ AUTOMÁTICO ⚠️⚠️⚠️
-
-**⚠️ AUTOMÁTICO: El Pre-Implementation Check add-on obtiene automáticamente el plan basado en historias cuando detecta un componente.**
-
-**Para CUALQUIER componente, el proceso es AUTOMÁTICO:**
-
-1. **El add-on automáticamente obtiene el plan** (NO necesitas hacerlo manualmente)
-2. **El agente solo necesita usar el plan**
-3. **Para CADA historia (UNA A LA VEZ con checklist):**
-   - ✅ **Obtener el checklist de la historia** antes de empezar
-   - ✅ **Consultar la historia en Storybook ANTES de implementar**
-   - ✅ **Implementar SOLO la funcionalidad de esa historia específica**
-   - ✅ **Completar TODO el checklist** antes de continuar
-   - ✅ **NO continuar hasta que TODO el checklist esté completo**
-
-**⚠️ REGLAS CRÍTICAS:**
-- ❌ **NO usar historia "default"** - tiene todas las funcionalidades mezcladas
-- ❌ **NO implementar múltiples historias al mismo tiempo**
-- ✅ **Implementar UNA historia a la vez**
-- ✅ **Completar TODO el checklist antes de pasar a la siguiente**
-
-**Ver guía completa:** `docs/guias/implementacion/GUIA-IMPLEMENTACION-AUTOMATICA-POR-HISTORIAS.md` - ⚠️ **OBLIGATORIO**
-
----
-
-## 📋 RESUMEN RÁPIDO DE REGLAS CRÍTICAS
-
-### Componentes UBITS
-- ✅ Usar solo componentes existentes
-- ✅ Consultar `CATALOGO-COMPONENTES-UBITS.md` antes de crear
-- ✅ Usar formato correcto de iconos (sin prefijos `fa-`, con sufijos si aplica)
-- ⚠️ **CRÍTICO: NO agregar padding, margin, margin-top ni estilos extra a componentes**
-- ⚠️ **NUNCA agregar margin-top automáticamente** - El spacing debe venir del `gap` del contenedor padre
-
-### Implementación
-- ✅ NUNCA implementar todo de golpe
-- ✅ SIEMPRE dividir en tareas pequeñas
-- ✅ SIEMPRE pedir aprobación antes de continuar
-- ⚠️ **CRÍTICO: SIEMPRE implementar sistema de restauración automática para SubNav**
-
-**Ver detalles completos:** `.cursor/rules/03-componentes.md` y `.cursor/rules/04-implementacion.md`
-
----
-
-## 🔌 Auto-Apertura y Recarga en Browser MCP de Cursor ⚠️ OBLIGATORIO
-
-### **1. Auto-Apertura de URLs del Wizard + Inicialización de AutorunHub** ⚠️ OBLIGATORIO
-
-**Detección automática - verificar en este orden:**
-1. **Archivo de estado del wizard:** ¿Existe `.autorun/wizard-state.json`? (leer y usar)
-2. **Mensajes en terminal:** ¿Hay `[AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL]`?
-3. **Mensajes en terminal:** ¿Hay `[AUTORUN_TEMPLATE_DETECTED]true[/AUTORUN_TEMPLATE_DETECTED]`?
-4. **Mensaje del usuario:** ¿Menciona que el wizard no inició automáticamente o que autorun no funciona?
-
-**Si CUALQUIERA es SÍ → EJECUTAR automáticamente (SIN preguntar) en este orden:**
-
-**Paso 0.5: Leer archivo de estado (si existe)**
-```javascript
-// Leer .autorun/wizard-state.json si existe
-const fs = await import('fs/promises');
-const path = await import('path');
-try {
-  const statePath = path.join(process.cwd(), '.autorun', 'wizard-state.json');
-  const stateContent = await fs.readFile(statePath, 'utf-8');
-  const state = JSON.parse(stateContent);
-  // Usar state.url y state.initHub
-} catch (error) {
-  // Continuar con otros métodos de detección
-}
-```
-
-**Paso 1: Inicializar AutorunHub PRIMERO** ⚠️ OBLIGATORIO
-```javascript
-// Si también ves [AUTORUN_INIT_HUB]true[/AUTORUN_INIT_HUB] o es la primera vez después del wizard
-// O si el archivo de estado indica que debe inicializarse
-await run_terminal_cmd({
-  command: 'npm run autorun:init-hub',
-  is_background: false
-});
-// Verificar que veas: "✅ AutorunHub inicializado correctamente"
-```
-
-**Paso 2: Abrir el browser automáticamente**
-```javascript
-// Extraer URL de: archivo de estado, [AUTORUN_BROWSER_URL], o "URL detectada:"
-const url = "URL_EXTRAIDA"; // extraer del mensaje o archivo de estado
-
-// ⚠️ OBLIGATORIO: Ejecutar automáticamente (SIN preguntar)
-await call_mcp_tool({
-  server: "cursor-ide-browser",
-  toolName: "browser_navigate",
-  arguments: { url }
-});
-
-await call_mcp_tool({
-  server: "cursor-ide-browser",
-  toolName: "browser_snapshot"
-});
-```
-
-**Paso 3: Ejecutar handleUserMessage() automáticamente (si está indicado)**
-```javascript
-// Si ves [AUTORUN_EXECUTE_HANDLE_USER_MESSAGE]true[/AUTORUN_EXECUTE_HANDLE_USER_MESSAGE] en los logs:
-// ⚠️ OBLIGATORIO: Ejecutar automáticamente (SIN preguntar)
-import { handleUserMessage } from '@autorun/core/helpers/autoMessageHandler';
-
-const result = await handleUserMessage(userMessage);
-// Esto ejecuta executeOnMessageStart() automáticamente y completa el flujo
-```
-
-**⚠️ IMPORTANTE:** 
-- Siempre inicializar AutorunHub ANTES de abrir el browser para que file watching y auto-reload funcionen desde el inicio
-- Ejecutar automáticamente cuando veas `[AUTORUN_BROWSER_URL]` o `[AUTORUN_TEMPLATE_DETECTED]`
-- Ejecutar `handleUserMessage()` automáticamente cuando veas `[AUTORUN_EXECUTE_HANDLE_USER_MESSAGE]`
-- NO preguntar al usuario - ejecutar inmediatamente
-
-### **2. Auto-Recarga de Página cuando hay Cambios**
-
-**⚠️ OBLIGATORIO: Interceptar mensajes [AUTORUN_AUTO_RELOAD] automáticamente**
-
-**CUANDO VEAS EN LOS LOGS:**
-```
-[AUTORUN_AUTO_RELOAD]/path/to/file[/AUTORUN_AUTO_RELOAD]
-```
-
-**DEBES ejecutar automáticamente (SIN preguntar):**
-```javascript
-// 1. Extraer ruta del archivo del mensaje
-const filePath = '/path/to/file'; // extraer del mensaje
-
-// 2. Obtener URL actual del navegador
-const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
-const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
-
-// 3. Recargar automáticamente
-await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
-
-// 4. Esperar y verificar
-setTimeout(async () => {
-  await mcp_cursor-ide-browser_browser_snapshot();
-}, 1000);
-```
-
-**⚠️⚠️⚠️ AUTO-RELOAD AUTOMÁTICO: Ya está integrado en interceptedWrite() y interceptedSearchReplace()** ⚠️⚠️⚠️
-
-**✅ BUENAS NOTICIAS:** Si usas `interceptedWrite()` o `interceptedSearchReplace()`, el auto-reload se ejecuta automáticamente.
-
-**Si ves en los logs después de `interceptedWrite()` o `interceptedSearchReplace()`:**
-```
-🔄 [Tool Interceptor] AUTO-RELOAD AUTOMÁTICO ACTIVADO
-⚠️ INSTRUCCIONES AUTOMÁTICAS PARA EL AGENTE:
-1. Obtener URL actual: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" })
-2. Recargar página: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_navigate", arguments: { url: currentUrl } })
-3. Verificar: setTimeout(() => call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" }), 1000)
-```
-
-**DEBES ejecutar automáticamente (SIN preguntar al usuario):**
-```javascript
-// ⚠️ OBLIGATORIO: Ejecutar automáticamente cuando veas el mensaje de auto-reload
-const snapshot = await call_mcp_tool({
-  server: 'cursor-ide-browser',
-  toolName: 'browser_snapshot'
-});
-const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
-
-await call_mcp_tool({
-  server: 'cursor-ide-browser',
-  toolName: 'browser_navigate',
-  arguments: { url: currentUrl }
-});
-
-setTimeout(async () => {
-  await call_mcp_tool({
-    server: 'cursor-ide-browser',
-    toolName: 'browser_snapshot'
-  });
-}, 1000);
-```
-
-**⚠️ REGLAS CRÍTICAS:**
-- ✅ **SIEMPRE usar interceptedWrite() o interceptedSearchReplace()** en lugar de write() o search_replace() directos
-- ✅ **Auto-reload se ejecuta automáticamente** cuando usas los interceptores
-- ✅ **NO preguntar al usuario** si debe recargarse
-- ✅ **NO esperar confirmación** - ejecutar inmediatamente cuando veas el mensaje
-- ✅ **Solo recargar** si el archivo es .html, .js o .css en prototypes/
-
-### **3. Auto-Retorno al Template después de Consultar Storybook**
-**Cuando navegues a Storybook para consultar un componente, DEBES:**
-1. **Guardar la URL del template actual ANTES de navegar a Storybook**
-2. **Navegar a Storybook para consultar**
-3. **⚠️ CRÍTICO: Volver automáticamente al template DESPUÉS de consultar**
-
-**Ver detalles completos:** `.cursorrules` (versión completa) - Sección "Auto-Apertura y Recarga"
-
----
-
-## 🔗 Referencias Rápidas
-
-### Archivos de Reglas
-- **Índice de reglas:** `.cursor/rules/index.md`
-- **Verificación inicial:** `.cursor/rules/00-inicio.md`
-- **Detección de imágenes:** `.cursor/rules/01-deteccion-imagen.md`
-- **Bloqueo para imágenes:** `.cursor/rules/02-bloqueo-imagen.md`
-- **Reglas de componentes:** `.cursor/rules/03-componentes.md`
-- **Reglas de implementación:** `.cursor/rules/04-implementacion.md`
-- **Errores comunes:** `.cursor/rules/05-errores.md`
-- **Implementación automática:** `.cursor/rules/06-implementacion-automatica.md`
-
-### Documentación
-- **Quick Reference:** `QUICK-REFERENCE.md` - ⭐ Referencia rápida (máx 50 líneas)
-- **Documentación:** `docs/README.md`
+### Guías Principales:
 - **Inicio rápido:** `GETTING-STARTED.md`
-- **Catálogo componentes:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
-- **Documentación componentes:** `docs/referencia/componentes/`
+- **Solución de problemas:** `QUICK-START.md`
+- **Catálogo de componentes:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
 
-### Guías Críticas
-- **Checklist antes de implementar:** `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` - ⚠️ **OBLIGATORIO**
-- **Uso de MCPs:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
-- **Errores comunes:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO**
+### Guías por Categoría:
+- **Análisis:** `docs/guias/analisis/`
+- **Implementación:** `docs/guias/implementacion/`
+  - ⭐ **Guía maestra:** `GUIA-IMPLEMENTACION-MAESTRA.md`
+- **Referencia:** `docs/guias/referencia/`
+- **Configuración:** `docs/guias/configuracion/`
+
+**Ver índice maestro:** `docs/INDEX.md`
 
 ---
 
-**Este archivo es el índice principal. Para detalles completos, consulta los módulos en `.cursor/rules/` y `QUICK-REFERENCE.md`**
+## 🆕 NOVEDADES - MIGRACIÓN A ANTIGRAVITY
 
-**Última actualización:** 2025-01-03
+Este proyecto ha migrado desde Cursor a **Antigravity**.
+
+### Cambios Principales:
+
+- ✅ Reglas modularizadas en `.agent/rules/`
+- ✅ Workflows nativos (próximamente en `.agent/workflows/`)
+- ✅ Skills reutilizables (próximamente en `.agent/skills/`)
+- ✅ Menos dependencia de MCP servers custom
+
+### Próximos Pasos:
+
+Ver **implementation_plan.md** en artifacts para el plan completo de optimización.
+
+---
+
+**Última actualización:** 2026-01-29  
+**Versión:** 2.0.0 (Antigravity Migration)

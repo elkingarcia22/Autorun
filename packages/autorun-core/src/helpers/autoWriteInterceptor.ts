@@ -44,7 +44,7 @@ export async function autoInterceptWrite(
   // 1. Detectar componentes en el contenido
   const detectedFromContent = detectComponentFromContent(content);
   const detectedFromMessage = userMessage
-    ? detectComponentFromMessage(userMessage)
+    ? await detectComponentFromMessage(userMessage)
     : null;
   const proactiveDetection = detectComponentsProactively(
     content + (userMessage || '')
@@ -245,8 +245,12 @@ export async function autoInterceptWrite(
 /**
  * Detecta componentes desde el mensaje del usuario
  */
-function detectComponentFromMessage(message: string): string | null {
+async function detectComponentFromMessage(
+  message: string
+): Promise<string | null> {
   // Importar dinámicamente para evitar dependencias circulares
-  const { detectComponentFromMessage } = require('./implementationHelpers.js');
+  const { detectComponentFromMessage } = await import(
+    './implementationHelpers.js'
+  );
   return detectComponentFromMessage(message);
 }

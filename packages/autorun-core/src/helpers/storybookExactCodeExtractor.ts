@@ -12,6 +12,21 @@ export interface ExactCodeResult {
   structure: ComponentStructure;
   sourceCodeMatch: boolean;
   cssUrls: string[];
+  helperFunctions?: {
+    getProviderLogo?: string;
+    buildCardData?: string;
+    renderIconHelper?: string;
+    configs: {
+      PROVIDERS?: Record<string, string>;
+      LEVELS?: Record<string, string>;
+      STATUSES?: Record<string, { class: string; text: string }>;
+      CONTENT_TYPES?: string[];
+      COMPETENCIES?: string[];
+      DURATIONS?: string[];
+      LANGUAGES?: string[];
+    };
+    source: string;
+  };
 }
 
 export interface ComponentStructure {
@@ -246,7 +261,7 @@ export async function getSourceCode(
 
     // Convertir a PascalCase para nombres de archivos (ej: "radio-button" -> "RadioButton")
     // ⚠️ MEJORADO: Manejar acrónimos como "nps" -> "NPS" (no "Nps")
-    const pascalCase = normalizedId
+    let pascalCase = normalizedId
       .split('-')
       .map((word) => {
         // Si la palabra es un acrónimo común (nps, api, etc.), mantenerlo en mayúsculas
@@ -257,6 +272,18 @@ export async function getSourceCode(
         return word.charAt(0).toUpperCase() + word.slice(1);
       })
       .join('');
+
+    // ✅ CASOS ESPECIALES de nombres de directorios vs nombres de componentes
+    const pascalMappings: Record<string, string> = {
+      TextMetricCard: 'MetricCard',
+      BarMetricCard: 'BarMetricCard',
+      CsatMetricCard: 'CSATMetricCard',
+      NpsCard: 'NPSCard',
+    };
+
+    if (pascalMappings[pascalCase]) {
+      pascalCase = pascalMappings[pascalCase];
+    }
 
     // Buscar en diferentes ubicaciones posibles
     const possiblePaths = [

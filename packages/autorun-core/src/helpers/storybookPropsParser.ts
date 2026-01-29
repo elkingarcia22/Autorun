@@ -84,9 +84,11 @@ export async function parsePropsFromComponent(
 	const baseUrl = baseUrlResult.url.replace(/\/$/, '');
 
 	// Usar página de docs si está disponible, sino usar historia default
+	// ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+	const encodedComponentId = encodeURIComponent(componentId);
 	const storybookUrl = useDocs
-		? `${baseUrl}/?path=/docs/${componentId}--docs`
-		: `${baseUrl}/?path=/story/${componentId}--default`;
+		? `${baseUrl}/?path=/docs/${encodedComponentId}--docs`
+		: `${baseUrl}/?path=/story/${encodedComponentId}--default`;
 
 	return parsePropsTableFromStorybookUrl(storybookUrl);
 }

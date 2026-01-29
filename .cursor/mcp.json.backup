@@ -1,0 +1,74 @@
+{
+  "mcpServers": {
+    "figma": {
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "talk-to-figma": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "cursor-talk-to-figma-mcp"
+      ],
+      "env": {}
+    },
+    "clarity": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@microsoft/clarity-mcp-server"
+      ],
+      "env": {}
+    },
+    "vercel": {
+      "url": "https://mcp.vercel.com"
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {}
+    },
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp"
+    },
+    "mcp-gsheets": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-gsheets@latest"
+      ],
+      "env": {}
+    },
+    "autorun": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "packages/autorun-core/src/cli/autorun-mcp-server.ts"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "google-sheets": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-gsheets@latest"
+      ],
+      "env": {}
+    },
+    "storybook": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "storybook-mcp@latest"
+      ],
+      "env": {
+        "STORYBOOK_URL": "http://localhost:6006/index.json"
+      }
+    }
+  }
+}

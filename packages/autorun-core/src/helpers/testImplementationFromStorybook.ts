@@ -559,7 +559,9 @@ async function getExampleCodeFromStorybook(
 
     // Intentar usar el helper existente con URL personalizada
     const { parseCodeFromStorybookUrl } = await import('./storybookCodeParser');
-    const storybookUrl = `${baseUrl}/?path=/story/${componentId}--${storyName}`;
+    // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+    const encodedComponentId = encodeURIComponent(componentId);
+    const storybookUrl = `${baseUrl}/?path=/story/${encodedComponentId}--${storyName}`;
     const result = await parseCodeFromStorybookUrl(storybookUrl);
 
     if (result.codeBlocks && result.codeBlocks.length > 0) {
@@ -594,7 +596,9 @@ async function getPropsFromStorybook(
     const { parsePropsTableFromStorybookUrl } = await import(
       './storybookPropsParser'
     );
-    const storybookUrl = `${baseUrl}/?path=/docs/${componentId}--docs`;
+    // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+    const encodedComponentId = encodeURIComponent(componentId);
+    const storybookUrl = `${baseUrl}/?path=/docs/${encodedComponentId}--docs`;
     const result = await parsePropsTableFromStorybookUrl(storybookUrl);
 
     if (result.props && result.props.length > 0) {

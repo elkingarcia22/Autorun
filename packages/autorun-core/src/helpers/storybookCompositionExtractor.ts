@@ -38,7 +38,9 @@ export async function extractCompositionFromStorybook(
 			checkAvailability: false,
 		});
 		const baseUrl = baseUrlResult.url.replace(/\/$/, '');
-		const storybookUrl = `${baseUrl}/?path=/docs/${componentId}--docs`;
+		// ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+		const encodedComponentId = encodeURIComponent(componentId);
+		const storybookUrl = `${baseUrl}/?path=/docs/${encodedComponentId}--docs`;
 
 		const html = await fetchStorybookPage(storybookUrl);
 		const dependencies = extractDependencies(html);

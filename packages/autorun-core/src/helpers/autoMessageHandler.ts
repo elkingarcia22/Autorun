@@ -12,6 +12,7 @@ import {
   MessageStartResult,
 } from './executeOnMessageStart.js';
 import { mapComponentNameToStorybookId } from './storybookStories.js';
+import { IntelligentComponentParser } from './intelligentComponentParser.js';
 
 /**
  * ⚠️ CRÍTICO: Manejar mensaje del usuario automáticamente
@@ -48,30 +49,73 @@ export async function handleUserMessage(
   const result = await executeOnMessageStart(userMessage, options);
 
   // PASO 2: Si detectó componente(s), preparar mensajes MCP y CONSULTAR AUTOMÁTICAMENTE
-  const mcpMessages: Array<{ componentName: string; storybookId: string }> = [];
+  const mcpMessages: Array<{
+    componentName: string;
+    storybookId: string;
+    variant?: string;
+    type?: string;
+    properties?: string[];
+  }> = [];
   const componentsToQuery: string[] = [];
 
   if (result.detected && result.componentName) {
     console.log(
       '🚀 [Auto Message Handler] PASO 2: Componente detectado, preparando consulta MCP...'
     );
-    componentsToQuery.push(result.componentName);
+
+    // ⭐ NUEVO: Parsear inteligentemente el mensaje para separar componente base de variantes/propiedades
+    console.log(
+      '🔍 [Auto Message Handler] Parseando mensaje inteligentemente...'
+    );
+    const parsed = await IntelligentComponentParser.parse(userMessage);
+    console.log(`   ✅ Componente base: ${parsed.componentName}`);
+    if (parsed.variant) {
+      console.log(`   ✅ Variante: ${parsed.variant}`);
+    }
+    if (parsed.type) {
+      console.log(`   ✅ Tipo: ${parsed.type}`);
+    }
+    if (parsed.properties.length > 0) {
+      console.log(`   ✅ Propiedades: ${parsed.properties.join(', ')}`);
+    }
+
+    // Usar componente base parseado (no el detectado literalmente)
+    const componentBaseName = parsed.componentName;
+
+    // ⚠️ CRÍTICO: Usar el nombre exacto encontrado en executeOnMessageStart()
+    // El nombre exacto ya está en result.componentName
+    const finalComponentName = result.componentName || componentBaseName;
+
+    // Usar el nombre exacto para la consulta MCP
+    componentsToQuery.push(finalComponentName);
 
     try {
-      // Obtener ID de Storybook para el componente detectado
-      const storybookId = await mapComponentNameToStorybookId(
-        result.componentName
+      console.log(
+        `✅ [Auto Message Handler] Usando nombre exacto: ${finalComponentName}`
       );
 
-      if (storybookId) {
+      // Obtener ID de Storybook para el componente (ya se tiene el nombre exacto)
+      const finalStorybookId =
+        await mapComponentNameToStorybookId(finalComponentName);
+
+      if (finalStorybookId || finalComponentName) {
+        // ⭐ NUEVO: Incluir información de variantes/propiedades en el mensaje MCP
         mcpMessages.push({
-          componentName: result.componentName,
-          storybookId,
+          componentName: finalComponentName, // Usar nombre exacto encontrado
+          storybookId: finalStorybookId || finalComponentName,
+          variant: parsed.variant,
+          type: parsed.type,
+          properties: parsed.properties,
         });
 
         console.log(
-          `📚 [Auto Message Handler] Mensaje MCP preparado: ${result.componentName} → ${storybookId}`
+          `📚 [Auto Message Handler] Mensaje MCP preparado: ${finalComponentName} → ${finalStorybookId || finalComponentName}`
         );
+        if (parsed.variant || parsed.type || parsed.properties.length > 0) {
+          console.log(
+            `   📋 Filtros: variant=${parsed.variant || 'N/A'}, type=${parsed.type || 'N/A'}, properties=[${parsed.properties.join(', ')}]`
+          );
+        }
         // Obtener Storybook activo para determinar servidor MCP
         try {
           const { StorybookManager } = await import('./storybookManager');
@@ -90,12 +134,8 @@ export async function handleUserMessage(
             mcpServer = 'storybook';
           }
 
-          // ⚠️ NUEVO MCP: Convertir storybookId a nombre de componente
-          const { storybookIdToComponentName } = await import(
-            './storybookMCPNameMapper.js'
-          );
-          const componentName =
-            storybookIdToComponentName(storybookId) || result.componentName;
+          // ⚠️ NUEVO MCP: Usar el nombre exacto encontrado (ya está en formato correcto)
+          const componentName = finalComponentName || result.componentName;
 
           console.log(
             `📚 [Auto Message Handler] ⚠️ OBLIGATORIO: El agente DEBE ejecutar automáticamente:`
@@ -123,7 +163,9 @@ export async function handleUserMessage(
           console.log(`   call_mcp_tool({`);
           console.log(`     server: "storybook",`); // ⚠️ CORREGIDO: Usar "storybook" (no "storybook-ubits")
           console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
-          console.log(`     arguments: { componentIds: ["${storybookId}"] }`);
+          console.log(
+            `     arguments: { componentNames: ["${finalComponentName}"] }`
+          ); // ⚠️ Usar nombre exacto encontrado
           console.log(`   })`);
           console.log(
             `📚 [Auto Message Handler] ⚠️ CRÍTICO: NO continuar con implementación hasta obtener props`
@@ -146,7 +188,7 @@ export async function handleUserMessage(
   console.log(
     '🚀 [Auto Message Handler] PASO 3: Detectando múltiples componentes...'
   );
-  const additionalComponents = detectAdditionalComponents(
+  const additionalComponents = await detectAdditionalComponents(
     userMessage,
     result.componentName
   );
@@ -222,15 +264,20 @@ export async function handleUserMessage(
   }
 
   // PASO 3.5: ⚠️ CRÍTICO: Llamar automáticamente al sistema de MCP
+  // ⚠️ MEJORADO: Usar IntegrationHelper que centraliza toda la lógica
   if (componentsToQuery.length > 0) {
     console.log(
       '\n📚 [Auto Message Handler] PASO 3.5: Llamando sistema automático de MCP...'
     );
     try {
-      const { autoCallStorybookMCP } = await import('./storybookMCPAutoCaller');
-      const mcpResults = await autoCallStorybookMCP(componentsToQuery);
+      const { IntegrationHelper } = await import('./integrationHelper.js');
+      const mcpResults =
+        await IntegrationHelper.autoCallStorybookMCP(componentsToQuery);
       console.log(
         `📚 [Auto Message Handler] ${mcpResults.length} componente(s) procesado(s) para MCP`
+      );
+      console.log(
+        `📚 [Auto Message Handler] ${mcpResults.filter((r) => r.success).length}/${mcpResults.length} consulta(s) exitosa(s)`
       );
     } catch (error) {
       console.warn(
@@ -256,14 +303,42 @@ export async function handleUserMessage(
 /**
  * Detectar componentes adicionales en el mensaje
  * (además del componente principal ya detectado)
+ *
+ * ⭐ NUEVO: Usa patrones dinámicos desde Storybook como prioridad
+ * Fallback a patrones hardcodeados solo si falla
  */
-function detectAdditionalComponents(
+async function detectAdditionalComponents(
   userMessage: string,
   alreadyDetected?: string
-): string[] {
+): Promise<string[]> {
   const detected: string[] = [];
   const lowerMessage = userMessage.toLowerCase();
 
+  // ⭐ NUEVO: Intentar usar patrones dinámicos primero
+  try {
+    const { DynamicPatternGenerator } = await import(
+      './dynamicPatternGenerator'
+    );
+    const dynamicComponent =
+      await DynamicPatternGenerator.detectComponentFromMessage(userMessage);
+
+    if (
+      dynamicComponent &&
+      (!alreadyDetected || dynamicComponent !== alreadyDetected)
+    ) {
+      detected.push(dynamicComponent);
+      console.log(
+        `✅ [Auto Message Handler] Componente detectado dinámicamente: ${dynamicComponent}`
+      );
+      return detected;
+    }
+  } catch (error: any) {
+    console.warn(
+      `⚠️ [Auto Message Handler] Error en detección dinámica, usando fallback: ${error.message}`
+    );
+  }
+
+  // Fallback: Patrones hardcodeados (temporal, hasta eliminar completamente)
   // ⚠️ PATRONES COMPLETOS: Todos los componentes de UBITS Storybook
   // ⚠️ TEMPORALMENTE: Solo usando UBITS Storybook (Libraries UI deshabilitado)
   // Total: ~66 componentes detectables

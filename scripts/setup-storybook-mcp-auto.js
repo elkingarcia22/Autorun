@@ -51,9 +51,11 @@ function generateMCPConfig(useLocal) {
 
 	return {
 		mcpServers: {
-			'storybook-ubits': {
-				command: 'npx',
-				args: ['-y', 'storybook-mcp@latest'],
+			'storybook': { // ⚠️ CRÍTICO: Usar "storybook" (no "storybook-ubits") para que coincida con el código
+				command: 'node',
+				args: [
+					path.join(__dirname, 'storybook-mcp-wrapper.mjs') // ⚠️ Usar .mjs para que Node.js lo reconozca como ES module
+				], // ⚠️ Usar wrapper personalizado con mejor manejo de errores
 				env: {
 					STORYBOOK_URL: storybookUrl,
 				},
@@ -118,6 +120,12 @@ function writeMCPConfig(configPath, config) {
 
 		// Leer configuración existente
 		const existing = readExistingConfig(configPath);
+
+		// ⚠️ CRÍTICO: Eliminar servidor viejo 'storybook-ubits' antes de agregar el nuevo
+		if (existing.mcpServers && existing.mcpServers['storybook-ubits']) {
+			delete existing.mcpServers['storybook-ubits'];
+			console.log('   🗑️  Eliminando servidor viejo "storybook-ubits"');
+		}
 
 		// Fusionar con nueva configuración
 		const merged = {

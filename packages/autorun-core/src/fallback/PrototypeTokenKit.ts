@@ -54,33 +54,90 @@ export class PrototypeTokenKit {
    * ✅ Genera KPI Card usando tokens reales (sin hardcoded colors)
    */
   generateKpiCard(props: KpiCardProps): string {
-    // ✅ Validar que tokens existen
-    this.registry.assertExists('--ubits-bg-1');
-    this.registry.assertExists('--ubits-border-1');
-    this.registry.assertExists('--ubits-border-radius-md');
-    this.registry.assertExists('--ubits-spacing-md');
-    this.registry.assertExists('--ubits-spacing-xs');
-    this.registry.assertExists('--ubits-fg-1-medium');
-    this.registry.assertExists('--ubits-fg-1-high');
-    // Nota: font-size tokens no existen en UBITS, usar valores directos permitidos para tamaños
-    this.registry.assertExists('--ubits-font-weight-bold');
+    // ✅ Validar que tokens existen (con fallback si no están disponibles)
+    const hasTokens = this.registry.getAll().length > 0;
+
+    // ⚠️ CORRECCIÓN: NO usar assertExists() que lanza error - usar has() en su lugar
+    // assertExists() lanza error y puede propagarse fuera del try-catch
+    if (hasTokens) {
+      // Verificar tokens sin lanzar errores
+      const missingTokens: string[] = [];
+      const requiredTokens = [
+        '--ubits-bg-1',
+        '--ubits-border-1',
+        '--ubits-border-radius-md',
+        '--ubits-spacing-md',
+        '--ubits-spacing-xs',
+        '--ubits-fg-1-medium',
+        '--ubits-fg-1-high',
+      ];
+
+      for (const token of requiredTokens) {
+        if (!this.registry.has(token)) {
+          missingTokens.push(token);
+        }
+      }
+
+      if (missingTokens.length > 0) {
+        console.warn(
+          `⚠️ [PrototypeTokenKit] Algunos tokens no están disponibles: ${missingTokens.join(', ')}, usando fallback`
+        );
+      }
+    } else {
+      console.warn(
+        `⚠️ [PrototypeTokenKit] No hay tokens disponibles, usando valores por defecto`
+      );
+    }
+
+    // Nota: font-size y font-weight tokens no existen en UBITS, usar valores directos permitidos
+    // font-weight: bold es un valor CSS estándar permitido
+
+    // Usar tokens si están disponibles, sino usar valores por defecto seguros
+    const bgColor =
+      hasTokens && this.registry.has('--ubits-bg-1')
+        ? 'var(--ubits-bg-1)'
+        : 'transparent';
+    const borderColor =
+      hasTokens && this.registry.has('--ubits-border-1')
+        ? 'var(--ubits-border-1)'
+        : 'transparent';
+    const borderRadius =
+      hasTokens && this.registry.has('--ubits-border-radius-md')
+        ? 'var(--ubits-border-radius-md)'
+        : '8px';
+    const padding =
+      hasTokens && this.registry.has('--ubits-spacing-md')
+        ? 'var(--ubits-spacing-md)'
+        : '12px';
+    const marginBottom =
+      hasTokens && this.registry.has('--ubits-spacing-xs')
+        ? 'var(--ubits-spacing-xs)'
+        : '4px';
+    const titleColor =
+      hasTokens && this.registry.has('--ubits-fg-1-medium')
+        ? 'var(--ubits-fg-1-medium)'
+        : 'inherit';
+    const valueColor =
+      hasTokens && this.registry.has('--ubits-fg-1-high')
+        ? 'var(--ubits-fg-1-high)'
+        : 'inherit';
 
     return `
 <div class="ubits-kpi-card" style="
-  background: var(--ubits-bg-1);
-  border: 1px solid var(--ubits-border-1);
-  border-radius: var(--ubits-border-radius-md);
-  padding: var(--ubits-spacing-md);
+  background: ${bgColor};
+  border: 1px solid ${borderColor};
+  border-radius: ${borderRadius};
+  padding: ${padding};
 ">
   <div class="ubits-kpi-card__title" style="
-    color: var(--ubits-fg-1-medium);
+    color: ${titleColor};
     font-size: 12px;
-    margin-bottom: var(--ubits-spacing-xs);
+    margin-bottom: ${marginBottom};
   ">${props.title}</div>
   <div class="ubits-kpi-card__value" style="
-    color: var(--ubits-fg-1-high);
+    color: ${valueColor};
     font-size: 24px;
-    font-weight: var(--ubits-font-weight-bold);
+    font-weight: bold;
   ">${props.value}</div>
 </div>`.trim();
   }
@@ -148,15 +205,22 @@ export class PrototypeTokenKit {
     this.registry.assertExists('--ubits-fg-1-medium');
     // Nota: font-size tokens no existen en UBITS, usar valores directos permitidos para tamaños
     this.registry.assertExists('--ubits-accent-brand');
-    this.registry.assertExists('--ubits-fg-on-brand');
+    // ⚠️ CORRECCIÓN: --ubits-fg-on-brand no existe, usar #ffffff (blanco) para texto sobre fondo de marca
+    // O usar --ubits-fg-1-high si está disponible, pero para botón primario normalmente es blanco
     this.registry.assertExists('--ubits-border-radius-sm');
+
+    // Obtener color de texto para botón primario (texto sobre fondo de marca)
+    // Si existe un token para esto, usarlo; si no, usar blanco (#ffffff)
+    const textOnBrandColor = this.registry.has('--ubits-fg-on-brand')
+      ? 'var(--ubits-fg-on-brand)'
+      : '#ffffff'; // Fallback seguro: blanco para texto sobre fondo de marca
 
     const actionHtml = props.action
       ? `
 <button class="ubits-button ubits-button--primary" onclick="${props.action.onClick || ''}" style="
   padding: var(--ubits-spacing-sm) var(--ubits-spacing-md);
   background: var(--ubits-accent-brand);
-  color: var(--ubits-fg-on-brand);
+  color: ${textOnBrandColor};
   border: none;
   border-radius: var(--ubits-border-radius-sm);
   font-size: 14px;
@@ -464,10 +528,15 @@ export class PrototypeTokenKit {
     this.registry.assertExists('--ubits-spacing-md');
     this.registry.assertExists('--ubits-spacing-sm');
     this.registry.assertExists('--ubits-accent-brand');
-    this.registry.assertExists('--ubits-fg-on-brand');
+    // ⚠️ CORRECCIÓN: --ubits-fg-on-brand no existe, usar #ffffff (blanco) para texto sobre fondo de marca
     this.registry.assertExists('--ubits-border-1');
     this.registry.assertExists('--ubits-fg-1-high');
     this.registry.assertExists('--ubits-border-radius-sm');
+
+    // Obtener color de texto para botón primario (texto sobre fondo de marca)
+    const textOnBrandColor = this.registry.has('--ubits-fg-on-brand')
+      ? 'var(--ubits-fg-on-brand)'
+      : '#ffffff'; // Fallback seguro: blanco para texto sobre fondo de marca
 
     const actionsHtml = props.actions
       .map((action) => {
@@ -475,7 +544,7 @@ export class PrototypeTokenKit {
         const styles = isPrimary
           ? `
   background: var(--ubits-accent-brand);
-  color: var(--ubits-fg-on-brand);
+  color: ${textOnBrandColor};
   border: none;`
           : `
   background: transparent;

@@ -286,7 +286,9 @@ export async function buildValidatedStorybookUrl(
 
 	// ⚠️ CRÍTICO: Usar /docs/ en lugar de /story/ para obtener documentación completa
 	// La pestaña Docs contiene props, ejemplos, código y toda la información necesaria
-	const path = `?path=/docs/${componentId}--docs`;
+	// ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+	const encodedComponentId = encodeURIComponent(componentId);
+	const path = `?path=/docs/${encodedComponentId}--docs`;
 	const url = await manager.buildStorybookUrl(path);
 
 	console.log(`📚 [Storybook ID Validator] URL construida con Docs: ${url}`);

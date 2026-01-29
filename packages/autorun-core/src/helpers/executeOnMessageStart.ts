@@ -192,28 +192,139 @@ export async function executeOnMessageStart(
     `✅ [Execute On Message Start] Componente detectado: ${detection.componentName}`
   );
 
+  // 1.3. ⚠️ CRÍTICO: PRIMERO buscar el nombre exacto del componente en la lista de Storybook
+  // Esto DEBE ejecutarse ANTES del Pre-Implementation Check para tener el nombre correcto
+  let exactComponentName = detection.componentName;
+  let exactStorybookId: string | undefined = undefined;
+
+  if (detection.componentName) {
+    console.log(
+      `🔍 [Execute On Message Start] PASO 1.3: Buscando nombre exacto del componente en Storybook...`
+    );
+
+    try {
+      const { findExactComponentName } = await import(
+        './findExactComponentName.js'
+      );
+      const exactNameResult = await findExactComponentName(
+        detection.componentName
+      );
+
+      if (exactNameResult.found && exactNameResult.exactName) {
+        exactComponentName = exactNameResult.exactName;
+        exactStorybookId = exactNameResult.storybookId;
+        console.log(
+          `✅ [Execute On Message Start] Nombre exacto encontrado: ${exactComponentName}`
+        );
+        if (exactStorybookId) {
+          console.log(`   📋 ID de Storybook: ${exactStorybookId}`);
+        }
+        // Actualizar el nombre del componente en detection para que se use en el resto del flujo
+        detection.componentName = exactComponentName;
+      } else {
+        console.warn(
+          `⚠️ [Execute On Message Start] No se encontró nombre exacto para "${detection.componentName}"`
+        );
+        if (exactNameResult.error) {
+          console.warn(`   Error: ${exactNameResult.error}`);
+        }
+        if (
+          exactNameResult.allMatches &&
+          exactNameResult.allMatches.length > 0
+        ) {
+          console.log(
+            `   💡 Coincidencias encontradas: ${exactNameResult.allMatches.join(', ')}`
+          );
+        }
+        console.warn(
+          `⚠️ [Execute On Message Start] Continuando con nombre detectado: ${detection.componentName}`
+        );
+      }
+    } catch (error: any) {
+      console.warn(
+        `⚠️ [Execute On Message Start] Error buscando nombre exacto: ${error.message}`
+      );
+      console.warn(
+        `⚠️ [Execute On Message Start] Continuando con nombre detectado: ${detection.componentName}`
+      );
+    }
+  }
+
   // 1.5. ⚠️ CRÍTICO: Emitir mensaje para consultar Storybook MCP automáticamente
   // El agente debe interceptar este mensaje y consultar Storybook MCP
   if (detection.componentName) {
     const { mapComponentNameToStorybookId } = await import(
       './storybookStories'
     );
-    const storybookId = await mapComponentNameToStorybookId(
-      detection.componentName
-    );
+    // Usar el ID exacto encontrado o el mapeo directo como fallback
+    const storybookId =
+      exactStorybookId ||
+      (await mapComponentNameToStorybookId(
+        exactComponentName || detection.componentName
+      ));
 
     console.log(
       '\n📚 [Execute On Message Start] ========================================'
     );
     console.log(
-      '📚 [Execute On Message Start] ⚠️ OBLIGATORIO: Consultar Storybook MCP'
+      '📚 [Execute On Message Start] ⚠️ OBLIGATORIO: Consultar Storybook en Vercel (PRIMERO)'
     );
     console.log(
-      `📚 [Execute On Message Start] Componente: ${detection.componentName}`
+      `📚 [Execute On Message Start] Componente: ${exactComponentName || detection.componentName}`
     );
     console.log(`📚 [Execute On Message Start] ID Storybook: ${storybookId}`);
+
+    // ⚠️ CRÍTICO: Construir URLs en el orden correcto: implementation → docs → default
+    try {
+      const { buildStorybookUrlsInOrder } = await import(
+        './buildStorybookUrlsInOrder.js'
+      );
+      const urls = await buildStorybookUrlsInOrder(storybookId);
+
+      console.log(
+        '📚 [Execute On Message Start] ⚠️ ORDEN OBLIGATORIO de navegación:'
+      );
+      console.log('   1. PRIMERO: Historia "implementation" (copy/paste)');
+      console.log(`      URL: ${urls.implementation}`);
+      console.log('   2. SEGUNDO: Docs (documentación completa)');
+      console.log(`      URL: ${urls.docs}`);
+      console.log('   3. ÚLTIMO: Default (solo si falta algo)');
+      console.log(`      URL: ${urls.default}`);
+      console.log(
+        `[AUTORUN_STORYBOOK_VERCEL]${exactComponentName || detection.componentName}:${storybookId}:${urls.implementation}:${urls.docs}:${urls.default}[/AUTORUN_STORYBOOK_VERCEL]`
+      );
+    } catch (urlError: any) {
+      console.warn(
+        `⚠️ [Execute On Message Start] Error construyendo URLs: ${urlError.message}`
+      );
+      // Fallback: construir URL básica
+      try {
+        const { StorybookManager } = await import('./storybookManager');
+        const manager = StorybookManager.getInstance();
+        const activeConfig = await manager.getActiveConfig();
+        if (activeConfig) {
+          const encodedId = encodeURIComponent(storybookId);
+          const implementationUrl = `${activeConfig.url}/?path=/story/${encodedId}--implementation`;
+          const docsUrl = `${activeConfig.url}/?path=/docs/${encodedId}--docs`;
+          const defaultUrl = `${activeConfig.url}/?path=/story/${encodedId}--default`;
+          console.log(`📚 [Execute On Message Start] URLs (fallback):`);
+          console.log(`   1. Implementation: ${implementationUrl}`);
+          console.log(`   2. Docs: ${docsUrl}`);
+          console.log(`   3. Default: ${defaultUrl}`);
+        }
+      } catch (fallbackError) {
+        console.warn(
+          `⚠️ [Execute On Message Start] Error en fallback de URLs: ${fallbackError}`
+        );
+      }
+    }
+
+    // 1.6. Consultar Storybook MCP
     console.log(
-      `[AUTORUN_STORYBOOK_MCP]${detection.componentName}:${storybookId}[/AUTORUN_STORYBOOK_MCP]`
+      '\n📚 [Execute On Message Start] ⚠️ OBLIGATORIO: Consultar Storybook MCP'
+    );
+    console.log(
+      `[AUTORUN_STORYBOOK_MCP]${exactComponentName || detection.componentName}:${storybookId}[/AUTORUN_STORYBOOK_MCP]`
     );
     console.log(
       '📚 [Execute On Message Start] El agente DEBE ejecutar automáticamente:'
@@ -244,21 +355,10 @@ export async function executeOnMessageStart(
       console.log(`     server: "storybook",`); // ⚠️ CORREGIDO: Usar "storybook" (no "storybook-ubits")
     }
 
-    // ⚠️ NUEVO MCP: Convertir storybookId a nombre de componente
-    try {
-      const { storybookIdToComponentName } = await import(
-        './storybookMCPNameMapper.js'
-      );
-      const componentName =
-        storybookIdToComponentName(storybookId) || detection.componentName;
-      console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
-      console.log(`     arguments: { componentNames: ["${componentName}"] }`); // ⚠️ NUEVO MCP: Usar componentNames
-    } catch (error) {
-      console.log(`     toolName: "getComponentsProps",`);
-      console.log(
-        `     arguments: { componentNames: ["${detection.componentName}"] }`
-      );
-    }
+    // ⚠️ NUEVO MCP: Usar el nombre exacto encontrado (ya está en formato correcto)
+    const componentName = exactComponentName || detection.componentName;
+    console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
+    console.log(`     arguments: { componentNames: ["${componentName}"] }`); // ⚠️ NUEVO MCP: Usar componentNames
     console.log(`   })`);
     console.log(
       '📚 [Execute On Message Start] ========================================\n'
@@ -374,7 +474,7 @@ export async function executeOnMessageStart(
 
   return {
     detected: true,
-    componentName: detection.componentName,
+    componentName: exactComponentName || detection.componentName, // Usar nombre exacto encontrado
     currentPhase,
     nextPhase,
     blocked,

@@ -1,6 +1,24 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
+// ✅ NUEVO: Importar fetch para Node.js (compatible con Node 18+)
+// Node.js 18+ tiene fetch nativo, pero para compatibilidad con versiones anteriores
+// usamos node-fetch si está disponible, o fetch global
+let fetchFn: typeof fetch;
+if (typeof fetch !== 'undefined') {
+  fetchFn = fetch;
+} else {
+  // Fallback para Node.js < 18
+  try {
+    const nodeFetch = await import('node-fetch');
+    fetchFn = nodeFetch.default as any;
+  } catch {
+    throw new Error(
+      'fetch no está disponible. Necesitas Node.js 18+ o instalar node-fetch'
+    );
+  }
+}
+
 /**
  * ✅ GlobalTokenRegistry - Registro global de tokens de diseño
  *
@@ -16,14 +34,80 @@ export class GlobalTokenRegistry {
   private initialized = false;
 
   /**
-   * Inicializa el registro cargando tokens desde CSS/JSON
+   * Inicializa el registro cargando tokens desde Storybook Vercel (PRIMERO) o archivos locales (FALLBACK)
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
       return;
     }
 
-    // ✅ 1. Intentar cargar desde tokens.css (primera opción)
+    // ✅ PRIORIDAD 1: Intentar cargar desde Storybook Vercel
+    try {
+      // Importar UBITS_PRESET dinámicamente para evitar dependencias circulares
+      const { UBITS_PRESET } = await import('../wizard/UBITSPreset.js');
+      const storybookUrl = UBITS_PRESET.storybook.url;
+      const bypassToken = UBITS_PRESET.storybook.bypassToken;
+
+      // Construir URLs con bypass token
+      const tokensCssUrl = `${storybookUrl}/tokens/dist/tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+      const figmaTokensCssUrl = `${storybookUrl}/tokens/dist/figma-tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+
+      console.log(
+        `🔄 [GlobalTokenRegistry] Intentando cargar tokens desde Storybook Vercel...`
+      );
+
+      // Cargar tokens.css desde Storybook
+      try {
+        const response = await fetch(tokensCssUrl);
+        if (response.ok) {
+          const css = await response.text();
+          this.parseTokensFromCSS(css);
+          console.log(
+            `✅ [GlobalTokenRegistry] Cargados ${this.tokens.size} tokens desde Storybook (tokens.css)`
+          );
+        }
+      } catch (error) {
+        console.warn(
+          `⚠️ [GlobalTokenRegistry] No se pudo cargar tokens.css desde Storybook: ${error}`
+        );
+      }
+
+      // Cargar figma-tokens.css desde Storybook
+      try {
+        const response = await fetch(figmaTokensCssUrl);
+        if (response.ok) {
+          const figmaCss = await response.text();
+          this.parseTokensFromCSS(figmaCss);
+          console.log(
+            `✅ [GlobalTokenRegistry] Total ${this.tokens.size} tokens (incluye modifiers desde Storybook)`
+          );
+        }
+      } catch (error) {
+        console.warn(
+          `⚠️ [GlobalTokenRegistry] No se pudo cargar figma-tokens.css desde Storybook: ${error}`
+        );
+      }
+
+      // Si se cargaron tokens desde Storybook, marcar como inicializado y retornar
+      if (this.tokens.size > 0) {
+        this.initialized = true;
+        console.log(
+          `✅ [GlobalTokenRegistry] Tokens cargados desde Storybook exitosamente`
+        );
+        return;
+      }
+    } catch (error) {
+      console.warn(
+        `⚠️ [GlobalTokenRegistry] Error al cargar desde Storybook, usando fallback local: ${error}`
+      );
+    }
+
+    // ✅ PRIORIDAD 2 (FALLBACK): Intentar cargar desde archivos locales
+    console.log(
+      `🔄 [GlobalTokenRegistry] Usando fallback: cargando tokens desde archivos locales...`
+    );
+
+    // ✅ 1. Intentar cargar desde tokens.css local
     const tokensCssPath = path.join(
       process.cwd(),
       'vendor/ubits/packages/tokens/dist/tokens.css'
@@ -33,13 +117,15 @@ export class GlobalTokenRegistry {
       const css = await fs.readFile(tokensCssPath, 'utf-8');
       this.parseTokensFromCSS(css);
       console.log(
-        `✅ GlobalTokenRegistry: Cargados ${this.tokens.size} tokens desde tokens.css`
+        `✅ [GlobalTokenRegistry] Cargados ${this.tokens.size} tokens desde tokens.css local`
       );
     } catch (error) {
-      console.warn(`⚠️ No se pudo cargar tokens.css: ${error}`);
+      console.warn(
+        `⚠️ [GlobalTokenRegistry] No se pudo cargar tokens.css local: ${error}`
+      );
     }
 
-    // ✅ 2. Intentar cargar desde figma-tokens.css (segunda opción)
+    // ✅ 2. Intentar cargar desde figma-tokens.css local
     const figmaTokensCssPath = path.join(
       process.cwd(),
       'vendor/ubits/packages/tokens/dist/figma-tokens.css'
@@ -49,10 +135,12 @@ export class GlobalTokenRegistry {
       const figmaCss = await fs.readFile(figmaTokensCssPath, 'utf-8');
       this.parseTokensFromCSS(figmaCss);
       console.log(
-        `✅ GlobalTokenRegistry: Total ${this.tokens.size} tokens (incluye modifiers)`
+        `✅ [GlobalTokenRegistry] Total ${this.tokens.size} tokens (incluye modifiers locales)`
       );
     } catch (error) {
-      console.warn(`⚠️ No se pudo cargar figma-tokens.css: ${error}`);
+      console.warn(
+        `⚠️ [GlobalTokenRegistry] No se pudo cargar figma-tokens.css local: ${error}`
+      );
     }
 
     // ✅ 3. Fallback a tokens.json (solo si CSS no existe)
@@ -67,14 +155,26 @@ export class GlobalTokenRegistry {
         const tokensData = JSON.parse(json);
         this.parseTokensFromJSON(tokensData);
         console.log(
-          `✅ GlobalTokenRegistry: Cargados ${this.tokens.size} tokens desde tokens.json`
+          `✅ [GlobalTokenRegistry] Cargados ${this.tokens.size} tokens desde tokens.json`
         );
       } catch (error) {
-        console.warn(`⚠️ No se pudo cargar tokens.json: ${error}`);
+        console.warn(
+          `⚠️ [GlobalTokenRegistry] No se pudo cargar tokens.json: ${error}`
+        );
       }
     }
 
     this.initialized = true;
+
+    if (this.tokens.size === 0) {
+      console.warn(
+        `⚠️ [GlobalTokenRegistry] ADVERTENCIA: No se pudieron cargar tokens desde ninguna fuente`
+      );
+    } else {
+      console.log(
+        `✅ [GlobalTokenRegistry] Inicialización completada: ${this.tokens.size} tokens disponibles`
+      );
+    }
   }
 
   /**

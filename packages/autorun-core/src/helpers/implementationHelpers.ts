@@ -678,6 +678,27 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'Gallery',
       priority: 7,
     },
+    // ⚠️ NUEVO: Detección de Metric Cards
+    {
+      pattern: /\b(?:Metric\s*Card|MetricCard|text-metric-card)\b/i,
+      component: 'MetricCard',
+      priority: 15,
+    },
+    {
+      pattern: /\b(?:Bar\s*Metric\s*Card|BarMetricCard|bar-metric-card)\b/i,
+      component: 'BarMetricCard',
+      priority: 15,
+    },
+    {
+      pattern: /\b(?:CSAT\s*Metric\s*Card|CSATMetricCard|csat-metric-card)\b/i,
+      component: 'CSATMetricCard',
+      priority: 15,
+    },
+    {
+      pattern: /\b(?:NPS\s*Card|NPSCard|nps-card)\b/i,
+      component: 'NPSCard',
+      priority: 15,
+    },
     // ⚠️ REMOVIDO: Pattern duplicado de Tabs (ya está arriba con mayor prioridad)
     {
       pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*sidebar`, 'i'),

@@ -88,30 +88,54 @@ const STORYBOOK_ID_TO_COMPONENT_NAME: Record<string, string> = {
 
 /**
  * Convierte un ID de Storybook a nombre de componente para el MCP
+ *
+ * ⭐ NUEVO: Usa mapeos dinámicos desde Storybook como prioridad
+ * Fallback a mapeos hardcodeados solo si falla
  */
-export function storybookIdToComponentName(storybookId: string): string | null {
+export async function storybookIdToComponentName(
+  storybookId: string
+): Promise<string | null> {
   // Si ya es un nombre de componente (empieza con mayúscula), devolverlo tal cual
   if (/^[A-Z]/.test(storybookId)) {
     return storybookId;
   }
 
-  // Buscar en el mapeo
+  // ⭐ NUEVO: Intentar mapeo dinámico primero
+  try {
+    const { StorybookDynamicMapper } = await import('./storybookDynamicMapper');
+    const dynamicName =
+      await StorybookDynamicMapper.storybookIdToComponentName(storybookId);
+    if (dynamicName) {
+      return dynamicName;
+    }
+  } catch (error: any) {
+    console.warn(
+      `⚠️ [MCP Name Mapper] Error en mapeo dinámico, usando fallback: ${error.message}`
+    );
+  }
+
+  // Fallback: Buscar en el mapeo hardcodeado (temporal, hasta eliminar completamente)
   return STORYBOOK_ID_TO_COMPONENT_NAME[storybookId] || null;
 }
 
 /**
  * Convierte múltiples IDs de Storybook a nombres de componentes
+ *
+ * ⭐ NUEVO: Ahora es async porque usa mapeos dinámicos
  */
-export function storybookIdsToComponentNames(storybookIds: string[]): string[] {
-  return storybookIds
-    .map((id) => storybookIdToComponentName(id))
-    .filter((name): name is string => name !== null);
+export async function storybookIdsToComponentNames(
+  storybookIds: string[]
+): Promise<string[]> {
+  const results = await Promise.all(
+    storybookIds.map((id) => storybookIdToComponentName(id))
+  );
+  return results.filter((name): name is string => name !== null);
 }
 
 /**
  * Mapeo inverso: nombre de componente a ID de Storybook
  */
-const COMPONENT_NAME_TO_STORYBOOK_ID: Record<string, string> =
+export const COMPONENT_NAME_TO_STORYBOOK_ID: Record<string, string> =
   Object.fromEntries(
     Object.entries(STORYBOOK_ID_TO_COMPONENT_NAME).map(([id, name]) => [
       name,
@@ -121,7 +145,7 @@ const COMPONENT_NAME_TO_STORYBOOK_ID: Record<string, string> =
 
 // ⚠️ Mapeos adicionales para nombres de componentes sin categoría
 // Estos se usan cuando el componente se detecta como "RadioButton" en lugar de "Formularios/Radio Button"
-const ADDITIONAL_COMPONENT_NAME_MAPPINGS: Record<string, string> = {
+export const ADDITIONAL_COMPONENT_NAME_MAPPINGS: Record<string, string> = {
   // Básicos
   Button: 'Básicos/Button',
   ButtonAI: 'Básicos/ButtonAI',
@@ -212,19 +236,38 @@ const ADDITIONAL_COMPONENT_NAME_MAPPINGS: Record<string, string> = {
   'Score Card Metrics': 'Charts/Score Card Metrics',
   TextMetricCard: 'Charts/Text Metric Card',
   'Text Metric Card': 'Charts/Text Metric Card',
+  MetricCard: 'Charts/Text Metric Card',
 };
 
 /**
  * Convierte un nombre de componente a ID de Storybook
+ *
+ * ⭐ NUEVO: Usa mapeos dinámicos desde Storybook como prioridad
+ * Fallback a mapeos hardcodeados solo si falla
  */
-export function componentNameToStorybookId(
+export async function componentNameToStorybookId(
   componentName: string
-): string | null {
+): Promise<string | null> {
   // Si ya es un ID (no empieza con mayúscula), devolverlo tal cual
   if (!/^[A-Z]/.test(componentName)) {
     return componentName;
   }
 
+  // ⭐ NUEVO: Intentar mapeo dinámico primero
+  try {
+    const { StorybookDynamicMapper } = await import('./storybookDynamicMapper');
+    const dynamicId =
+      await StorybookDynamicMapper.componentNameToStorybookId(componentName);
+    if (dynamicId) {
+      return dynamicId;
+    }
+  } catch (error: any) {
+    console.warn(
+      `⚠️ [MCP Name Mapper] Error en mapeo dinámico, usando fallback: ${error.message}`
+    );
+  }
+
+  // Fallback: Mapeos hardcodeados (temporal, hasta eliminar completamente)
   // ⚠️ NUEVO: Primero intentar mapeo adicional (RadioButton → Formularios/Radio Button)
   const mappedName = ADDITIONAL_COMPONENT_NAME_MAPPINGS[componentName];
   if (mappedName) {

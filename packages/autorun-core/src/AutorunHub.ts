@@ -10,489 +10,624 @@ import { IFunctionalAddon } from './interfaces/IFunctionalAddon';
 import { AddonRegistry } from './AddonRegistry';
 import { AddonLoader } from './AddonLoader';
 import { ConfigManager } from './ConfigManager';
-import { getConflictDetector, AddonConflictError } from './AddonConflictDetector';
+import {
+  getConflictDetector,
+  AddonConflictError,
+} from './AddonConflictDetector';
 import { FileWatcher } from './core/FileWatcher';
 import * as path from 'path';
+import * as fs from 'fs';
 import {
-	HubNotInitializedError,
-	HubAlreadyInitializedError,
-	AddonNotFoundError,
-	AddonLoadError,
-	MissingDependencyError,
-	AddonInitializationError,
-	AddonActivationError,
-	ServiceNotFoundError,
+  HubNotInitializedError,
+  HubAlreadyInitializedError,
+  AddonNotFoundError,
+  AddonLoadError,
+  MissingDependencyError,
+  AddonInitializationError,
+  AddonActivationError,
+  ServiceNotFoundError,
 } from './errors/AutorunErrors';
 
 export class AutorunHub {
-	private registry: AddonRegistry;
-	private loader: AddonLoader;
-	private configManager: ConfigManager;
-	private activeAddons: Map<string, IAddon> = new Map();
-	private context: AutorunContext;
-	private initialized = false;
-	private fileWatcher?: FileWatcher;
+  private registry: AddonRegistry;
+  private loader: AddonLoader;
+  private configManager: ConfigManager;
+  private activeAddons: Map<string, IAddon> = new Map();
+  private context: AutorunContext;
+  private initialized = false;
+  private fileWatcher?: FileWatcher;
 
-	/**
-	 * Crea una instancia de AutorunHub
-	 * @param configPath Ruta al archivo de configuración
-	 */
-	constructor(configPath: string = '.ubits/project-config.json') {
-		this.configManager = new ConfigManager(configPath);
-		this.registry = new AddonRegistry();
-		this.loader = new AddonLoader();
+  /**
+   * Crea una instancia de AutorunHub
+   * @param configPath Ruta al archivo de configuración
+   */
+  constructor(configPath: string = '.ubits/project-config.json') {
+    this.configManager = new ConfigManager(configPath);
+    this.registry = new AddonRegistry();
+    this.loader = new AddonLoader();
 
-		// Crear contexto (hub se asignará después para evitar dependencia circular)
-		this.context = {
-			config: {},
-			hub: this as any,
-			emit: this.emitEvent.bind(this),
-		};
-	}
+    // Crear contexto (hub se asignará después para evitar dependencia circular)
+    this.context = {
+      config: {},
+      hub: this as any,
+      emit: this.emitEvent.bind(this),
+    };
+  }
 
-	/**
-	 * Inicializa el hub y carga los add-ons configurados
-	 * @throws Error si el hub ya está inicializado
-	 */
-	async initialize(): Promise<void> {
-		if (this.initialized) {
-			throw new HubAlreadyInitializedError();
-		}
+  /**
+   * Inicializa el hub y carga los add-ons configurados
+   * @throws Error si el hub ya está inicializado
+   */
+  async initialize(): Promise<void> {
+    if (this.initialized) {
+      throw new HubAlreadyInitializedError();
+    }
 
-		// Cargar configuración
-		const config = await this.configManager.load();
-		this.context.config = config;
+    // Cargar configuración
+    const config = await this.configManager.load();
+    this.context.config = config;
 
-		// Obtener lista de add-ons activos desde la configuración
-		const activeAddonIds = config.autorun?.addons?.active || [];
+    // Obtener lista de add-ons activos desde la configuración
+    const activeAddonIds = config.autorun?.addons?.active || [];
 
-		if (activeAddonIds.length > 0) {
-			// Cargar y activar add-ons en orden de dependencias
-			await this.loadAddons(activeAddonIds);
-		}
+    if (activeAddonIds.length > 0) {
+      // ⭐ OPTIMIZACIÓN: Cargar add-ons bajo demanda o solo los esenciales al inicio
+      // Para evitar timeouts en implementaciones, solo cargamos los críticos
+      const essentialAddons = [
+        'storybook',
+        'pre-implementation-check',
+        'auto-reload',
+      ];
+      const addonsToLoad =
+        process.env.AUTORUN_MINIMAL === 'true'
+          ? activeAddonIds.filter((id) => essentialAddons.includes(id))
+          : activeAddonIds;
 
-		// Inicializar file watching si está habilitado
-		const enableFileWatching = config.autorun?.fileWatching?.enabled !== false;
-		if (enableFileWatching) {
-			this.startFileWatching(config.autorun?.fileWatching);
-		}
+      if (process.env.AUTORUN_MINIMAL === 'true') {
+        console.log(
+          `🚀 [AutorunHub] Modo MINIMAL activo. Cargando solo ${addonsToLoad.length} add-ons esenciales.`
+        );
+      }
 
-		// ⭐ NUEVO: Ejecutar pruebas de Storybook Implementation (opcional, no bloquea)
-		if (config.autorun?.testStorybookImplementation !== false) {
-			try {
-				const { runQuickTest } = await import('./helpers/storybookImplementationTester');
-				// Ejecutar en background para no bloquear inicialización
-				setTimeout(async () => {
-					const testPassed = await runQuickTest();
-					if (testPassed) {
-						console.log('✅ [AutorunHub] Pruebas de Storybook Implementation: OK');
-					} else {
-						console.warn(
-							'⚠️ [AutorunHub] Pruebas de Storybook Implementation: Algunas fallaron (ver logs arriba)',
-						);
-					}
-				}, 1000); // Esperar 1 segundo para no bloquear
-			} catch (error: any) {
-				// No bloquear si falla
-				console.warn(
-					`⚠️ [AutorunHub] No se pudieron ejecutar pruebas de Storybook Implementation: ${error.message}`,
-				);
-			}
-		}
+      await this.loadAddons(addonsToLoad);
+    }
 
-		this.initialized = true;
-	}
+    // Inicializar file watching si está habilitado
+    const enableFileWatching = config.autorun?.fileWatching?.enabled !== false;
+    if (enableFileWatching) {
+      this.startFileWatching(config.autorun?.fileWatching);
+    }
 
-	/**
-	 * Carga y activa una lista de add-ons
-	 * @param addonIds Lista de IDs de add-ons a cargar
-	 * @private
-	 */
-	private async loadAddons(addonIds: string[]): Promise<void> {
-		// Verificar conflictos entre los add-ons a cargar
-		const conflictDetector = getConflictDetector();
-		const activeAddonIds = Array.from(this.activeAddons.keys());
-		const conflicts = conflictDetector.checkMultipleConflicts(addonIds, activeAddonIds);
+    // ⭐ NUEVO: Ejecutar pruebas de Storybook Implementation (opcional, no bloquea)
+    if (
+      config.autorun?.testStorybookImplementation !== false &&
+      process.env.AUTORUN_MINIMAL !== 'true'
+    ) {
+      try {
+        const { runQuickTest } = await import(
+          './helpers/storybookImplementationTester'
+        );
+        // Ejecutar en background para no bloquear inicialización
+        setTimeout(async () => {
+          const testPassed = await runQuickTest();
+          if (testPassed) {
+            console.log(
+              '✅ [AutorunHub] Pruebas de Storybook Implementation: OK'
+            );
+          } else {
+            console.warn(
+              '⚠️ [AutorunHub] Pruebas de Storybook Implementation: Algunas fallaron (ver logs arriba)'
+            );
+          }
+        }, 1000); // Esperar 1 segundo para no bloquear
+      } catch (error: any) {
+        // No bloquear si falla
+        console.warn(
+          `⚠️ [AutorunHub] No se pudieron ejecutar pruebas de Storybook Implementation: ${error.message}`
+        );
+      }
+    }
 
-		if (conflicts.length > 0) {
-			// Mostrar todos los conflictos encontrados
-			console.error('\n❌ Se detectaron conflictos entre add-ons:\n');
-			for (const conflict of conflicts) {
-				const errorMessage = conflictDetector.generateErrorMessage(
-					conflict.addonId,
-					conflict.conflict,
-					conflict.conflictingAddon,
-				);
-				console.error(errorMessage);
-			}
-			throw new Error(`No se pueden activar add-ons con conflictos. Revisa los mensajes arriba.`);
-		}
+    this.initialized = true;
+  }
 
-		// Resolver orden de dependencias
-		const orderedIds = this.resolveDependencies(addonIds);
+  /**
+   * Carga y activa una lista de add-ons
+   * @param addonIds Lista de IDs de add-ons a cargar
+   * @private
+   */
+  private async loadAddons(addonIds: string[]): Promise<void> {
+    // Verificar conflictos entre los add-ons a cargar
+    const conflictDetector = getConflictDetector();
+    const activeAddonIds = Array.from(this.activeAddons.keys());
+    const conflicts = conflictDetector.checkMultipleConflicts(
+      addonIds,
+      activeAddonIds
+    );
 
-		for (const addonId of orderedIds) {
-			try {
-				await this.activateAddon(addonId);
-			} catch (error) {
-				if (error instanceof AddonConflictError) {
-					// Re-lanzar errores de conflicto sin modificar
-					throw error;
-				}
-				console.error(`❌ Error cargando add-on ${addonId}:`, error);
-				// Continuar con los demás add-ons aunque uno falle (excepto conflictos)
-			}
-		}
-	}
+    if (conflicts.length > 0) {
+      // Mostrar todos los conflictos encontrados
+      console.error('\n❌ Se detectaron conflictos entre add-ons:\n');
+      for (const conflict of conflicts) {
+        const errorMessage = conflictDetector.generateErrorMessage(
+          conflict.addonId,
+          conflict.conflict,
+          conflict.conflictingAddon
+        );
+        console.error(errorMessage);
+      }
+      throw new Error(
+        `No se pueden activar add-ons con conflictos. Revisa los mensajes arriba.`
+      );
+    }
 
-	/**
-	 * Resuelve el orden de carga basado en dependencias
-	 * @param addonIds Lista de IDs de add-ons
-	 * @returns Lista ordenada por dependencias
-	 * @private
-	 */
-	private resolveDependencies(addonIds: string[]): string[] {
-		const ordered: string[] = [];
-		const visited = new Set<string>();
+    // Resolver orden de dependencias
+    const orderedIds = this.resolveDependencies(addonIds);
 
-		const visit = (id: string) => {
-			if (visited.has(id)) return;
+    for (const addonId of orderedIds) {
+      try {
+        await this.activateAddon(addonId);
+      } catch (error) {
+        if (error instanceof AddonConflictError) {
+          // Re-lanzar errores de conflicto sin modificar
+          throw error;
+        }
+        // ⚠️ Si el add-on no se encuentra, solo mostrar warning (no error)
+        // Esto permite que el wizard guarde add-ons que pueden no estar compilados todavía
+        if (error instanceof AddonNotFoundError) {
+          console.warn(
+            `⚠️  Add-on ${addonId} no encontrado (puede no estar compilado o no estar disponible)`
+          );
+        } else {
+          console.error(`❌ Error cargando add-on ${addonId}:`, error);
+        }
+        // Continuar con los demás add-ons aunque uno falle (excepto conflictos)
+      }
+    }
+  }
 
-			// Buscar add-on en el registro (si ya está registrado)
-			const addon = this.registry.get(id);
-			if (addon?.dependencies) {
-				for (const dep of addon.dependencies) {
-					if (addonIds.includes(dep)) {
-						visit(dep);
-					}
-				}
-			}
+  /**
+   * Resuelve el orden de carga basado en dependencias
+   * @param addonIds Lista de IDs de add-ons
+   * @returns Lista ordenada por dependencias
+   * @private
+   */
+  private resolveDependencies(addonIds: string[]): string[] {
+    const ordered: string[] = [];
+    const visited = new Set<string>();
 
-			visited.add(id);
-			if (addonIds.includes(id)) {
-				ordered.push(id);
-			}
-		};
+    const visit = (id: string) => {
+      if (visited.has(id)) return;
 
-		for (const id of addonIds) {
-			visit(id);
-		}
+      // Buscar add-on en el registro (si ya está registrado)
+      const addon = this.registry.get(id);
+      if (addon?.dependencies) {
+        for (const dep of addon.dependencies) {
+          if (addonIds.includes(dep)) {
+            visit(dep);
+          }
+        }
+      }
 
-		return ordered;
-	}
+      visited.add(id);
+      if (addonIds.includes(id)) {
+        ordered.push(id);
+      }
+    };
 
-	/**
-	 * Registra un add-on disponible (descubrimiento)
-	 * @param addonPath Ruta al directorio del add-on
-	 */
-	async registerAddon(addonPath: string): Promise<void> {
-		const addon = await this.loader.load(addonPath);
-		this.registry.register(addon);
-		console.log(`📦 Add-on registrado: ${addon.name} (${addon.id})`);
-	}
+    for (const id of addonIds) {
+      visit(id);
+    }
 
-	/**
-	 * Activa un add-on
-	 * @param addonId ID del add-on a activar
-	 * @throws Error si el add-on no se encuentra, hay conflictos o no se puede activar
-	 */
-	async activateAddon(addonId: string): Promise<void> {
-		if (this.activeAddons.has(addonId)) {
-			console.log(`⚠️  Add-on ${addonId} ya está activo`);
-			return;
-		}
+    return ordered;
+  }
 
-		// Verificar conflictos con add-ons ya activos
-		const activeAddonIds = Array.from(this.activeAddons.keys());
-		const conflictDetector = getConflictDetector();
-		const conflict = conflictDetector.checkConflict(addonId, activeAddonIds);
+  /**
+   * Registra un add-on disponible (descubrimiento)
+   * @param addonPath Ruta al directorio del add-on
+   */
+  async registerAddon(addonPath: string): Promise<void> {
+    const addon = await this.loader.load(addonPath);
+    this.registry.register(addon);
+    console.log(`📦 Add-on registrado: ${addon.name} (${addon.id})`);
+  }
 
-		if (conflict) {
-			const errorMessage = conflictDetector.generateErrorMessage(
-				addonId,
-				conflict.conflict,
-				conflict.conflictingAddon,
-			);
-			throw new AddonConflictError(errorMessage, {
-				addonId,
-				conflictingAddon: conflict.conflictingAddon,
-				conflictGroup: conflict.conflict,
-			});
-		}
+  /**
+   * Activa un add-on
+   * @param addonId ID del add-on a activar
+   * @throws Error si el add-on no se encuentra, hay conflictos o no se puede activar
+   */
+  async activateAddon(addonId: string): Promise<void> {
+    if (this.activeAddons.has(addonId)) {
+      console.log(`⚠️  Add-on ${addonId} ya está activo`);
+      return;
+    }
 
-		let addon = this.registry.get(addonId);
+    // Verificar conflictos con add-ons ya activos
+    const activeAddonIds = Array.from(this.activeAddons.keys());
+    const conflictDetector = getConflictDetector();
+    const conflict = conflictDetector.checkConflict(addonId, activeAddonIds);
 
-		// Si no está registrado, intentar cargarlo desde la configuración
-		if (!addon) {
-			const addonPath = this.getAddonPath(addonId);
-			if (addonPath) {
-				try {
-					addon = await this.loader.load(addonPath);
-					this.registry.register(addon);
-				} catch (error: any) {
-					throw new AddonLoadError(
-						addonId,
-						addonPath,
-						error.message || 'Error desconocido al cargar',
-					);
-				}
-			} else {
-				const availableAddons = this.registry.getAll().map((a) => a.id);
-				throw new AddonNotFoundError(addonId, availableAddons);
-			}
-		}
+    if (conflict) {
+      const errorMessage = conflictDetector.generateErrorMessage(
+        addonId,
+        conflict.conflict,
+        conflict.conflictingAddon
+      );
+      throw new AddonConflictError(errorMessage, {
+        addonId,
+        conflictingAddon: conflict.conflictingAddon,
+        conflictGroup: conflict.conflict,
+      });
+    }
 
-		// Verificar dependencias
-		await this.checkDependencies(addon);
+    let addon = this.registry.get(addonId);
 
-		// Inicializar
-		try {
-			await addon.initialize(this.context);
-		} catch (error: any) {
-			throw new AddonInitializationError(
-				addonId,
-				error.message || 'Error desconocido al inicializar',
-			);
-		}
+    // Si no está registrado, intentar cargarlo desde la configuración
+    if (!addon) {
+      const addonPath = this.getAddonPath(addonId);
+      if (addonPath) {
+        try {
+          addon = await this.loader.load(addonPath);
+          this.registry.register(addon);
+        } catch (error: any) {
+          throw new AddonLoadError(
+            addonId,
+            addonPath,
+            error.message || 'Error desconocido al cargar'
+          );
+        }
+      } else {
+        const availableAddons = this.registry.getAll().map((a) => a.id);
+        throw new AddonNotFoundError(addonId, availableAddons);
+      }
+    }
 
-		// Configurar si hay configuración específica
-		const addonConfig = this.configManager.getAddonConfig(addonId);
-		if (addonConfig && Object.keys(addonConfig).length > 0) {
-			await addon.configure(addonConfig);
-		}
+    // Verificar dependencias
+    await this.checkDependencies(addon);
 
-		// Activar
-		if (addon.activate) {
-			try {
-				await addon.activate();
-			} catch (error: any) {
-				throw new AddonActivationError(addonId, error.message || 'Error desconocido al activar');
-			}
-		}
+    // Inicializar
+    try {
+      await addon.initialize(this.context);
+    } catch (error: any) {
+      throw new AddonInitializationError(
+        addonId,
+        error.message || 'Error desconocido al inicializar'
+      );
+    }
 
-		this.activeAddons.set(addonId, addon);
+    // Configurar si hay configuración específica
+    const addonConfig = this.configManager.getAddonConfig(addonId);
+    if (addonConfig && Object.keys(addonConfig).length > 0) {
+      await addon.configure(addonConfig);
+    }
 
-		// Guardar en configuración
-		await this.configManager.addAddon(addonId);
+    // Activar
+    if (addon.activate) {
+      try {
+        await addon.activate();
+      } catch (error: any) {
+        throw new AddonActivationError(
+          addonId,
+          error.message || 'Error desconocido al activar'
+        );
+      }
+    }
 
-		console.log(`✅ Add-on activado: ${addon.name}`);
-	}
+    this.activeAddons.set(addonId, addon);
 
-	/**
-	 * Verifica que las dependencias estén satisfechas
-	 * @param addon Add-on a verificar
-	 * @throws Error si faltan dependencias
-	 * @private
-	 */
-	private async checkDependencies(addon: IAddon): Promise<void> {
-		if (!addon.dependencies || addon.dependencies.length === 0) {
-			return;
-		}
+    // Guardar en configuración
+    await this.configManager.addAddon(addonId);
 
-		const missingDeps: string[] = [];
-		for (const depId of addon.dependencies) {
-			const depAddon = this.activeAddons.get(depId);
-			if (!depAddon || !depAddon.isActive()) {
-				missingDeps.push(depId);
-			}
-		}
+    console.log(`✅ Add-on activado: ${addon.name}`);
+  }
 
-		if (missingDeps.length > 0) {
-			throw new MissingDependencyError(addon.id, missingDeps);
-		}
-	}
+  /**
+   * Verifica que las dependencias estén satisfechas
+   * @param addon Add-on a verificar
+   * @throws Error si faltan dependencias
+   * @private
+   */
+  private async checkDependencies(addon: IAddon): Promise<void> {
+    if (!addon.dependencies || addon.dependencies.length === 0) {
+      return;
+    }
 
-	/**
-	 * Obtiene la ruta de un add-on desde la configuración
-	 * @param addonId ID del add-on
-	 * @returns Ruta del add-on o null
-	 * @private
-	 */
-	private getAddonPath(addonId: string): string | null {
-		const config = this.context.config;
-		const addonConfig = config.autorun?.addons?.config?.[addonId];
-		return addonConfig?.source || null;
-	}
+    const missingDeps: string[] = [];
+    for (const depId of addon.dependencies) {
+      const depAddon = this.activeAddons.get(depId);
+      if (!depAddon || !depAddon.isActive()) {
+        missingDeps.push(depId);
+      }
+    }
 
-	/**
-	 * Desactiva un add-on
-	 * @param addonId ID del add-on a desactivar
-	 */
-	async deactivateAddon(addonId: string): Promise<void> {
-		const addon = this.activeAddons.get(addonId);
-		if (!addon) {
-			console.log(`⚠️  Add-on ${addonId} no está activo`);
-			return;
-		}
+    if (missingDeps.length > 0) {
+      throw new MissingDependencyError(addon.id, missingDeps);
+    }
+  }
 
-		if (addon.deactivate) {
-			await addon.deactivate();
-		}
+  /**
+   * Obtiene la ruta de un add-on desde la configuración
+   * @param addonId ID del add-on
+   * @returns Ruta del add-on o null
+   * @private
+   */
+  private getAddonPath(addonId: string): string | null {
+    const config = this.context.config;
+    const addonConfig = config.autorun?.addons?.config?.[addonId];
+    return addonConfig?.source || null;
+  }
 
-		this.activeAddons.delete(addonId);
-		await this.configManager.removeAddon(addonId);
+  /**
+   * Desactiva un add-on
+   * @param addonId ID del add-on a desactivar
+   */
+  async deactivateAddon(addonId: string): Promise<void> {
+    const addon = this.activeAddons.get(addonId);
+    if (!addon) {
+      console.log(`⚠️  Add-on ${addonId} no está activo`);
+      return;
+    }
 
-		console.log(`🔌 Add-on desactivado: ${addon.name}`);
-	}
+    if (addon.deactivate) {
+      await addon.deactivate();
+    }
 
-	/**
-	 * Emite un evento a todos los add-ons funcionales activos
-	 * @param event Nombre del evento (ej: 'fileChange', 'beforeCommit')
-	 * @param data Datos del evento (opcional)
-	 */
-	async emitEvent(event: string, data?: any): Promise<void> {
-		console.log(
-			`📡 AutorunHub: Emitiendo evento '${event}' con datos:`,
-			typeof data === 'string' ? data : JSON.stringify(data).substring(0, 100),
-		);
+    this.activeAddons.delete(addonId);
+    await this.configManager.removeAddon(addonId);
 
-		// Convertir nombre del evento a nombre del método
-		// Ej: 'fileChange' -> 'onFileChange'
-		const eventMethod = `on${event.charAt(0).toUpperCase() + event.slice(1)}`;
-		console.log(
-			`🔍 AutorunHub: Buscando método '${eventMethod}' en ${this.activeAddons.size} add-on(s) activo(s)`,
-		);
+    console.log(`🔌 Add-on desactivado: ${addon.name}`);
+  }
 
-		let handlersFound = 0;
-		for (const addon of this.activeAddons.values()) {
-			if (addon.type === 'functional') {
-				const functionalAddon = addon as IFunctionalAddon;
-				const handler = (functionalAddon as any)[eventMethod];
+  /**
+   * Emite un evento a todos los add-ons funcionales activos
+   * @param event Nombre del evento (ej: 'fileChange', 'beforeCommit')
+   * @param data Datos del evento (opcional)
+   */
+  async emitEvent(event: string, data?: any): Promise<void> {
+    console.log('\n📡 [AutorunHub] ========================================');
+    console.log(`📡 [AutorunHub] Emitiendo evento '${event}'`);
+    console.log(
+      `📡 [AutorunHub] Datos: ${typeof data === 'string' ? data : JSON.stringify(data).substring(0, 100)}`
+    );
+    console.log(`📡 [AutorunHub] Add-ons activos: ${this.activeAddons.size}`);
 
-				if (typeof handler === 'function') {
-					handlersFound++;
-					console.log(`✅ AutorunHub: Handler encontrado en add-on '${addon.id}'`);
-					try {
-						// Para fileChange, pasar filePath como primer argumento
-						if (event === 'fileChange' && typeof data === 'string') {
-							console.log(
-								`📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}' con filePath: ${data}`,
-							);
-							await handler.call(functionalAddon, data);
-						} else {
-							console.log(`📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}'`);
-							await handler.call(functionalAddon, data);
-						}
-						console.log(`✅ AutorunHub: Handler en add-on '${addon.id}' completado`);
-					} catch (error) {
-						console.error(`❌ Error en add-on ${addon.id} manejando evento ${event}:`, error);
-					}
-				} else {
-					console.log(`⏭️ AutorunHub: Add-on '${addon.id}' no tiene método '${eventMethod}'`);
-				}
-			}
-		}
+    // Convertir nombre del evento a nombre del método
+    // Ej: 'fileChange' -> 'onFileChange'
+    const eventMethod = `on${event.charAt(0).toUpperCase() + event.slice(1)}`;
+    console.log(
+      `🔍 [AutorunHub] Buscando método '${eventMethod}' en add-ons funcionales`
+    );
 
-		console.log(
-			`📊 AutorunHub: Evento '${event}' procesado - ${handlersFound} handler(s) ejecutado(s)`,
-		);
-	}
+    let handlersFound = 0;
+    for (const addon of this.activeAddons.values()) {
+      if (addon.type === 'functional') {
+        const functionalAddon = addon as IFunctionalAddon;
+        const handler = (functionalAddon as any)[eventMethod];
 
-	/**
-	 * Inicia el file watching para detectar cambios en archivos
-	 * @param options Opciones de configuración del file watching
-	 */
-	private startFileWatching(options?: any): void {
-		try {
-			const watchPaths = options?.paths || ['prototypes/', 'src/'];
-			const ignored = options?.ignored || ['node_modules/', '.git/', 'dist/', '.next/'];
-			const debounceMs = options?.debounceMs || 300;
+        if (typeof handler === 'function') {
+          handlersFound++;
+          console.log(
+            `✅ [AutorunHub] Handler encontrado en add-on '${addon.id}' (${addon.name})`
+          );
+          try {
+            // Para fileChange, pasar filePath como primer argumento
+            if (event === 'fileChange' && typeof data === 'string') {
+              console.log(
+                `📞 [AutorunHub] Llamando ${eventMethod} en add-on '${addon.id}' con filePath: ${data}`
+              );
+              await handler.call(functionalAddon, data);
+              console.log(
+                `✅ [AutorunHub] Handler ejecutado correctamente en add-on '${addon.id}'`
+              );
+            } else {
+              console.log(
+                `📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}'`
+              );
+              await handler.call(functionalAddon, data);
+            }
+            console.log(
+              `✅ AutorunHub: Handler en add-on '${addon.id}' completado`
+            );
+          } catch (error) {
+            console.error(
+              `❌ Error en add-on ${addon.id} manejando evento ${event}:`,
+              error
+            );
+          }
+        } else {
+          console.log(
+            `⏭️ AutorunHub: Add-on '${addon.id}' no tiene método '${eventMethod}'`
+          );
+        }
+      }
+    }
 
-			// Resolver rutas absolutas
-			const projectRoot = process.cwd();
-			const absolutePaths = watchPaths.map((p: string) => path.resolve(projectRoot, p));
+    console.log(
+      `📊 AutorunHub: Evento '${event}' procesado - ${handlersFound} handler(s) ejecutado(s)`
+    );
+  }
 
-			this.fileWatcher = new FileWatcher({
-				watchPaths: absolutePaths,
-				ignored,
-				debounceMs,
-			});
+  /**
+   * Inicia el file watching para detectar cambios en archivos
+   * @param options Opciones de configuración del file watching
+   */
+  private startFileWatching(options?: any): void {
+    try {
+      const watchPaths = options?.paths || ['prototypes/', 'src/'];
+      const ignored = options?.ignored || [
+        'node_modules/',
+        '.git/',
+        'dist/',
+        '.next/',
+      ];
+      const debounceMs = options?.debounceMs || 300;
 
-			this.fileWatcher.start((filePath: string) => {
-				console.log(`📥 AutorunHub: FileWatcher callback recibido para: ${filePath}`);
-				// Emitir evento fileChange a todos los add-ons
-				this.emitEvent('fileChange', filePath);
-			});
+      console.log('\n🔍 [AutorunHub] ========================================');
+      console.log('🔍 [AutorunHub] Iniciando file watching...');
+      console.log(`🔍 [AutorunHub] Paths a observar: ${watchPaths.join(', ')}`);
+      console.log(`🔍 [AutorunHub] Ignorados: ${ignored.join(', ')}`);
+      console.log(`🔍 [AutorunHub] Debounce: ${debounceMs}ms`);
 
-			console.log('✅ AutorunHub: File watching iniciado');
-		} catch (error) {
-			console.error('❌ AutorunHub: Error iniciando file watching:', error);
-		}
-	}
+      // Resolver rutas absolutas
+      const projectRoot = process.cwd();
+      const absolutePaths = watchPaths.map((p: string) =>
+        path.resolve(projectRoot, p)
+      );
 
-	/**
-	 * Detiene el file watching
-	 */
-	stopFileWatching(): void {
-		if (this.fileWatcher) {
-			this.fileWatcher.stop();
-			this.fileWatcher = undefined;
-			console.log('🛑 AutorunHub: File watching detenido');
-		}
-	}
+      console.log(
+        `🔍 [AutorunHub] Rutas absolutas: ${absolutePaths.join(', ')}`
+      );
 
-	/**
-	 * Obtiene todos los add-ons disponibles
-	 * @returns Array de add-ons registrados
-	 */
-	getAvailableAddons(): IAddon[] {
-		return this.registry.getAll();
-	}
+      // Verificar que los directorios existen
+      for (const absPath of absolutePaths) {
+        if (!fs.existsSync(absPath)) {
+          console.warn(`⚠️ [AutorunHub] Directorio no existe: ${absPath}`);
+        } else {
+          console.log(`✅ [AutorunHub] Directorio existe: ${absPath}`);
+        }
+      }
 
-	/**
-	 * Obtiene los add-ons activos
-	 * @returns Array de add-ons activos
-	 */
-	getActiveAddons(): IAddon[] {
-		return Array.from(this.activeAddons.values());
-	}
+      this.fileWatcher = new FileWatcher({
+        watchPaths: absolutePaths,
+        ignored,
+        debounceMs,
+      });
 
-	/**
-	 * Obtiene un add-on activo por ID
-	 * @param addonId ID del add-on
-	 * @returns Add-on encontrado o undefined
-	 */
-	getAddon(addonId: string): IAddon | undefined {
-		return this.activeAddons.get(addonId);
-	}
+      this.fileWatcher.start((filePath: string) => {
+        console.log(
+          '\n📥 [AutorunHub] ========================================'
+        );
+        console.log(
+          `📥 [AutorunHub] FileWatcher callback recibido para: ${filePath}`
+        );
+        console.log(
+          `📥 [AutorunHub] Emitiendo evento 'fileChange' a todos los add-ons...`
+        );
 
-	/**
-	 * Obtiene un servicio de un add-on funcional
-	 * @param addonId ID del add-on
-	 * @param serviceName Nombre del servicio
-	 * @returns Función del servicio o null
-	 */
-	getService(addonId: string, serviceName: string): Function | null {
-		if (!this.initialized) {
-			throw new HubNotInitializedError(`getService('${addonId}', '${serviceName}')`);
-		}
+        // Emitir evento fileChange a todos los add-ons
+        this.emitEvent('fileChange', filePath);
 
-		const addon = this.activeAddons.get(addonId);
-		if (!addon) {
-			throw new AddonNotFoundError(addonId);
-		}
+        console.log(
+          `✅ [AutorunHub] Evento 'fileChange' emitido correctamente`
+        );
+        console.log(
+          '📥 [AutorunHub] ========================================\n'
+        );
+      });
 
-		if (addon.type !== 'functional') {
-			throw new ServiceNotFoundError(addonId, serviceName);
-		}
+      console.log('✅ [AutorunHub] File watching iniciado correctamente');
+      console.log('🔍 [AutorunHub] ========================================\n');
+    } catch (error) {
+      console.error(
+        '\n❌ [AutorunHub] ========================================'
+      );
+      console.error('❌ [AutorunHub] Error iniciando file watching:', error);
+      console.error(
+        '❌ [AutorunHub] ========================================\n'
+      );
+    }
+  }
 
-		const functionalAddon = addon as IFunctionalAddon;
-		const services = functionalAddon.getServices?.() || {};
-		const service = services[serviceName];
+  /**
+   * Detiene el file watching
+   */
+  stopFileWatching(): void {
+    if (this.fileWatcher) {
+      this.fileWatcher.stop();
+      this.fileWatcher = undefined;
+      console.log('🛑 AutorunHub: File watching detenido');
+    }
+  }
 
-		if (!service) {
-			const availableServices = Object.keys(services);
-			throw new ServiceNotFoundError(addonId, serviceName);
-		}
+  /**
+   * Verifica si el file watching está activo
+   */
+  isFileWatchingActive(): boolean {
+    return this.fileWatcher !== undefined;
+  }
 
-		return service;
-	}
+  /**
+   * Obtiene información del estado del file watching
+   */
+  getFileWatchingStatus(): {
+    active: boolean;
+    watchedPaths?: string[];
+  } {
+    if (!this.fileWatcher) {
+      return { active: false };
+    }
 
-	/**
-	 * Verifica si el hub está inicializado
-	 * @returns true si está inicializado
-	 */
-	isInitialized(): boolean {
-		return this.initialized;
-	}
+    return {
+      active: true,
+      watchedPaths: this.fileWatcher.getWatchedPaths?.() || [],
+    };
+  }
+
+  /**
+   * Obtiene todos los add-ons disponibles
+   * @returns Array de add-ons registrados
+   */
+  getAvailableAddons(): IAddon[] {
+    return this.registry.getAll();
+  }
+
+  /**
+   * Obtiene los add-ons activos
+   * @returns Array de add-ons activos
+   */
+  getActiveAddons(): IAddon[] {
+    return Array.from(this.activeAddons.values());
+  }
+
+  /**
+   * Obtiene un add-on activo por ID
+   * @param addonId ID del add-on
+   * @returns Add-on encontrado o undefined
+   */
+  getAddon(addonId: string): IAddon | undefined {
+    return this.activeAddons.get(addonId);
+  }
+
+  /**
+   * Obtiene un servicio de un add-on funcional
+   * @param addonId ID del add-on
+   * @param serviceName Nombre del servicio
+   * @returns Función del servicio o null
+   */
+  getService(addonId: string, serviceName: string): Function | null {
+    if (!this.initialized) {
+      throw new HubNotInitializedError(
+        `getService('${addonId}', '${serviceName}')`
+      );
+    }
+
+    const addon = this.activeAddons.get(addonId);
+    if (!addon) {
+      throw new AddonNotFoundError(addonId);
+    }
+
+    if (addon.type !== 'functional') {
+      throw new ServiceNotFoundError(addonId, serviceName);
+    }
+
+    const functionalAddon = addon as IFunctionalAddon;
+    const services = functionalAddon.getServices?.() || {};
+    const service = services[serviceName];
+
+    if (!service) {
+      const availableServices = Object.keys(services);
+      throw new ServiceNotFoundError(addonId, serviceName);
+    }
+
+    return service;
+  }
+
+  /**
+   * Verifica si el hub está inicializado
+   * @returns true si está inicializado
+   */
+  isInitialized(): boolean {
+    return this.initialized;
+  }
 }

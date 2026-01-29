@@ -271,7 +271,9 @@ export class ActiveStepGuide {
 			}
 
 			// Construir URL usando el Storybook activo (priorizando /docs/)
-			const path = `?path=/docs/${componentId}--docs`;
+			// ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+			const encodedComponentId = encodeURIComponent(componentId);
+			const path = `?path=/docs/${encodedComponentId}--docs`;
 			return await manager.buildStorybookUrl(path);
 		} catch (error: any) {
 			// ⚠️ CRÍTICO: NO usar fallback de UBITS

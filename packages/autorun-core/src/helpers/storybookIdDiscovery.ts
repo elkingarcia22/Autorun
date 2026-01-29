@@ -321,6 +321,63 @@ export async function findComponentByIdOrName(
 ): Promise<DiscoveredComponent | null> {
 	const discovery = await discoverStorybookComponents();
 
+	// ⚠️ NUEVO: Primero intentar usar el mapeo de storybookMCPNameMapper
+	try {
+		const { ADDITIONAL_COMPONENT_NAME_MAPPINGS } = await import('./storybookMCPNameMapper');
+		const mappedName = ADDITIONAL_COMPONENT_NAME_MAPPINGS[searchTerm];
+		
+		if (mappedName) {
+			console.log(
+				`🔍 [Storybook ID Discovery] Mapeo encontrado: ${searchTerm} → ${mappedName}`,
+			);
+			
+			// Buscar por el nombre completo del mapeo (ej: "Layout/Selection Card")
+			const byMappedName = discovery.components.find((c) =>
+				c.title.toLowerCase() === mappedName.toLowerCase(),
+			);
+			if (byMappedName) {
+				console.log(
+					`✅ [Storybook ID Discovery] Componente encontrado usando mapeo (título): ${searchTerm} → ${mappedName} → ${byMappedName.componentId}`,
+				);
+				return byMappedName;
+			}
+			
+			// También buscar por ID si el mapeo tiene el formato correcto
+			// Convertir "Layout/Selection Card" a "layout-selection-card"
+			const mappedId = mappedName
+				.toLowerCase()
+				.replace(/\//g, '-')
+				.replace(/\s+/g, '-');
+			const byMappedId = discovery.components.find(
+				(c) => c.componentId.toLowerCase() === mappedId,
+			);
+			if (byMappedId) {
+				console.log(
+					`✅ [Storybook ID Discovery] Componente encontrado usando mapeo (ID): ${searchTerm} → ${mappedId}`,
+				);
+				return byMappedId;
+			}
+			
+			// Si no se encuentra por título exacto, buscar por palabras clave del título mapeado
+			const mappedWords = mappedName.toLowerCase().split(/[\/\s]+/);
+			const byMappedKeywords = discovery.components.find((c) => {
+				const titleLower = c.title.toLowerCase();
+				return mappedWords.every((word) => titleLower.includes(word));
+			});
+			if (byMappedKeywords) {
+				console.log(
+					`✅ [Storybook ID Discovery] Componente encontrado usando mapeo (palabras clave): ${searchTerm} → ${mappedName} → ${byMappedKeywords.componentId}`,
+				);
+				return byMappedKeywords;
+			}
+		}
+	} catch (error: any) {
+		// Si el mapeo no está disponible, continuar con búsqueda normal
+		console.warn(
+			`⚠️ [Storybook ID Discovery] Error usando mapeo, continuando con búsqueda normal: ${error.message}`,
+		);
+	}
+
 	// Buscar por ID exacto
 	const byId = discovery.components.find(
 		(c) => c.componentId.toLowerCase() === searchTerm.toLowerCase(),
@@ -329,7 +386,15 @@ export async function findComponentByIdOrName(
 		return byId;
 	}
 
-	// Buscar por título
+	// Buscar por título exacto
+	const byTitleExact = discovery.components.find(
+		(c) => c.title.toLowerCase() === searchTerm.toLowerCase(),
+	);
+	if (byTitleExact) {
+		return byTitleExact;
+	}
+
+	// Buscar por título (incluye)
 	const byTitle = discovery.components.find((c) =>
 		c.title.toLowerCase().includes(searchTerm.toLowerCase()),
 	);
@@ -343,6 +408,27 @@ export async function findComponentByIdOrName(
 	);
 	if (byPartialId) {
 		return byPartialId;
+	}
+
+	// ⚠️ NUEVO: Búsqueda más flexible - buscar palabras clave en el título
+	// Ej: "SelectionCard" → buscar "selection" y "card" en títulos
+	const searchWords = searchTerm
+		.toLowerCase()
+		.replace(/([A-Z])/g, ' $1') // Separar camelCase
+		.split(/\s+/)
+		.filter((w) => w.length > 2); // Filtrar palabras muy cortas
+
+	if (searchWords.length > 0) {
+		const byKeywords = discovery.components.find((c) => {
+			const titleLower = c.title.toLowerCase();
+			return searchWords.every((word) => titleLower.includes(word));
+		});
+		if (byKeywords) {
+			console.log(
+				`✅ [Storybook ID Discovery] Componente encontrado por palabras clave: ${searchTerm} → ${byKeywords.title}`,
+			);
+			return byKeywords;
+		}
 	}
 
 	return null;

@@ -36,7 +36,14 @@ jobs:
         run: cd packages/autorun-core && npm run test
 
       - name: Verify prototypes
-        run: npm run prototypes:verify -- --baseRef=origin/${{ github.base_ref || 'main' }}
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_REF="origin/${{ github.base_ref || 'main' }}"
+          else
+            BASE_REF="origin/main"
+          fi
+          npm run prototypes:verify -- --base=$BASE_REF
         env:
           CI: true
+        continue-on-error: false
 

@@ -63,7 +63,7 @@ export async function createTokensAddonFromSource(
 /**
  * Convierte tokens JSON a CSS
  */
-function convertTokensJSONToCSS(tokens: Record<string, any>): string {
+export function convertTokensJSONToCSS(tokens: Record<string, any>): string {
 	const lines: string[] = [':root {'];
 
 	function flatten(obj: Record<string, any>, prefix = ''): void {

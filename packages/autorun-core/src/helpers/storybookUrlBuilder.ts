@@ -51,11 +51,13 @@ export async function buildValidatedStorybookUrlForComponent(
       // Retornar URL con el ID original como último recurso
       const manager = StorybookManager.getInstance();
       const activeConfig = await manager.getActiveConfig();
+      // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+      const encodedComponentId = encodeURIComponent(componentId);
       const fallbackUrl = activeConfig
         ? await manager.buildStorybookUrl(
-            `?path=/story/${componentId}--${storyName}`
+            `?path=/story/${encodedComponentId}--${storyName}`
           )
-        : `https://ubits-storybook10.vercel.app/?path=/story/${componentId}--${storyName}`;
+        : `https://ubits-storybook10.vercel.app/?path=/story/${encodedComponentId}--${storyName}`;
 
       return {
         url: fallbackUrl,
@@ -93,11 +95,13 @@ export async function buildValidatedStorybookUrlForComponent(
     // Fallback: construir URL manualmente
     const manager = StorybookManager.getInstance();
     const activeConfig = await manager.getActiveConfig();
+    // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+    const encodedComponentId = encodeURIComponent(componentId);
     const fallbackUrl = activeConfig
       ? await manager.buildStorybookUrl(
-          `?path=/story/${componentId}--${storyName}`
+          `?path=/story/${encodedComponentId}--${storyName}`
         )
-      : `https://libraries-ui.ubitslearning.com/index.html?path=/story/${componentId}--${storyName}`;
+      : `https://libraries-ui.ubitslearning.com/index.html?path=/story/${encodedComponentId}--${storyName}`;
 
     return {
       url: fallbackUrl,

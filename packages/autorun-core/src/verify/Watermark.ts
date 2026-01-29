@@ -1,5 +1,7 @@
 import * as crypto from 'crypto';
-import type { AutorunMode } from '../mcp-server/types';
+
+// Local type definition to avoid MCP dependencies
+type AutorunMode = 'storybook' | 'prototypeTokens' | 'manual';
 
 /**
  * ✅ WatermarkMeta - Metadatos del watermark v2

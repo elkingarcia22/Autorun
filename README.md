@@ -1,10 +1,16 @@
 # 🚀 Autorun - Sistema de Prototipado Rápido
 
+> **⚠️ IMPORTANTE - MIGRACIÓN A ANTIGRAVITY**  
+> El MCP Server de Autorun está **DEPRECATED**. Ahora usamos **Workflows** y **Skills** nativos de Antigravity.  
+> **Ver guía de migración:** [MIGRATION.md](./MIGRATION.md)
+
 Sistema modular para crear prototipos de alta calidad con componentes UBITS, add-ons funcionales y herramientas de desarrollo integradas.
 
 > ⚡ **Inicio rápido:** Lee [GETTING-STARTED.md](./GETTING-STARTED.md) para empezar en 5 minutos
 > 
 > ❓ **¿Problemas?** Consulta [QUICK-START.md](./QUICK-START.md) para soluciones rápidas
+>
+> 🔄 **Migración:** Lee [MIGRATION.md](./MIGRATION.md) para migrar de MCP a Workflows/Skills
 
 ---
 
@@ -25,9 +31,9 @@ cd vendor/ubits/packages/storybook
 npm install
 cd ../../../../
 
-# Instalar Autorun MCP Server (se ejecuta automáticamente después de npm install)
-# Si no se instaló automáticamente, ejecuta:
-npm run autorun:install-mcp
+# ⚠️ DEPRECATED: Autorun MCP Server
+# El MCP server está deprecado. Usa workflows y skills en .agent/
+# Ver MIGRATION.md para más información
 ```
 
 ### 🛠️ Herramientas de Inspección (Opcional pero Recomendado)
@@ -176,17 +182,19 @@ npm run test:watch # Tests en modo watch
 
 ## 📚 Documentación
 
-### ⚠️ IMPORTANTE: Leer Antes de Trabajar
+### ⚠️ IMPORTANTE: Para Antigravity
 
-**Cursor lee automáticamente estos archivos:**
+**Estructura nueva (.agent/):**
 
-1. **[`.cursorrules`](./.cursorrules)** - ⚠️ **OBLIGATORIO** - Reglas críticas que Cursor debe seguir (simplificado - 236 líneas)
-2. **[`QUICK-REFERENCE.md`](./QUICK-REFERENCE.md)** - ⭐ **NUEVO** - Referencia rápida con reglas críticas (máx 50 líneas)
-3. **[`.cursor/rules/`](./.cursor/rules/)** - ⭐ **NUEVO** - Reglas organizadas por módulos con tags de prioridad
-3. **[`docs/referencia/GUIA-TRABAJO-TEMPLATE.md`](./docs/referencia/GUIA-TRABAJO-TEMPLATE.md)** - ⚠️ **OBLIGATORIO** - Guía completa para trabajar con templates UBITS
-4. **[`docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md`](./docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md)** - Estrategia de uso de componentes
-5. **[`docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md`](./docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md)** - Cómo usar componentes UBITS
-6. **[`docs/referencia/componentes/`](./docs/referencia/componentes/)** - ⭐ **NUEVO** - Documentación completa de componentes con historias de Storybook
+1. **[`.agent/rules/index.md`](./.agent/rules/index.md)** - ⚠️ **OBLIGATORIO** - Reglas modularizadas
+2. **[`.agent/workflows/README.md`](./.agent/workflows/README.md)** - ⭐ Workflows que reemplazan MCP
+3. **[`.agent/skills/README.md`](./.agent/skills/README.md)** - ⭐ Skills reutilizables
+4. **[`MIGRATION.md`](./MIGRATION.md)** - 🔄 Guía de migración MCP → Workflows/Skills
+
+**Para Cursor (legacy):**
+
+1. **[`.cursorrules`](./.cursorrules)** - ⚠️ Simplificado (130 líneas) - Referencia a .agent/
+2. **[`docs/referencia/CATALOGO-COMPONENTES-UBITS.md`](./docs/referencia/CATALOGO-COMPONENTES-UBITS.md)** - Catálogo de 80+ componentes
 
 ### Guías Principales
 

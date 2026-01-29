@@ -58,7 +58,7 @@ export async function getComponentPropsWithFallback(
       './storybookMCPNameMapper.js'
     );
     const componentName =
-      storybookIdToComponentName(componentId) || componentId;
+      (await storybookIdToComponentName(componentId)) || componentId;
 
     console.log(`   📡 Instrucciones para consultar MCP:`);
     console.log(`      El agente DEBE ejecutar:`);
@@ -123,8 +123,11 @@ export async function extractPropsVisually(
   console.log(`   👁️ Extrayendo props visualmente desde: ${storybookBaseUrl}`);
 
   try {
+    // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+    const encodedComponentId = encodeURIComponent(componentId);
+    
     // Construir URL de Docs (tiene información más completa)
-    const docsUrl = `${storybookBaseUrl}/?path=/docs/${componentId}--docs`;
+    const docsUrl = `${storybookBaseUrl}/?path=/docs/${encodedComponentId}--docs`;
 
     // Intentar obtener HTML de la página de Docs
     const response = await fetch(docsUrl);

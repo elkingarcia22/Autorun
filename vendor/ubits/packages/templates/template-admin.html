@@ -1,59 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UBITS Proyecto - Template Administrador</title>
-    
+
     <!-- UBITS Base Styles -->
     <link rel="stylesheet" href="../tokens/dist/tokens.css" />
     <link rel="stylesheet" href="../typography/fonts.css" />
     <link rel="stylesheet" href="../typography/tokens-typography.css" />
     <!-- FontAwesome Pro -->
     <link rel="stylesheet" href="assets/fontawesome/css/all.min.css" />
-    
-    <!-- Navigation Components -->
-    <link rel="stylesheet" href="../components/sidebar/src/styles/sidebar.css" />
-    <link rel="stylesheet" href="../components/subnav/src/styles/subnav.css" />
-    <link rel="stylesheet" href="../components/tabbar/src/styles/tabbar.css" />
-    
-    <!-- UBITS Component Styles -->
-    <link rel="stylesheet" href="../components/status-tag/src/styles/status-tag.css" />
-    <link rel="stylesheet" href="../components/avatar/src/styles/avatar.css" />
-    <link rel="stylesheet" href="../components/drawer/src/styles/drawer.css" />
-    <link rel="stylesheet" href="../components/modal/src/styles/modal.css" />
-    <link rel="stylesheet" href="../components/scroll/src/styles/scroll.css" />
-    <link rel="stylesheet" href="../components/progress/src/styles/progress.css" />
-    <link rel="stylesheet" href="../components/file-upload/src/styles/file-upload.css" />
-    <link rel="stylesheet" href="../components/button/src/styles/button.css" />
-    <link rel="stylesheet" href="../components/badge/src/styles/badge.css" />
-    <link rel="stylesheet" href="../components/alert/src/styles/alert.css" />
-    <link rel="stylesheet" href="../components/toast/src/styles/toast.css" />
-    <link rel="stylesheet" href="../components/list/src/styles/list.css" />
-    <link rel="stylesheet" href="../components/input/src/styles/input.css" />
-    <link rel="stylesheet" href="../components/card/src/styles/card.css" />
-    <link rel="stylesheet" href="../components/data-table/src/styles/data-table.css" />
-    <link rel="stylesheet" href="../components/pagination/src/styles/pagination.css" />
-    <link rel="stylesheet" href="../components/checkbox/src/styles/checkbox.css" />
-    <link rel="stylesheet" href="../components/toggle/src/styles/toggle.css" />
-    <link rel="stylesheet" href="../components/radio-button/src/styles/radio-button.css" />
-    <link rel="stylesheet" href="../components/selection-card/src/styles/selection-card.css" />
-    <link rel="stylesheet" href="../components/empty-state/src/styles/empty-state.css" />
-    <link rel="stylesheet" href="../components/tooltip/src/styles/tooltip.css" />
-    <link rel="stylesheet" href="../components/spinner/src/styles/spinner.css" />
-    <link rel="stylesheet" href="../components/calendar/src/styles/calendar.css" />
-    <link rel="stylesheet" href="../components/tabs/src/styles/tabs.css" />
-    <link rel="stylesheet" href="../components/segment-control/src/styles/segment-control.css" />
-    <link rel="stylesheet" href="../components/breadcrumb/src/styles/breadcrumb.css" />
-    <link rel="stylesheet" href="../components/stepper/src/styles/stepper.css" />
-    <link rel="stylesheet" href="../components/participants-menu/src/styles/participants-menu.css" />
-    <link rel="stylesheet" href="../components/metric-card/src/styles/metric-card.css" />
-    
+
+    <!-- UBITS Component Bundle -->
+    <link rel="stylesheet" href="dist/components-bundle.css" />
+
     <style>
         /* ========================================
            GLOBAL STYLES
            ======================================== */
-        
+
         * {
             box-sizing: border-box;
         }
@@ -90,7 +57,7 @@
         /* ========================================
            DASHBOARD CONTAINER
            ======================================== */
-        
+
         .dashboard-container {
             display: flex;
             min-height: 100vh;
@@ -103,14 +70,14 @@
         /* ========================================
            TOOLTIP
            ======================================== */
-        
+
         /* ⚠️ NOTA: Los estilos del tooltip del sidebar están en el componente sidebar.css */
         /* No sobrescribir aquí, usar los estilos del componente oficial */
 
         /* ========================================
            MAIN CONTENT
            ======================================== */
-        
+
         .main-content {
             position: relative;
             flex: 1;
@@ -120,7 +87,8 @@
             max-height: none;
             display: flex;
             flex-direction: column;
-            gap: var(--ubits-spacing-xl, 20px); /* Gap entre SubNav y Content Area */
+            gap: var(--ubits-spacing-xl, 20px);
+            /* Gap entre SubNav y Content Area */
             z-index: 5;
             box-sizing: border-box;
         }
@@ -129,8 +97,10 @@
         /* El proyecto UBITS original usa margin: auto sin cambiar flex */
         @media (min-width: 1440px) {
             .main-content {
-                margin: var(--ubits-spacing-lg, 16px) auto 0 auto; /* ⚠️ margin auto centra el elemento */
-                padding-left: calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px); /* Espacio para sidebar (24px + 96px + 23px gap) */
+                margin: var(--ubits-spacing-lg, 16px) auto 0 auto;
+                /* ⚠️ margin auto centra el elemento */
+                padding-left: calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px);
+                /* Espacio para sidebar (24px + 96px + 23px gap) */
                 padding-right: var(--ubits-spacing-2xl, 24px);
                 width: 1607px;
                 max-width: 1607px;
@@ -142,11 +112,12 @@
 
         /* Ajustar gap en móvil cuando no hay subnav - igual que el proyecto UBITS original */
         @media (max-width: 1023px) {
+
             /* ⚠️ CRÍTICO: Ocultar sidebar container, igual que el proyecto UBITS original */
             #sidebar-container {
                 display: none !important;
             }
-            
+
             .main-content {
                 gap: var(--ubits-spacing-xl, 20px);
                 margin: var(--ubits-spacing-lg, 16px) var(--ubits-spacing-md, 12px) 0 var(--ubits-spacing-md, 12px) !important;
@@ -154,14 +125,16 @@
                 padding-left: 0;
                 padding-right: 0;
                 max-width: 100%;
-                padding-bottom: var(--ubits-spacing-6xl, 40px); /* Espacio para el TabBar, igual que el proyecto UBITS original */
+                padding-bottom: var(--ubits-spacing-6xl, 40px);
+                /* Espacio para el TabBar, igual que el proyecto UBITS original */
             }
-            
+
             .content-area {
-                padding-bottom: var(--ubits-spacing-6xl, 40px); /* Espacio para el TabBar, igual que el proyecto UBITS original */
+                padding-bottom: var(--ubits-spacing-6xl, 40px);
+                /* Espacio para el TabBar, igual que el proyecto UBITS original */
             }
-            
-            .main-content > *:first-child {
+
+            .main-content>*:first-child {
                 margin-top: calc(-1 * var(--ubits-spacing-xl, 20px));
             }
         }
@@ -181,7 +154,7 @@
         /* ========================================
            SUB NAV CONTAINER
            ======================================== */
-        
+
         #top-nav-container {
             width: 100%;
             max-width: 100%;
@@ -191,7 +164,7 @@
         /* ========================================
            CONTENT AREA
            ======================================== */
-        
+
         .content-area {
             background-color: transparent !important;
             border-radius: var(--ubits-border-radius-md, 12px);
@@ -222,7 +195,7 @@
         /* ========================================
            DARK MODE
            ======================================== */
-        
+
         [data-theme="dark"] body {
             background-color: var(--ubits-bg-2) !important;
         }
@@ -252,17 +225,18 @@
         /* Transiciones suaves para dark mode */
         body {
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         *[data-theme] {
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
+
 <body data-theme="light">
     <div class="dashboard-container">
         <!-- Sidebar Container -->
@@ -272,7 +246,7 @@
         <main class="main-content">
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
-            
+
             <!-- Content Area -->
             <div class="content-area">
                 <!-- Tabs Container -->
@@ -285,62 +259,64 @@
     <div id="tab-bar-container"></div>
 
     <!-- System Loaders -->
-    <script src="components-loader.js"></script>
+    <!-- UBITS Component Bundle & Bridge -->
+    <script src="dist/components-bundle.js"></script>
+    <script src="components-bridge.js"></script>
     <script src="config/products.js"></script>
     <script src="config/theme-manager.js"></script>
     <script src="config/responsive-manager.js"></script>
     <script src="engine/template-loader.js"></script>
     <script src="engine/content-manager.js"></script>
-    
+
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
-    
+
     <script>
         // ========================================
         // INTERCEPTAR ContentManager.updateContent
         // Para eliminar HeaderSection y content-sections dinámicamente
         // ⚠️ CRÍTICO: Interceptar INMEDIATAMENTE después de cargar content-manager.js
         // ========================================
-        (function() {
+        (function () {
             function interceptContentManagerImmediately() {
                 if (!window.UBITS_ContentManager) {
                     setTimeout(interceptContentManagerImmediately, 50);
                     return;
                 }
-                
+
                 // Verificar si ya está interceptado (evitar múltiples interceptaciones)
                 if (window._UBITS_ContentManager_HeaderSection_Intercepted) {
                     return;
                 }
-                
+
                 // Guardar referencia al método original
                 const originalUpdateContent = window.UBITS_ContentManager.updateContent;
                 if (!originalUpdateContent) {
                     setTimeout(interceptContentManagerImmediately, 50);
                     return;
                 }
-                
+
                 // Interceptar el método
-                window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                window.UBITS_ContentManager.updateContent = function (section, subSection) {
                     console.log('🔵 [Template Admin] updateContent interceptado para sección:', section);
-                    
+
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
-                    
+
                     // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
                     requestAnimationFrame(() => {
                         const contentArea = document.querySelector('.content-area');
                         if (!contentArea) {
                             return;
                         }
-                        
+
                         // Eliminar TODOS los elementos relacionados
                         const headerContainer = contentArea.querySelector('#header-section-container');
                         if (headerContainer) {
                             console.log('🔵 [Template Admin] Eliminando HeaderSection');
                             headerContainer.remove();
                         }
-                        
+
                         const headerSection = contentArea.querySelector('.ubits-header-section');
                         if (headerSection) {
                             console.log('🔵 [Template Admin] Eliminando .ubits-header-section');
@@ -351,42 +327,42 @@
                                 headerSection.remove();
                             }
                         }
-                        
+
                         const contentSections = contentArea.querySelector('.content-sections');
                         if (contentSections) {
                             console.log('🔵 [Template Admin] Eliminando .content-sections');
                             contentSections.remove();
                         }
-                        
+
                         const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
                         if (widgetPrincipal) {
                             console.log('🔵 [Template Admin] Eliminando .widget-contenido-principal');
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
                         }
-                        
+
                         // Crear tabs después de eliminar HeaderSection y content-sections
                         createTabsIfNeeded();
                     });
-                    
+
                     return result;
                 };
-                
+
                 // Marcar como interceptado
                 window._UBITS_ContentManager_HeaderSection_Intercepted = true;
                 console.log('✅ [Template Admin] ContentManager.updateContent interceptado INMEDIATAMENTE');
             }
-            
+
             // ⚠️ CRÍTICO: Ejecutar inmediatamente y con múltiples intentos
             interceptContentManagerImmediately();
             setTimeout(interceptContentManagerImmediately, 100);
             setTimeout(interceptContentManagerImmediately, 500);
-            
+
             // También interceptar cuando ContentManager se carga después
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', interceptContentManagerImmediately);
             }
         })();
-        
+
         // ========================================
         // MUTATION OBSERVER para eliminar HeaderSection si se crea dinámicamente
         // ========================================
@@ -396,7 +372,7 @@
                 setTimeout(setupHeaderSectionObserver, 100);
                 return;
             }
-            
+
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     mutation.addedNodes.forEach((node) => {
@@ -407,112 +383,345 @@
                                 node.querySelector?.('#header-section-container') ||
                                 node.querySelector?.('.ubits-header-section')) {
                                 console.log('🔵 [Template Admin] HeaderSection detectado en MutationObserver, eliminando...');
-                                
+
                                 requestAnimationFrame(() => {
                                     const headerContainer = document.getElementById('header-section-container');
                                     if (headerContainer) {
                                         console.log('🔵 [Template Admin] ✅ HeaderSection eliminado por MutationObserver');
                                         headerContainer.remove();
                                     }
-                                    
+
                                     const headerSection = document.querySelector('.ubits-header-section');
                                     if (headerSection) {
                                         headerSection.closest('#header-section-container')?.remove() || headerSection.remove();
                                     }
-                                    
+
                                     const contentSections = document.querySelector('.content-sections');
                                     if (contentSections) {
                                         contentSections.remove();
                                     }
-                                    
+
                                     // Crear tabs después de eliminar
                                     createTabsIfNeeded();
+                                    // Y el carrusel
+                                    setTimeout(() => {
+                                        if (window.initCarouselImplementation) window.initCarouselImplementation();
+                                    }, 200);
                                 });
                             }
                         }
                     });
                 });
             });
-            
+
             observer.observe(contentArea, {
                 childList: true,
                 subtree: true
             });
-            
+
             console.log('✅ [Template Admin] MutationObserver configurado para eliminar HeaderSection');
         }
-        
+
         // Configurar observer cuando el DOM esté listo
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', setupHeaderSectionObserver);
         } else {
             setupHeaderSectionObserver();
         }
-        
+
         // También intentar después de un delay por si acaso
         setTimeout(setupHeaderSectionObserver, 500);
         setTimeout(setupHeaderSectionObserver, 1000);
-        
+
         // Función para crear tabs
         function createTabsIfNeeded() {
-            const tabsContainer = document.getElementById('tabs-container');
+            let tabsContainer = document.getElementById('tabs-container');
+
+            // Si no existe el contenedor (probablemente eliminado por ContentManager), recrearlo
             if (!tabsContainer) {
-                return;
+                const contentArea = document.querySelector('.content-area');
+                if (contentArea) {
+                    console.log('🔵 [Template Admin] Recreando #tabs-container dentro de .content-area');
+                    tabsContainer = document.createElement('div');
+                    tabsContainer.id = 'tabs-container';
+                    // Insertar al principio o donde corresponda
+                    contentArea.prepend(tabsContainer);
+
+                    // Crear contenedores de contenido
+                    const encuestasContent = document.createElement('div');
+                    encuestasContent.id = 'encuestas-content';
+                    encuestasContent.style.display = 'block'; // Activo por defecto
+                    encuestasContent.style.marginTop = '24px';
+                    // Contenedor para el carrusel dentro de Encuestas
+                    encuestasContent.innerHTML = `
+                        <div class="ubits-text-h3" style="margin-bottom: 16px;">Encuestas disponibles</div>
+                        <div id="carousel-implementation-container"></div>
+                        
+                        <div class="ubits-text-h3" style="margin: 40px 0 16px 0;">Contenido Destacado (Prueba Bundle)</div>
+                        <div id="card-content-container" style="max-width: 350px;"></div>
+                    `;
+
+                    const demograficosContent = document.createElement('div');
+                    demograficosContent.id = 'datos-demograficos-content';
+                    demograficosContent.style.display = 'none'; // Inactivo por defecto
+                    demograficosContent.innerHTML = '<div class="ubits-text-body-md">Contenido de Datos demográficos</div>';
+
+                    contentArea.append(encuestasContent);
+                    contentArea.append(demograficosContent);
+                } else {
+                    console.warn('⚠️ [Template Admin] No se encontró .content-area para crear tabs');
+                    return;
+                }
             }
-            
+
+            // ⚠️ FIX: Asegurar que el contenedor de cards exista (incluso si los tabs ya existían)
+            const encuestasContent = document.getElementById('encuestas-content');
+            if (encuestasContent && !document.getElementById('card-content-container')) {
+                console.log('🔵 [Template Admin] Inyectando #card-content-container faltante...');
+                const cardHeader = document.createElement('div');
+                cardHeader.className = 'ubits-text-h3';
+                cardHeader.style.margin = '40px 0 16px 0';
+                cardHeader.innerText = 'Contenido Destacado (Prueba Bundle)';
+
+                const cardContainer = document.createElement('div');
+                cardContainer.id = 'card-content-container';
+                cardContainer.style.maxWidth = '350px';
+
+                encuestasContent.appendChild(cardHeader);
+                encuestasContent.appendChild(cardContainer);
+            }
+
             // Verificar si los tabs ya existen
             if (tabsContainer.querySelector('.ubits-tabs')) {
                 return;
             }
-            
+
             // Verificar que createTabs esté disponible
             if (!window.createTabs) {
-                console.warn('⚠️ [Template Admin] window.createTabs no está disponible aún');
-                setTimeout(createTabsIfNeeded, 100);
-                return;
+                // Si no está disponible createTabs global, puede estar en UBITS.Tabs.create
+                if (window.UBITS && window.UBITS.Tabs && window.UBITS.Tabs.create) {
+                    window.createTabs = window.UBITS.Tabs.create;
+                } else {
+                    console.warn('⚠️ [Template Admin] window.createTabs no está disponible aún. Esperando...');
+                    setTimeout(createTabsIfNeeded, 100);
+                    return;
+                }
             }
-            
-            console.log('🔵 [Template Admin] Creando tabs...');
+
+            console.log('🔵 [Template Admin] Creando tabs (Implementación Autorun Flow)...');
             window.createTabs({
                 tabs: [
-                    { 
-                        id: 'encuestas', 
-                        label: 'Encuestas', 
-                        icon: 'clipboard-list'
+                    {
+                        id: 'encuestas',
+                        label: 'Encuestas',
+                        icon: 'far fa-clipboard-list',
+                        active: true
                     },
-                    { 
-                        id: 'datos-demograficos', 
-                        label: 'Datos demográficos', 
-                        icon: 'users'
+                    {
+                        id: 'datos-demograficos',
+                        label: 'Datos demográficos',
+                        icon: 'far fa-users',
+                        active: false
                     }
                 ],
                 activeTabId: 'encuestas',
                 onTabChange: (tabId, tabElement) => {
                     console.log('Tab cambiado:', tabId);
-                    // Aquí puedes agregar lógica para cambiar el contenido según el tab
+
+                    // Lógica de cambio de contenido
+                    const encuestasContent = document.getElementById('encuestas-content');
+                    const demograficosContent = document.getElementById('datos-demograficos-content');
+
+                    if (encuestasContent && demograficosContent) {
+                        if (tabId === 'encuestas') {
+                            encuestasContent.style.display = 'block';
+                            demograficosContent.style.display = 'none';
+                        } else {
+                            encuestasContent.style.display = 'none';
+                            demograficosContent.style.display = 'block';
+                        }
+                    }
                 }
             }, 'tabs-container');
+
+            // Inicializar Carrusel si es necesario
+            setTimeout(() => {
+                if (window.initCarouselImplementation) {
+                    window.initCarouselImplementation();
+                }
+            }, 100);
         }
-        
+        }
+
         // ========================================
         // INITIALIZATION
         // ========================================
     </script>
-    
+
+    <script>
+        // ========================================
+        // CAROUSEL INITIALIZATION (Using Bundle)
+        // ========================================
+
+        // Implementación específica
+        window.initCarouselImplementation = function () {
+            const container = document.getElementById('carousel-implementation-container');
+            if (!container || container.children.length > 0) return;
+
+            console.log('🔵 [Template Admin] Inicializando Carousel size-m (desde Bundle)...');
+
+            // Verificar si el bundle cargó el Carousel
+            if (window.UBITS && window.UBITS.Carousel && window.UBITS.Carousel.createCarousel) {
+                const carouselElement = window.UBITS.Carousel.createCarousel({
+                    items: [
+                        {
+                            id: 1, title: 'Encuesta de Clima', subtitle: 'RRHH - 2024',
+                            content: 'Evalúa el ambiente laboral de tu equipo.',
+                            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+                            showButtons: true,
+                            buttons: [{ label: 'Ver resultados', variant: 'primary', size: 'md' }]
+                        },
+                        {
+                            id: 2, title: 'Evaluación de Desempeño', subtitle: 'Q1 - 2024',
+                            content: 'Revisión de objetivos trimestrales.',
+                            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+                            showButtons: true,
+                            buttons: [{ label: 'Iniciar', variant: 'primary', size: 'md' }]
+                        },
+                        {
+                            id: 3, title: 'Satisfacción del Cliente', subtitle: 'NPS Global',
+                            content: 'Resultados de la última medición de NPS.',
+                            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+                            showButtons: true,
+                            buttons: [{ label: 'Analizar', variant: 'primary', size: 'md' }]
+                        }
+                    ],
+                    itemsPerView: 3,
+                    showArrows: true,
+                    showDots: true,
+                    gap: 16,
+                    cardSize: 'md'
+                });
+
+                container.appendChild(carouselElement);
+                console.log('✅ [Template Admin] Carousel inicializado correctamente.');
+            } else {
+                console.error('❌ [Template Admin] UBITS.Carousel.createCarousel no encontrado en el bundle.', window.UBITS);
+            }
+        };
+
+        // Implementación de prueba CardContent
+        window.initCardContentImplementation = function () {
+            let container = document.getElementById('card-content-container');
+
+            // ⚠️ Force creation if missing
+            if (!container) {
+                console.warn('⚠️ [Template Admin] #card-content-container missing. Creating it forcibly...');
+                const parent = document.getElementById('encuestas-content') || document.querySelector('.content-area');
+                if (parent) {
+                    const cardHeader = document.createElement('div');
+                    cardHeader.className = 'ubits-text-h3';
+                    cardHeader.style.margin = '40px 0 16px 0';
+                    cardHeader.innerText = 'Contenido Destacado (Prueba Bundle)';
+
+                    container = document.createElement('div');
+                    container.id = 'card-content-container';
+                    container.style.maxWidth = '350px';
+
+                    // Insert before end
+                    parent.appendChild(cardHeader);
+                    parent.appendChild(container);
+                } else {
+                    console.error('❌ [Template Admin] No parent found for CardContent');
+                    return;
+                }
+            }
+
+            if (container.children.length > 0) return;
+
+            console.log('🔵 [Template Admin] Inicializando CardContent (desde Bundle)...');
+
+            if (window.UBITS && window.UBITS.Card && window.UBITS.Card.createCard) {
+                try {
+                    console.log('🧐 [Template Admin] UBITS.Card contents:', window.UBITS.Card);
+
+                    // Ejemplo de data para CardContent
+                    const cardElement = window.UBITS.Card.createCard({
+                        type: 'Curso',
+                        title: 'Liderazgo Efectivo en Equipos Remotos',
+                        status: 'Iniciado', // Required: STATUSES key
+                        level: 'Intermedio', // Required: LEVELS key
+                        image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                        progress: 45,
+                        provider: 'UBITS',
+                        providerLogo: 'https://via.placeholder.com/24', // Needs a logo
+                        competency: 'Liderazgo',
+                        duration: '2h 30m',
+                        language: 'Español',
+                        onClick: () => alert('Card Clicked!')
+                    });
+
+                    container.appendChild(cardElement);
+                    console.log('✅ [Template Admin] CardContent inicializado correctamente.');
+
+                    // Debug Visual
+                    cardElement.style.border = '2px solid green';
+                } catch (error) {
+                    console.error('🔥 [Template Admin] Error creando CardContent:', error);
+                    container.innerHTML = `<div style="color: red; padding: 10px; border: 1px solid red;">
+                        <strong>Error creando CardContent:</strong><br>
+                        ${error.message}<br>
+                        <small>Check console for details.</small>
+                    </div>`;
+                }
+            } else {
+                console.error('❌ [Template Admin] UBITS.Card.createCard no encontrado en el bundle.', window.UBITS);
+                container.innerHTML = `<div style="color: red;">❌ UBITS.Card.createCard NO encontrado. <br> UBITS keys: ${Object.keys(window.UBITS || {}).join(', ')}</div>`;
+            }
+        };
+
+        // Ejecutar initCardContentImplementation de forma robusta
+        // Intentar cada 500ms hasta que funcione o pase 10 segundos
+        const cardContentInterval = setInterval(() => {
+            if (window.initCardContentImplementation) {
+                // Verificar si ya se creó (el componente o el mensaje de error)
+                const container = document.getElementById('card-content-container');
+                if (container && container.children.length > 0) {
+                    clearInterval(cardContentInterval);
+                    return;
+                }
+
+                // Intentar ejecutar
+                window.initCardContentImplementation();
+            }
+        }, 500);
+
+        // Limpiar intervalo después de 10s para evitar memoria leaks
+        setTimeout(() => clearInterval(cardContentInterval), 10000);
+
+        // Mantener también el hook original por si acaso
+        const originalInitCarousel = window.initCarouselImplementation;
+        window.initCarouselImplementation = function () {
+            if (originalInitCarousel) originalInitCarousel();
+            setTimeout(window.initCardContentImplementation, 200);
+        };
+    </script>
+
+
     <script>
         // ========================================
         // INITIALIZATION
         // Usando los componentes reales desde components-loader.js
         // ========================================
-        
+
         // ========================================
         // HELPER FUNCTIONS (Compatibilidad)
         // ========================================
-        
+
         // ========================================
         // DARK MODE SYNC (para Storybook)
         // ========================================
-        
+
         function syncThemeFromParent() {
             // Si estamos en un iframe, intentar obtener el tema del parent (Storybook)
             if (window.parent && window.parent !== window) {
@@ -521,7 +730,7 @@
                     const parentTheme = parentBody.getAttribute('data-theme') || 'light';
                     document.body.setAttribute('data-theme', parentTheme);
                     document.documentElement.setAttribute('data-theme', parentTheme);
-                    
+
                     // Sincronizar con ThemeManager si está disponible
                     if (window.UBITS_ThemeManager) {
                         window.UBITS_ThemeManager.setTheme(parentTheme, false);
@@ -532,7 +741,7 @@
                 }
             }
         }
-        
+
         // Observar cambios en el tema del parent (Storybook)
         function observeParentTheme() {
             if (window.parent && window.parent !== window) {
@@ -544,7 +753,7 @@
                                 const parentTheme = window.parent.document.body.getAttribute('data-theme') || 'light';
                                 document.body.setAttribute('data-theme', parentTheme);
                                 document.documentElement.setAttribute('data-theme', parentTheme);
-                                
+
                                 // Sincronizar con ThemeManager si está disponible
                                 if (window.UBITS_ThemeManager) {
                                     window.UBITS_ThemeManager.setTheme(parentTheme, false);
@@ -552,7 +761,7 @@
                             }
                         });
                     });
-                    
+
                     observer.observe(window.parent.document.body, {
                         attributes: true,
                         attributeFilter: ['data-theme']
@@ -564,14 +773,14 @@
                 }
             }
         }
-        
+
         function toggleDarkMode() {
             // Solo usar si NO estamos en Storybook (iframe)
             if (window.parent && window.parent !== window) {
                 // En Storybook, el toggle se maneja desde el parent
                 return;
             }
-            
+
             if (window.UBITS_ThemeManager) {
                 window.UBITS_ThemeManager.toggleTheme();
             } else {
@@ -587,13 +796,13 @@
         // ========================================
         // INITIALIZATION
         // ========================================
-        
+
         // Función para verificar si los CSS se están cargando
         function checkLoadedStylesheets() {
             console.log('🔍 [CSS Check] Verificando hojas de estilo cargadas...');
             const stylesheets = Array.from(document.styleSheets);
             console.log(`📊 [CSS Check] Total de hojas de estilo encontradas: ${stylesheets.length}`);
-            
+
             const criticalCSS = [
                 'tokens.css',
                 'sidebar.css',
@@ -601,7 +810,7 @@
                 'tabbar.css',
                 'button.css'
             ];
-            
+
             criticalCSS.forEach(cssName => {
                 const found = stylesheets.some(sheet => {
                     try {
@@ -612,7 +821,7 @@
                 });
                 console.log(found ? `✅ [CSS Check] ${cssName} encontrado` : `❌ [CSS Check] ${cssName} NO encontrado`);
             });
-            
+
             // Verificar tokens CSS específicamente
             const tokensSheet = stylesheets.find(sheet => {
                 try {
@@ -621,7 +830,7 @@
                     return false;
                 }
             });
-            
+
             if (tokensSheet) {
                 console.log('✅ [CSS Check] tokens.css encontrado:', tokensSheet.href);
                 try {
@@ -638,41 +847,41 @@
                 console.error('❌ [CSS Check] tokens.css NO encontrado en document.styleSheets');
             }
         }
-        
+
         // ⚠️ PREVENIR múltiples ejecuciones del DOMContentLoaded
         let domContentLoadedExecuted = false;
-        
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             // Prevenir ejecuciones múltiples
             if (domContentLoadedExecuted) {
                 console.warn('⚠️ [Template Admin] DOMContentLoaded ya ejecutado, ignorando...');
                 return;
             }
             domContentLoadedExecuted = true;
-            
+
             // Verificar CSS inmediatamente
             setTimeout(checkLoadedStylesheets, 100);
-            
+
             // Esperar a que todos los sistemas estén listos
             setTimeout(() => {
                 // Verificar que todos los sistemas estén cargados
                 if (!window.UBITS_ThemeManager || !window.UBITS_ResponsiveManager || !window.UBITS_TemplateLoader) {
                     return;
                 }
-                
+
                 // Detectar producto actual
                 const productId = window.detectCurrentProduct();
-                
+
                 // Obtener configuración del producto
                 const productConfig = window.getProductConfig(productId);
-                
+
                 // Cargar tema guardado
                 window.UBITS_ThemeManager.init();
-                
+
                 // Sincronizar tema desde Storybook si estamos en un iframe
                 syncThemeFromParent();
                 observeParentTheme();
-                
+
                 // ⚠️ IMPORTANTE: Cargar componentes PRIMERO
                 // Luego inicializar responsive para que adapte los componentes ya creados
                 window.UBITS_TemplateLoader.loadProduct(productConfig, {
@@ -680,7 +889,7 @@
                     subnav: 'top-nav-container',
                     tabbar: 'tab-bar-container'
                 });
-                
+
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
                 setTimeout(() => {
@@ -691,11 +900,11 @@
                         window.UBITS_ContentManager.currentSection = initialSection;
                         console.log('🔍 [Template Admin] ✅ currentSection establecido ANTES de ResponsiveManager.init():', initialSection);
                     }
-                    
+
                     window.UBITS_ResponsiveManager.init();
                     // Ejecutar adaptComponents manualmente después de que los componentes estén listos
                     window.UBITS_ResponsiveManager.adaptComponents();
-                    
+
                     // Cargar sección inicial después de que todo esté listo
                     // IMPORTANTE: El SubNav NO se carga aquí porque ContentManager lo maneja
                     // ⚠️ NOTA: El botón ya se activa automáticamente con initialActiveSection en products.js
@@ -707,13 +916,13 @@
                                 // El ContentManager actualizará el SubNav y el contenido automáticamente
                                 // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
                                 window.UBITS_ContentManager.handleSectionChange(initialSection);
-                                
+
                                 // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
                                 const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
                                 if (tooltipElement) {
                                     tooltipElement.classList.remove('show');
                                 }
-                                
+
                                 // Asegurar que ningún botón tenga focus (para evitar borde azul)
                                 const sidebarElement = document.querySelector('.ubits-sidebar');
                                 if (sidebarElement) {
@@ -722,16 +931,16 @@
                                         activeButton.blur(); // Remover focus si lo tiene
                                     }
                                 }
-                                
-                                
+
+
                                 // Crear tabs después de que ContentManager haya actualizado el contenido
                                 setTimeout(() => {
                                     createTabsIfNeeded();
                                 }, 300);
-                                
+
                                 // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
                                 debugLayout();
-                                
+
                                 // Escuchar cambios de tamaño de ventana para logs continuos
                                 let resizeTimeout;
                                 window.addEventListener('resize', () => {
@@ -746,21 +955,21 @@
                 }, 100);
             });
         });
-        
+
         // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
         function debugLayout() {
             const windowWidth = window.innerWidth;
             const mainContent = document.querySelector('.main-content');
             const sidebar = document.querySelector('.ubits-sidebar');
             const tabBar = document.querySelector('.ubits-tabbar');
-            
+
             if (!mainContent) return;
-            
+
             const mainRect = mainContent.getBoundingClientRect();
             const computedStyle = window.getComputedStyle(mainContent);
             const sidebarRect = sidebar ? sidebar.getBoundingClientRect() : null;
             const tabBarVisible = tabBar && window.getComputedStyle(tabBar).display !== 'none';
-            
+
             // ⚠️ CRÍTICO: Verificar si está centrado correctamente
             // NOTA: getComputedStyle devuelve valores calculados en px, no "auto"
             // Verificamos centrado comparando los espacios laterales (deben estar balanceados)
@@ -775,19 +984,20 @@
             const shouldBeCentered = isWideScreen && (computedStyle.flex === 'none' || computedStyle.flex === '0 0 auto');
             if (isWideScreen) {
             }
-            
+
             if (sidebarRect) {
                 const sidebarStyle = window.getComputedStyle(sidebar);
             }
-            
+
             if (tabBar) {
                 const tabBarStyle = window.getComputedStyle(tabBar);
             }
-            
+
             // Mostrar espacios laterales
-            
-            
+
+
         }
     </script>
 </body>
+
 </html>

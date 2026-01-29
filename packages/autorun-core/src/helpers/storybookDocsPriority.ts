@@ -46,7 +46,9 @@ export async function getComponentInfoFromStorybook(componentId: string): Promis
 
 	// PASO 1: Consultar Docs (información completa)
 	console.log(`   [1/2] Consultando Docs (información completa)...`);
-	const docsUrl = `${activeConfig.url}/?path=/docs/${componentId}--docs`;
+	// ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+	const encodedComponentId = encodeURIComponent(componentId);
+	const docsUrl = `${activeConfig.url}/?path=/docs/${encodedComponentId}--docs`;
 
 	// ⚠️ CRÍTICO: Esta función requiere que el agente ejecute Browser MCP
 	// Por ahora, usamos fetch como fallback
@@ -66,7 +68,8 @@ export async function getComponentInfoFromStorybook(componentId: string): Promis
 
 	// PASO 2: Consultar Story (código exacto)
 	console.log(`   [2/2] Consultando Story (código exacto)...`);
-	const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--default`;
+	// ⚠️ CRÍTICO: Usar encodedComponentId ya calculado arriba
+	const storyUrl = `${activeConfig.url}/?path=/story/${encodedComponentId}--default`;
 
 	console.log(`   ⚠️ IMPORTANTE: El agente DEBE navegar a: ${storyUrl}`);
 	console.log(`   📋 Instrucciones para el agente:`);

@@ -82,18 +82,18 @@ export function isBrowserMCPRequiredError(error: any): error is Error & {
  * @param storyName Nombre de la historia a extraer (opcional)
  * @returns Código extraído
  */
-export function extractCodeFromBrowserSnapshot(
+export async function extractCodeFromBrowserSnapshot(
   snapshot: SnapshotNode | SnapshotNode[],
   storyName: string = 'default'
-): BrowserMCPExtractionResult {
+): Promise<BrowserMCPExtractionResult> {
   console.log(
     `🔍 [Browser MCP Auto Extractor] Extrayendo código desde snapshot...`
   );
 
   try {
-    const {
-      extractCodeFromDocsSnapshot,
-    } = require('./extractCodeFromDocsSnapshot');
+    const { extractCodeFromDocsSnapshot } = await import(
+      './extractCodeFromDocsSnapshot.js'
+    );
     const result = extractCodeFromDocsSnapshot(snapshot);
 
     if (result.found) {

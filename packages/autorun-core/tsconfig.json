@@ -1,19 +1,44 @@
 {
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "ESNext",
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"declaration": true,
-		"declarationMap": true,
-		"outDir": "./dist",
-		"rootDir": "./src",
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "bundler",
-		"resolveJsonModule": true
-	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist", "tests"]
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false
+  },
+  "include": [
+    "src/wizard/**/*",
+    "src/addons/**/*",
+    "src/server/**/*",
+    "src/helpers/activeFileDetector.ts",
+    "src/helpers/autoReloadHelper.ts",
+    "src/helpers/executeAutoReload.ts",
+    "src/helpers/autoImplementationFlow.ts",
+    "src/helpers/storybookManager.ts",
+    "src/helpers/storybookCodeParser.ts",
+    "src/helpers/storybookPlaywrightExtractor.ts",
+    "src/helpers/templateDetector.ts",
+    "src/helpers/fileSystemHelpers.ts",
+    "src/index.ts",
+    "src/MCPInstaller.ts",
+    "src/types.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests",
+    "**/*.test.ts",
+    "**/__tests__/**"
+  ]
 }

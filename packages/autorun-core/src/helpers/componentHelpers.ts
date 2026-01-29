@@ -113,12 +113,13 @@ function mapComponentNameToStorybookURLSync(componentName: string): string {
 export function mapComponentNameToDocFile(componentName: string): string {
   const mapping: Record<string, string> = {
     DataTable: 'data-data-table',
-    Tabs: 'navegación-tabs',
+    Tabs: 'navegacin-tabs', // ⚠️ CORRECCIÓN: Archivo real es navegacin-tabs.md (sin tilde)
     Button: 'bsicos-button',
     Modal: 'feedback-modal',
     Sidebar: 'navegacion-sidebar',
     SubNav: 'navegacion-sub-nav',
     TabBar: 'navegacin-tab-bar',
+    EmptyState: 'emptystate', // ⚠️ CORRECCIÓN: Archivo real es emptystate.md
   };
 
   return (
@@ -311,18 +312,160 @@ export async function autoConsultDocumentation(
 }
 
 /**
- * Extrae el HTML real generado desde la documentación del componente
+ * Extrae el HTML real generado desde Storybook Docs o documentación local
  *
- * ⚠️ CRÍTICO: Esta función lee la sección "## 📄 Estructura HTML Generada"
- * de la documentación del componente en docs/referencia/componentes/
+ * ⚠️ CRÍTICO: Prioriza extraer desde la pestaña "Docs" de Storybook (usando Browser MCP)
+ * Si eso falla, intenta desde la sección "## 📄 Estructura HTML Generada" en documentación local
  *
  * @param componentName Nombre del componente
- * @returns HTML real extraído de la documentación, o null si no se encuentra
+ * @param browserSnapshot Opcional: Snapshot del Browser MCP si ya se navegó a Docs
+ * @returns HTML real extraído, o null si no se encuentra
  */
 export async function extractHTMLFromDocumentation(
-  componentName: string
-): Promise<{ html: string; found: boolean; source: string }> {
+  componentName: string,
+  browserSnapshot?: any
+): Promise<{
+  html: string;
+  found: boolean;
+  source: string;
+  requiresBrowserMCP?: boolean;
+  docsUrl?: string;
+}> {
   try {
+    // ⭐ NUEVO: PASO 1 - Intentar extraer desde Storybook Docs PRIMERO
+    try {
+      const { mapAndValidateComponentNameToStorybookId } = await import(
+        './storybookStories.js'
+      );
+      const { StorybookManager } = await import('./storybookManager.js');
+
+      const componentId =
+        await mapAndValidateComponentNameToStorybookId(componentName);
+      const manager = StorybookManager.getInstance();
+      const activeConfig = await manager.getActiveConfig();
+
+      if (activeConfig && componentId) {
+        // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+        const encodedComponentId = encodeURIComponent(componentId);
+        const docsUrl = `${activeConfig.url}/?path=/docs/${encodedComponentId}--docs`;
+        console.log(
+          `📚 [HTML Extractor] Intentando extraer desde Storybook Docs: ${docsUrl}`
+        );
+
+        // ⚠️ IMPORTANTE: El agente DEBE navegar a Docs usando Browser MCP
+        // Por ahora, intentamos con fetch como fallback
+        try {
+          // fetchStorybookPage no está exportada, usar fetch directamente
+          const response = await fetch(docsUrl);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          const html = await response.text();
+          console.log(`   📄 HTML de Docs obtenido: ${html.length} caracteres`);
+
+          // Extraer HTML desde el HTML de Docs (buscar al comienzo)
+          // ⚠️ CRÍTICO: extractCodeFromDocs es privada, necesitamos extraer HTML directamente
+          // Buscar HTML al comienzo de Docs (el usuario dice que está al comienzo)
+          const htmlAtStart = extractHTMLFromDocsHTML(html);
+          console.log(
+            `   🔍 HTML al inicio encontrado: ${htmlAtStart.length} caracteres`
+          );
+
+          if (htmlAtStart && htmlAtStart.length > 0) {
+            console.log(
+              `✅ [HTML Extractor] HTML extraído desde inicio de Storybook Docs: ${htmlAtStart.length} caracteres`
+            );
+            return {
+              html: htmlAtStart,
+              found: true,
+              source: 'storybook-docs',
+            };
+          }
+
+          // Si no encontramos HTML al inicio, intentar con extractCodeFromDocs (puede requerir exportarla)
+          // Por ahora, intentamos parsear el HTML directamente
+          const codeResult = parseHTMLFromDocsHTML(html);
+          console.log(
+            `   🔍 HTML parseado encontrado: ${codeResult.length} caracteres`
+          );
+
+          if (codeResult && codeResult.length > 0) {
+            console.log(
+              `✅ [HTML Extractor] HTML extraído desde Storybook Docs: ${codeResult.length} caracteres`
+            );
+            return {
+              html: codeResult,
+              found: true,
+              source: 'storybook-docs',
+            };
+          }
+
+          // ⭐ NUEVO: Si tenemos un snapshot del Browser MCP, intentar extraer desde ahí
+          if (browserSnapshot) {
+            console.log(
+              `   🔍 Intentando extraer desde snapshot del Browser MCP...`
+            );
+            try {
+              const { extractCodeFromDocsSnapshot } = await import(
+                './extractCodeFromDocsSnapshot.js'
+              );
+              const snapshotResult =
+                extractCodeFromDocsSnapshot(browserSnapshot);
+
+              if (snapshotResult.found && snapshotResult.html) {
+                console.log(
+                  `✅ [HTML Extractor] HTML extraído desde snapshot de Browser MCP: ${snapshotResult.html.length} caracteres`
+                );
+                return {
+                  html: snapshotResult.html,
+                  found: true,
+                  source: 'storybook-docs-browser',
+                };
+              }
+            } catch (snapshotError: any) {
+              console.warn(
+                `   ⚠️ Error extrayendo desde snapshot: ${snapshotError.message}`
+              );
+            }
+          }
+
+          // Si no encontramos HTML y no tenemos snapshot, indicar que se requiere Browser MCP
+          console.warn(
+            `⚠️ [HTML Extractor] No se pudo extraer HTML desde Docs (contenido dinámico)`
+          );
+          console.log(
+            `   💡 El código se carga dinámicamente con JavaScript - se requiere Browser MCP`
+          );
+
+          // Retornar información para que autorun.apply() pueda usar Browser MCP
+          return {
+            html: '',
+            found: false,
+            source: 'storybook-docs',
+            requiresBrowserMCP: true,
+            docsUrl: docsUrl,
+          };
+        } catch (docsError: any) {
+          console.warn(
+            `⚠️ [HTML Extractor] No se pudo extraer desde Storybook Docs: ${docsError.message}`
+          );
+          // Si hay error pero tenemos URL, indicar que se requiere Browser MCP
+          return {
+            html: '',
+            found: false,
+            source: 'storybook-docs',
+            requiresBrowserMCP: true,
+            docsUrl: docsUrl,
+          };
+        }
+      }
+    } catch (storybookError: any) {
+      console.warn(
+        `⚠️ [HTML Extractor] Error accediendo a Storybook: ${storybookError.message}`
+      );
+    }
+
+    // PASO 2: Fallback a documentación local (sección "## 📄 Estructura HTML Generada")
     // 1. Obtener documentación del componente
     const docResult = await autoConsultDocumentation(componentName);
 
@@ -336,8 +479,10 @@ export async function extractHTMLFromDocumentation(
     const content = docResult.content;
 
     // 2. Buscar sección "## 📄 Estructura HTML Generada"
+    // ⚠️ CORRECCIÓN: El regex debe capturar hasta el siguiente ## (sin # adicionales)
+    // Usar lookahead negativo para evitar capturar ### como fin
     const htmlSectionRegex =
-      /##\s*📄\s*Estructura\s*HTML\s*Generada[\s\S]*?(?=##|$)/i;
+      /##\s*📄\s*Estructura\s*HTML\s*Generada[\s\S]*?(?=\n##[^#]|$)/i;
     const htmlSectionMatch = content.match(htmlSectionRegex);
 
     if (!htmlSectionMatch) {
@@ -412,6 +557,81 @@ export async function extractHTMLFromDocumentation(
     );
     return { html: '', found: false, source: 'documentation' };
   }
+}
+
+/**
+ * Extrae HTML desde el HTML de la pestaña Docs de Storybook
+ * Busca HTML al comienzo de Docs (como dice el usuario)
+ */
+function extractHTMLFromDocsHTML(html: string): string {
+  // Buscar HTML al comienzo de Docs
+  // Patrón 1: Buscar bloques de código que contengan HTML (<div, <button, etc.) al comienzo
+  // Buscar en los primeros 5000 caracteres (al comienzo)
+  const startSection = html.substring(0, 5000);
+
+  // Buscar bloques <pre><code> que contengan HTML
+  const htmlCodeRegex =
+    /<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/gi;
+  const matches = Array.from(startSection.matchAll(htmlCodeRegex));
+
+  for (const match of matches) {
+    const code = match[1];
+    // Verificar que sea HTML (contiene tags HTML)
+    if (
+      code.includes('<div') ||
+      code.includes('<button') ||
+      code.includes('<span')
+    ) {
+      // Decodificar entidades HTML
+      const decoded = code
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      return decoded.trim();
+    }
+  }
+
+  // Patrón 2: Buscar directamente bloques HTML en el HTML renderizado
+  const directHTMLRegex =
+    /<div[^>]*class="[^"]*docs-story[^"]*"[^>]*>([\s\S]{0,2000}?)<\/div>/i;
+  const directMatch = startSection.match(directHTMLRegex);
+  if (directMatch) {
+    return directMatch[1].trim();
+  }
+
+  return '';
+}
+
+/**
+ * Parsea HTML desde el HTML de Docs (fallback)
+ */
+function parseHTMLFromDocsHTML(html: string): string {
+  // Intentar extraer HTML usando los mismos patrones que extractCodeFromDocs
+  // pero enfocándonos en HTML, no en JS
+
+  // Buscar bloques que contengan HTML
+  const htmlPatterns = [
+    /<pre[^>]*>\s*<code[^>]*>([\s\S]*?<div[\s\S]*?<\/div>[\s\S]*?)<\/code>\s*<\/pre>/i,
+    /<div[^>]*class="[^"]*docs-story[^"]*"[^>]*>([\s\S]{0,2000}?)<\/div>/i,
+  ];
+
+  for (const pattern of htmlPatterns) {
+    const match = html.match(pattern);
+    if (match && match[1]) {
+      const code = match[1];
+      if (code.includes('<div') || code.includes('<button')) {
+        return code
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .trim();
+      }
+    }
+  }
+
+  return '';
 }
 
 /**

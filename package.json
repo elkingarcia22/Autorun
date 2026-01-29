@@ -17,15 +17,22 @@
 		"autorun:init": "npm run init",
 		"autorun:init-hub": "tsx packages/autorun-core/src/cli/autorun-init-hub.ts",
 		"autorun:daemon": "tsx packages/autorun-core/src/cli/autorun-daemon.ts",
+		"build:components": "tsx scripts/build-components-bundle.ts",
 		"autorun:install-mcp": "tsx packages/autorun-core/src/cli/install-autorun-mcp.ts",
-		"autorun:mcp-server": "tsx packages/autorun-core/src/cli/autorun-mcp-server.ts",
+		"autorun:mcp-server": "tsx packages/autorun-core/src/cli/autorun-mcp-server-v2.ts",
 		"autorun:verify": "tsx packages/autorun-core/src/cli/autorun-verify.ts",
+		"autorun:status": "tsx scripts/verify-autorun-status.ts",
+		"autorun:test-filewatcher": "tsx scripts/test-filewatcher.ts",
+		"autorun:test-handleusermessage": "tsx scripts/test-handleusermessage.ts",
+		"autorun:test-flow-detailed": "tsx scripts/test-autorun-flow-detailed.ts",
+		"test:complete-flow": "tsx scripts/test-complete-implementation-flow-with-helper.ts",
 		"prototypes:verify": "tsx packages/autorun-core/src/verify/verifyDiffRunner.ts",
 		"storybook:connect": "tsx packages/autorun-core/src/cli/storybook-connect.ts connect",
 		"storybook:disconnect": "tsx packages/autorun-core/src/cli/storybook-connect.ts disconnect",
 		"storybook:list": "tsx packages/autorun-core/src/cli/storybook-connect.ts list",
 		"storybook:set-active": "tsx packages/autorun-core/src/cli/storybook-connect.ts set-active",
 		"setup-storybook-mcp": "node scripts/setup-storybook-mcp-auto.js",
+		"install-storybook-mcp": "node scripts/install-storybook-mcp.js",
 		"generate-storybook-inventory": "tsx scripts/generate-storybook-inventory.ts",
 		"setup-project": "node scripts/create-project-package-json.js",
 		"postinstall": "npm run verify",
@@ -49,12 +56,17 @@
 	],
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.2",
+		"@modelcontextprotocol/sdk": "^1.25.1",
+		"eslint": "^9.39.2",
 		"husky": "^9.1.7",
+		"prettier": "^3.7.4",
+		"storybook-mcp": "^0.4.1",
 		"style-dictionary": "^4.4.0",
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3",
 		"vercel": "^49.1.2",
-		"vite": "^7.2.6"
+		"vite": "^7.2.6",
+		"zod": "^4.2.1"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-pro": "^7.1.0",
@@ -62,6 +74,9 @@
 		"@fortawesome/pro-light-svg-icons": "^7.1.0",
 		"@fortawesome/pro-regular-svg-icons": "^7.1.0",
 		"@fortawesome/pro-solid-svg-icons": "^7.1.0",
-		"@fortawesome/pro-thin-svg-icons": "^7.1.0"
+		"@fortawesome/pro-thin-svg-icons": "^7.1.0",
+		"googleapis": "^169.0.0",
+		"open": "^11.0.0",
+		"playwright": "^1.57.0"
 	}
 }

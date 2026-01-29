@@ -5,7 +5,7 @@
 /* Segment Control Container */
 .ubits-segment-control {
   display: flex;
-  Menu de Participantes  gap: 0;
+  gap: 0;
   align-items: center;
   background-color: var(--modifiers-normal-color-light-bg-2);
   padding: 4px;
@@ -165,7 +165,7 @@
     font-size: var(--modifiers-normal-body-sm-regular-fontsize);
     line-height: var(--modifiers-normal-body-sm-regular-lineheight);
   }
-  
+
   .ubits-segment i {
     font-size: 14px;
     width: 14px;

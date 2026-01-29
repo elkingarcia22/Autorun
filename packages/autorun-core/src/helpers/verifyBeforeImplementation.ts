@@ -179,7 +179,7 @@ async function validateHTMLStructure(
 	}
 
 	// Verificar que tenga clases del componente
-	const componentPrefix = getComponentPrefix(componentId);
+	const componentPrefix = await getComponentPrefix(componentId);
 	const hasComponentClasses = new RegExp(`class="[^"]*${componentPrefix}`).test(html);
 	if (!hasComponentClasses) {
 		warnings.push(`No se encontraron clases del componente (${componentPrefix})`);
@@ -198,7 +198,7 @@ async function validateRequiredElements(
 	const errors: string[] = [];
 
 	// Obtener elementos requeridos según el componente
-	const requiredElements = getRequiredElementsForComponent(componentId);
+	const requiredElements = await getRequiredElementsForComponent(componentId);
 
 	for (const element of requiredElements) {
 		if (element.type === 'class') {
@@ -277,8 +277,8 @@ async function validateAgainstSourceCode(
 		}
 
 		// Extraer clases del código fuente
-		const sourceClasses = extractClassesFromSource(sourceCode, componentId);
-		const htmlClasses = extractClassesFromHTML(html, componentId);
+		const sourceClasses = await extractClassesFromSource(sourceCode, componentId);
+		const htmlClasses = await extractClassesFromHTML(html, componentId);
 
 		// Verificar que las clases usadas existan en el código fuente
 		const missingClasses = htmlClasses.filter((cls) => !sourceClasses.includes(cls));
@@ -294,8 +294,24 @@ async function validateAgainstSourceCode(
 
 /**
  * Obtiene prefijo del componente
+ * 
+ * ⭐ NUEVO: Usa clases extraídas desde Storybook como prioridad
  */
-function getComponentPrefix(componentId: string): string {
+async function getComponentPrefix(componentId: string): Promise<string> {
+	// ⭐ NUEVO: Intentar obtener clase principal desde Storybook
+	try {
+		const { StorybookCSSExtractor } = await import('./storybookCSSExtractor');
+		const mainClass = await StorybookCSSExtractor.getMainClass(componentId);
+		if (mainClass) {
+			return mainClass;
+		}
+	} catch (error: any) {
+		console.warn(
+			`⚠️ [Verify Before Implementation] Error obteniendo clase desde Storybook, usando fallback: ${error.message}`
+		);
+	}
+
+	// Fallback: Normalizar componentId (temporal, hasta eliminar completamente)
 	const normalized = componentId
 		.replace(/^[🧩⚙️]/g, '')
 		.replace(/^functional-/, '')
@@ -322,12 +338,54 @@ function getComponentPrefix(componentId: string): string {
 
 /**
  * Obtiene elementos requeridos para un componente
+ * 
+ * ⭐ NUEVO: Usa clases extraídas desde Storybook como prioridad
  */
-function getRequiredElementsForComponent(componentId: string): Array<{
-	type: 'class' | 'element' | 'structure';
-	value: string;
-	description?: string;
-}> {
+async function getRequiredElementsForComponent(
+	componentId: string
+): Promise<
+	Array<{
+		type: 'class' | 'element' | 'structure';
+		value: string;
+		description?: string;
+	}>
+> {
+	// ⭐ NUEVO: Intentar obtener clases desde Storybook
+	try {
+		const { StorybookCSSExtractor } = await import('./storybookCSSExtractor');
+		const cssInfo = await StorybookCSSExtractor.extractCSSClasses(componentId);
+		
+		if (cssInfo.classes.length > 0) {
+			// Convertir clases a formato requerido
+			const elements = cssInfo.classes.map((cls) => ({
+				type: 'class' as const,
+				value: cls,
+			}));
+			
+			// Agregar clases principales primero
+			if (cssInfo.mainClass) {
+				return [
+					{ type: 'class' as const, value: cssInfo.mainClass },
+					...cssInfo.elementClasses.map((cls) => ({
+						type: 'class' as const,
+						value: cls,
+					})),
+					...cssInfo.modifierClasses.map((cls) => ({
+						type: 'class' as const,
+						value: cls,
+					})),
+				];
+			}
+			
+			return elements;
+		}
+	} catch (error: any) {
+		console.warn(
+			`⚠️ [Verify Before Implementation] Error obteniendo clases desde Storybook, usando fallback: ${error.message}`
+		);
+	}
+
+	// Fallback: Mapeos hardcodeados (temporal, hasta eliminar completamente)
 	const normalized = componentId
 		.replace(/^[🧩⚙️]/g, '')
 		.replace(/^functional-/, '')
@@ -382,9 +440,12 @@ function getRequiredElementsForComponent(componentId: string): Array<{
 /**
  * Extrae clases del código fuente
  */
-function extractClassesFromSource(sourceCode: string, componentId: string): string[] {
+async function extractClassesFromSource(
+	sourceCode: string,
+	componentId: string
+): Promise<string[]> {
 	const classes = new Set<string>();
-	const prefix = getComponentPrefix(componentId);
+	const prefix = await getComponentPrefix(componentId);
 
 	// Buscar clases en el código fuente
 	const classRegex = new RegExp(`['"\`](${prefix}[^'"\`]+)['"\`]`, 'g');
@@ -399,9 +460,12 @@ function extractClassesFromSource(sourceCode: string, componentId: string): stri
 /**
  * Extrae clases del HTML
  */
-function extractClassesFromHTML(html: string, componentId: string): string[] {
+async function extractClassesFromHTML(
+	html: string,
+	componentId: string
+): Promise<string[]> {
 	const classes = new Set<string>();
-	const prefix = getComponentPrefix(componentId);
+	const prefix = await getComponentPrefix(componentId);
 
 	const classRegex = /class="([^"]+)"/g;
 	const matches = Array.from(html.matchAll(classRegex));

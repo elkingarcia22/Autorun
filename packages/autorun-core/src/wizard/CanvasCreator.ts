@@ -1180,6 +1180,132 @@ export class CanvasCreator {
     }
   </style>`;
 
+    // ⚠️ CRÍTICO: Script para prevenir creación de HeaderSection y content-sections
+    // Este script DEBE ejecutarse ANTES de que content-manager.js se cargue
+    const preventHeaderSectionScript = `
+  <script>
+    // ========================================
+    // PREVENIR CREACIÓN DE HEADERSECTION Y CONTENT-SECTIONS
+    // ⚠️ CRÍTICO: Sobrescribir ContentManager ANTES de que se cargue
+    // ========================================
+    (function() {
+      console.log('🔵 [Wizard] Iniciando prevención de HeaderSection...');
+      
+      // Interceptar cuando ContentManager se defina
+      Object.defineProperty(window, 'UBITS_ContentManager', {
+        get: function() {
+          return this._UBITS_ContentManager;
+        },
+        set: function(value) {
+          console.log('🔵 [Wizard] ContentManager detectado, sobrescribiendo métodos...');
+          
+          // 1. Sobrescribir createHeaderSection para que no haga nada
+          if (value.createHeaderSection) {
+            const originalCreateHeaderSection = value.createHeaderSection;
+            value.createHeaderSection = function() {
+              console.log('🔵 [Wizard] ❌ createHeaderSection() bloqueado - NO se creará HeaderSection');
+              return null; // Retornar null en lugar de crear el elemento
+            };
+          }
+          
+          // 2. Sobrescribir updateContent para eliminar HeaderSection si se crea
+          const originalUpdateContent = value.updateContent;
+          if (originalUpdateContent) {
+            value.updateContent = function(section, subSection) {
+              console.log('🔵 [Wizard] updateContent() interceptado para sección:', section);
+              
+              // Llamar al método original
+              const result = originalUpdateContent.call(this, section, subSection);
+              
+              // Eliminar HeaderSection y content-sections inmediatamente después
+              requestAnimationFrame(() => {
+                const contentArea = document.querySelector('.content-area');
+                if (!contentArea) {
+                  return;
+                }
+                
+                // Eliminar #header-section-container
+                const headerContainer = contentArea.querySelector('#header-section-container');
+                if (headerContainer) {
+                  console.log('🔵 [Wizard] ✅ Eliminando #header-section-container');
+                  headerContainer.remove();
+                }
+                
+                // Eliminar .ubits-header-section
+                const headerSection = contentArea.querySelector('.ubits-header-section');
+                if (headerSection) {
+                  console.log('🔵 [Wizard] ✅ Eliminando .ubits-header-section');
+                  const container = headerSection.closest('#header-section-container');
+                  if (container) {
+                    container.remove();
+                  } else {
+                    headerSection.remove();
+                  }
+                }
+                
+                // Eliminar .content-sections
+                const contentSections = contentArea.querySelector('.content-sections');
+                if (contentSections) {
+                  console.log('🔵 [Wizard] ✅ Eliminando .content-sections');
+                  contentSections.remove();
+                }
+                
+                // Eliminar .widget-contenido-principal
+                const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
+                if (widgetPrincipal) {
+                  console.log('🔵 [Wizard] ✅ Eliminando .widget-contenido-principal');
+                  widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                }
+              });
+              
+              return result;
+            };
+          }
+          
+          // 3. Sobrescribir handleSectionChange para eliminar HeaderSection
+          const originalHandleSectionChange = value.handleSectionChange;
+          if (originalHandleSectionChange) {
+            value.handleSectionChange = function(section) {
+              console.log('🔵 [Wizard] handleSectionChange() interceptado para sección:', section);
+              
+              // Llamar al método original
+              const result = originalHandleSectionChange.call(this, section);
+              
+              // Eliminar HeaderSection después
+              requestAnimationFrame(() => {
+                const contentArea = document.querySelector('.content-area');
+                if (!contentArea) {
+                  return;
+                }
+                
+                const headerContainer = contentArea.querySelector('#header-section-container');
+                if (headerContainer) {
+                  console.log('🔵 [Wizard] ✅ Eliminando HeaderSection después de handleSectionChange');
+                  headerContainer.remove();
+                }
+                
+                const contentSections = contentArea.querySelector('.content-sections');
+                if (contentSections) {
+                  console.log('🔵 [Wizard] ✅ Eliminando content-sections después de handleSectionChange');
+                  contentSections.remove();
+                }
+              });
+              
+              return result;
+            };
+          }
+          
+          this._UBITS_ContentManager = value;
+          console.log('✅ [Wizard] ContentManager sobrescrito correctamente');
+        },
+        configurable: true,
+        enumerable: true
+      });
+      
+      console.log('✅ [Wizard] Interceptación de ContentManager configurada');
+    })();
+  </script>`;
+
     // Agregar script para configurar el módulo y producto activos
     // Este script debe ejecutarse ANTES de que el template se inicialice
     const scriptTag = `
@@ -2014,16 +2140,16 @@ export class CanvasCreator {
     }
   </script>`;
 
-    // Insertar estilos CSS en el <head> si existe, sino antes de </body>
+    // Insertar estilos CSS y script de prevención en el <head> si existe, sino antes de </body>
     if (templateHtml.includes('</head>')) {
       templateHtml = templateHtml.replace(
         '</head>',
-        `${darkModeFixStyles}\n</head>`
+        `${darkModeFixStyles}\n${preventHeaderSectionScript}\n</head>`
       );
     } else if (templateHtml.includes('<head>')) {
       templateHtml = templateHtml.replace(
         '<head>',
-        `<head>${darkModeFixStyles}`
+        `<head>${darkModeFixStyles}${preventHeaderSectionScript}`
       );
     }
 

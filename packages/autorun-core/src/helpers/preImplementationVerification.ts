@@ -133,7 +133,7 @@ async function validateHTMLStructure(
 	}
 
 	// Verificar que hay clases del componente
-	const componentPrefix = getComponentPrefix(componentId);
+	const componentPrefix = await getComponentPrefix(componentId);
 	const hasComponentClasses = html.includes(componentPrefix);
 
 	if (!hasComponentClasses) {
@@ -165,7 +165,7 @@ async function validateRequiredElements(
 	const errors: string[] = [];
 
 	// Obtener elementos requeridos según el componente
-	const requiredElements = getRequiredElementsForComponent(componentId);
+	const requiredElements = await getRequiredElementsForComponent(componentId);
 
 	for (const element of requiredElements) {
 		if (element.type === 'class') {
@@ -240,7 +240,7 @@ async function validateAgainstSourceCode(
 		const htmlClasses = extractClassesFromHTML(html);
 
 		// Verificar que las clases principales están en el código fuente
-		const componentPrefix = getComponentPrefix(componentId);
+		const componentPrefix = await getComponentPrefix(componentId);
 		const htmlComponentClasses = htmlClasses.filter((cls) => cls.startsWith(componentPrefix));
 
 		const missingInSource = htmlComponentClasses.filter((cls) => !sourceClasses.includes(cls));
@@ -257,14 +257,31 @@ async function validateAgainstSourceCode(
 
 /**
  * Obtiene prefijo del componente
+ * 
+ * ⭐ NUEVO: Usa clases extraídas desde Storybook como prioridad
  */
-function getComponentPrefix(componentId: string): string {
+async function getComponentPrefix(componentId: string): Promise<string> {
+	// ⭐ NUEVO: Intentar obtener clase principal desde Storybook
+	try {
+		const { StorybookCSSExtractor } = await import('./storybookCSSExtractor');
+		const mainClass = await StorybookCSSExtractor.getMainClass(componentId);
+		if (mainClass) {
+			return mainClass;
+		}
+	} catch (error: any) {
+		console.warn(
+			`⚠️ [Pre Implementation Verification] Error obteniendo clase desde Storybook, usando fallback: ${error.message}`
+		);
+	}
+
+	// Fallback: Normalizar componentId (temporal, hasta eliminar completamente)
 	const normalized = componentId
 		.replace(/^[🧩⚙️]/g, '')
 		.replace(/^functional-/, '')
 		.replace(/^ux-/, '')
 		.toLowerCase();
 
+	// Fallback: Mapeos hardcodeados (temporal, hasta eliminar completamente)
 	const specialMappings: Record<string, string> = {
 		radio: 'ubits-radio-button',
 		'radio-button': 'ubits-radio-button',
@@ -281,11 +298,31 @@ function getComponentPrefix(componentId: string): string {
 
 /**
  * Obtiene elementos requeridos para un componente
+ * 
+ * ⭐ NUEVO: Usa clases extraídas desde Storybook como prioridad
  */
-function getRequiredElementsForComponent(componentId: string): Array<{
-	type: 'class' | 'tag';
-	value: string;
-}> {
+async function getRequiredElementsForComponent(
+	componentId: string
+): Promise<Array<{ type: 'class' | 'tag'; value: string }>> {
+	// ⭐ NUEVO: Intentar obtener clases desde Storybook
+	try {
+		const { StorybookCSSExtractor } = await import('./storybookCSSExtractor');
+		const cssInfo = await StorybookCSSExtractor.extractCSSClasses(componentId);
+		
+		if (cssInfo.classes.length > 0) {
+			// Convertir clases a formato requerido
+			return cssInfo.classes.map((cls) => ({
+				type: 'class' as const,
+				value: cls,
+			}));
+		}
+	} catch (error: any) {
+		console.warn(
+			`⚠️ [Pre Implementation Verification] Error obteniendo clases desde Storybook, usando fallback: ${error.message}`
+		);
+	}
+
+	// Fallback: Mapeos hardcodeados (temporal, hasta eliminar completamente)
 	const normalized = componentId.toLowerCase();
 
 	const requiredElements: Record<string, Array<{ type: 'class' | 'tag'; value: string }>> = {

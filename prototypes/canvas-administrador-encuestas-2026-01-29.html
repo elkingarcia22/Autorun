@@ -1,441 +1,495 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UBITS - Encuestas - administrador</title>
-    
-    <!-- UBITS Base Styles -->
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/tokens/dist/tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/tokens/dist/figma-tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/typography/fonts.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/typography/tokens-typography.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <!-- FontAwesome Pro -->
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/templates/assets/fontawesome/css/all.min.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    
-    <!-- Navigation Components -->
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/sidebar/src/styles/sidebar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/subnav/src/styles/subnav.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/tabbar/src/styles/tabbar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    
-    <!-- UBITS Component Styles -->
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/status-tag/src/styles/status-tag.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/avatar/src/styles/avatar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/drawer/src/styles/drawer.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/modal/src/styles/modal.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/scroll/src/styles/scroll.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/progress/src/styles/progress.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/file-upload/src/styles/file-upload.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/button/src/styles/button.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/badge/src/styles/badge.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/alert/src/styles/alert.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/toast/src/styles/toast.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/list/src/styles/list.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/input/src/styles/input.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/card/src/styles/card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/data-table/src/styles/data-table.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/pagination/src/styles/pagination.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/checkbox/src/styles/checkbox.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/toggle/src/styles/toggle.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/radio-button/src/styles/radio-button.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/selection-card/src/styles/selection-card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/empty-state/src/styles/empty-state.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/tooltip/src/styles/tooltip.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/spinner/src/styles/spinner.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/calendar/src/styles/calendar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/tabs/src/styles/tabs.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/segment-control/src/styles/segment-control.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/breadcrumb/src/styles/breadcrumb.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/stepper/src/styles/stepper.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/participants-menu/src/styles/participants-menu.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/metric-card/src/styles/metric-card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/header-section/src/styles/header-section.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    
-    <style>
-        /* ========================================
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UBITS - Encuestas - administrador</title>
+
+  <!-- UBITS Base Styles -->
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/tokens/dist/tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/tokens/dist/figma-tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/typography/fonts.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/typography/tokens-typography.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <!-- FontAwesome Pro -->
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/templates/assets/fontawesome/css/all.min.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+
+  <!-- Navigation Components -->
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/sidebar/src/styles/sidebar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/subnav/src/styles/subnav.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/tabbar/src/styles/tabbar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+
+  <!-- UBITS Component Styles -->
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/status-tag/src/styles/status-tag.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/avatar/src/styles/avatar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/drawer/src/styles/drawer.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/modal/src/styles/modal.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/scroll/src/styles/scroll.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/progress/src/styles/progress.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/file-upload/src/styles/file-upload.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/button/src/styles/button.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/badge/src/styles/badge.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/alert/src/styles/alert.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/toast/src/styles/toast.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/list/src/styles/list.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/input/src/styles/input.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/card/src/styles/card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/data-table/src/styles/data-table.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/pagination/src/styles/pagination.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/checkbox/src/styles/checkbox.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/toggle/src/styles/toggle.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/radio-button/src/styles/radio-button.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/selection-card/src/styles/selection-card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/empty-state/src/styles/empty-state.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/tooltip/src/styles/tooltip.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/spinner/src/styles/spinner.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/calendar/src/styles/calendar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/tabs/src/styles/tabs.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/segment-control/src/styles/segment-control.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/breadcrumb/src/styles/breadcrumb.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/stepper/src/styles/stepper.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/accordion/src/styles/accordion.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/participants-menu/src/styles/participants-menu.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/metric-card/src/styles/metric-card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+  <link rel="stylesheet"
+    href="https://ubits-storybook10.vercel.app/components/header-section/src/styles/header-section.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+
+  <style>
+    /* ========================================
            GLOBAL STYLES
            ======================================== */
-        
-        * {
-            box-sizing: border-box;
-        }
 
-        body {
-            background-color: var(--ubits-bg-2);
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            overflow-y: auto;
-            font-family: var(--font-sans, 'Noto Sans', sans-serif);
-            scrollbar-width: thin;
-            scrollbar-color: var(--ubits-fg-2-medium-static) var(--ubits-bg-5);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        /* Scrollbar personalizado */
-        ::-webkit-scrollbar {
-            width: var(--ubits-spacing-sm, 8px);
-        }
+    body {
+      background-color: var(--ubits-bg-2);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      font-family: var(--font-sans, 'Noto Sans', sans-serif);
+      scrollbar-width: thin;
+      scrollbar-color: var(--ubits-fg-2-medium-static) var(--ubits-bg-5);
+    }
 
-        ::-webkit-scrollbar-track {
-            background: var(--ubits-bg-5);
-        }
+    /* Scrollbar personalizado */
+    ::-webkit-scrollbar {
+      width: var(--ubits-spacing-sm, 8px);
+    }
 
-        ::-webkit-scrollbar-thumb {
-            background: var(--ubits-fg-2-medium-static);
-            border-radius: var(--ubits-border-radius-xs, 4px);
-        }
+    ::-webkit-scrollbar-track {
+      background: var(--ubits-bg-5);
+    }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--ubits-fg-2-high-static);
-        }
+    ::-webkit-scrollbar-thumb {
+      background: var(--ubits-fg-2-medium-static);
+      border-radius: var(--ubits-border-radius-xs, 4px);
+    }
 
-        /* ========================================
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--ubits-fg-2-high-static);
+    }
+
+    /* ========================================
            DASHBOARD CONTAINER
            ======================================== */
-        
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-            overflow: visible;
-            /* ⚠️ IMPORTANTE: NO usar justify-content: center aquí */
-            /* El margin: auto en .main-content (≥1440px) se encarga del centrado */
-        }
 
-        /* ========================================
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      overflow: visible;
+      /* ⚠️ IMPORTANTE: NO usar justify-content: center aquí */
+      /* El margin: auto en .main-content (≥1440px) se encarga del centrado */
+    }
+
+    /* ========================================
            TOOLTIP
            ======================================== */
-        
-        /* ⚠️ NOTA: Los estilos del tooltip del sidebar están en el componente sidebar.css */
-        /* No sobrescribir aquí, usar los estilos del componente oficial */
-        
-        /* Asegurar que la línea divisoria del footer del sidebar se muestre */
-        .ubits-sidebar-footer {
-            position: relative !important;
-        }
-        
-        .ubits-sidebar-footer::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 32px !important;
-            height: 1px !important;
-            background-color: var(--ubits-fg-1-medium, #5c646f) !important;
-        }
-        
-        [data-theme="dark"] .ubits-sidebar-footer::before {
-            background-color: var(--ubits-fg-1-medium, #d0d2d5) !important;
-        }
 
-        /* ========================================
+    /* ⚠️ NOTA: Los estilos del tooltip del sidebar están en el componente sidebar.css */
+    /* No sobrescribir aquí, usar los estilos del componente oficial */
+
+    /* Asegurar que la línea divisoria del footer del sidebar se muestre */
+    .ubits-sidebar-footer {
+      position: relative !important;
+    }
+
+    .ubits-sidebar-footer::before {
+      content: '' !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 32px !important;
+      height: 1px !important;
+      background-color: var(--ubits-fg-1-medium, #5c646f) !important;
+    }
+
+    [data-theme="dark"] .ubits-sidebar-footer::before {
+      background-color: var(--ubits-fg-1-medium, #d0d2d5) !important;
+    }
+
+    /* ========================================
            MAIN CONTENT
            ======================================== */
-        
-        .main-content {
-            position: relative;
-            flex: 1;
-            margin: var(--ubits-spacing-lg, 16px) var(--ubits-spacing-2xl, 24px) 0 calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px);
-            width: calc(100% - calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px) - var(--ubits-spacing-2xl, 24px));
-            overflow: visible;
-            max-height: none;
-            display: flex;
-            flex-direction: column;
-            gap: var(--ubits-spacing-xl, 20px); /* Gap entre SubNav y Content Area */
-            z-index: 5;
-            box-sizing: border-box;
-        }
 
-        /* Centrado para pantallas grandes - EXACTAMENTE igual que el proyecto UBITS original */
-        /* El proyecto UBITS original usa margin: auto sin cambiar flex */
-        @media (min-width: 1440px) {
-            .main-content {
-                margin: var(--ubits-spacing-lg, 16px) auto 0 auto; /* ⚠️ margin auto centra el elemento */
-                padding-left: calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px); /* Espacio para sidebar (24px + 96px + 23px gap) */
-                padding-right: var(--ubits-spacing-2xl, 24px);
-                width: 1607px;
-                max-width: 1607px;
-                box-sizing: border-box;
-                /* ⚠️ IMPORTANTE: Mantener flex: 1, igual que el proyecto UBITS original */
-                /* NO cambiar a flex: none, el margin: auto funciona con flex: 1 */
-            }
-        }
+    .main-content {
+      position: relative;
+      flex: 1;
+      margin: var(--ubits-spacing-lg, 16px) var(--ubits-spacing-2xl, 24px) 0 calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px);
+      width: calc(100% - calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px) - var(--ubits-spacing-2xl, 24px));
+      overflow: visible;
+      max-height: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--ubits-spacing-xl, 20px);
+      /* Gap entre SubNav y Content Area */
+      z-index: 5;
+      box-sizing: border-box;
+    }
 
-        /* Ajustar gap en móvil cuando no hay subnav - igual que el proyecto UBITS original */
-        @media (max-width: 1023px) {
-            /* ⚠️ CRÍTICO: Ocultar sidebar container, igual que el proyecto UBITS original */
-            #sidebar-container {
-                display: none !important;
-            }
-            
-            .main-content {
-                gap: var(--ubits-spacing-xl, 20px);
-                margin: var(--ubits-spacing-lg, 16px) var(--ubits-spacing-md, 12px) 0 var(--ubits-spacing-md, 12px) !important;
-                width: calc(100% - var(--ubits-spacing-2xl, 24px));
-                padding-left: 0;
-                padding-right: 0;
-                max-width: 100%;
-                padding-bottom: var(--ubits-spacing-6xl, 40px); /* Espacio para el TabBar, igual que el proyecto UBITS original */
-            }
-            
-            .content-area {
-                padding-bottom: var(--ubits-spacing-6xl, 40px); /* Espacio para el TabBar, igual que el proyecto UBITS original */
-            }
-            
-            .main-content > *:first-child {
-                margin-top: calc(-1 * var(--ubits-spacing-xl, 20px));
-            }
-        }
+    /* Centrado para pantallas grandes - EXACTAMENTE igual que el proyecto UBITS original */
+    /* El proyecto UBITS original usa margin: auto sin cambiar flex */
+    @media (min-width: 1440px) {
+      .main-content {
+        margin: var(--ubits-spacing-lg, 16px) auto 0 auto;
+        /* ⚠️ margin auto centra el elemento */
+        padding-left: calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px);
+        /* Espacio para sidebar (24px + 96px + 23px gap) */
+        padding-right: var(--ubits-spacing-2xl, 24px);
+        width: 1607px;
+        max-width: 1607px;
+        box-sizing: border-box;
+        /* ⚠️ IMPORTANTE: Mantener flex: 1, igual que el proyecto UBITS original */
+        /* NO cambiar a flex: none, el margin: auto funciona con flex: 1 */
+      }
+    }
 
-        /* ========================================
+    /* Ajustar gap en móvil cuando no hay subnav - igual que el proyecto UBITS original */
+    @media (max-width: 1023px) {
+
+      /* ⚠️ CRÍTICO: Ocultar sidebar container, igual que el proyecto UBITS original */
+      #sidebar-container {
+        display: none !important;
+      }
+
+      .main-content {
+        gap: var(--ubits-spacing-xl, 20px);
+        margin: var(--ubits-spacing-lg, 16px) var(--ubits-spacing-md, 12px) 0 var(--ubits-spacing-md, 12px) !important;
+        width: calc(100% - var(--ubits-spacing-2xl, 24px));
+        padding-left: 0;
+        padding-right: 0;
+        max-width: 100%;
+        padding-bottom: var(--ubits-spacing-6xl, 40px);
+        /* Espacio para el TabBar, igual que el proyecto UBITS original */
+      }
+
+      .content-area {
+        padding-bottom: var(--ubits-spacing-6xl, 40px);
+        /* Espacio para el TabBar, igual que el proyecto UBITS original */
+      }
+
+      .main-content>*:first-child {
+        margin-top: calc(-1 * var(--ubits-spacing-xl, 20px));
+      }
+    }
+
+    /* ========================================
            TOP NAV CONTAINER (SubNav)
            ======================================== */
 
-        /* El SubNav debe mantener sus estilos originales del componente */
-        /* Solo establecer el contenedor para que el componente SubNav funcione correctamente */
-        #top-nav-container {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
+    /* El SubNav debe mantener sus estilos originales del componente */
+    /* Solo establecer el contenedor para que el componente SubNav funcione correctamente */
+    #top-nav-container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
 
-        /* ========================================
+    /* ========================================
            SUB NAV CONTAINER
            ======================================== */
-        
-        #top-nav-container {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
 
-        /* ========================================
+    #top-nav-container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ========================================
            CONTENT AREA
            ======================================== */
-        
-        .content-area {
-            background-color: transparent !important;
-            border-radius: var(--ubits-border-radius-md, 12px);
-            border: none !important;
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-            overflow: visible;
-            box-sizing: border-box;
-            max-height: none;
-            box-shadow: none !important;
-            width: 100%;
-            max-width: 100%;
-            gap: 0;
-        }
 
-        /* ========================================
+    .content-area {
+      background-color: transparent !important;
+      border-radius: var(--ubits-border-radius-md, 12px);
+      border: none !important;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      overflow: visible;
+      box-sizing: border-box;
+      max-height: none;
+      box-shadow: none !important;
+      width: 100%;
+      max-width: 100%;
+      gap: 0;
+    }
+
+    /* ========================================
            HEADER SECTION CONTAINER
            ======================================== */
-        
-        #header-section-container {
-            width: 100%;
-            background: transparent;
-            padding: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            box-sizing: border-box;
-        }
 
-        /* Ajustes responsive para header-section-container */
-        @media (max-width: 1023px) {
-            #header-section-container {
-                padding: 0;
-                margin-top: 0;
-            }
-        }
+    #header-section-container {
+      width: 100%;
+      background: transparent;
+      padding: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+      box-sizing: border-box;
+    }
 
-        @media (max-width: 479px) {
-            #header-section-container {
-                margin-top: 0;
-            }
-        }
+    /* Ajustes responsive para header-section-container */
+    @media (max-width: 1023px) {
+      #header-section-container {
+        padding: 0;
+        margin-top: 0;
+      }
+    }
 
-        .content-area.no-background {
-            background-color: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 var(--ubits-spacing-6xl, 40px) !important;
-        }
+    @media (max-width: 479px) {
+      #header-section-container {
+        margin-top: 0;
+      }
+    }
 
-        /* ========================================
+    .content-area.no-background {
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 var(--ubits-spacing-6xl, 40px) !important;
+    }
+
+    /* ========================================
            CONTENT SECTIONS (Sistema de Widgets)
            ======================================== */
-        
-        .content-sections {
-            display: flex;
-            flex-direction: column;
-            gap: var(--ubits-spacing-lg, 16px);
-            flex: 1;
-            min-width: 0;
-            width: 100%; /* Ocupar el 100% del ancho del content-area */
-            max-width: 100%; /* No exceder el ancho del content-area */
-            overflow: visible;
-            max-height: none;
-            box-sizing: border-box;
-        }
 
-        .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-            margin-bottom: var(--ubits-spacing-lg, 16px);
-        }
+    .content-sections {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ubits-spacing-lg, 16px);
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      /* Ocupar el 100% del ancho del content-area */
+      max-width: 100%;
+      /* No exceder el ancho del content-area */
+      overflow: visible;
+      max-height: none;
+      box-sizing: border-box;
+    }
 
-        .content-sections::after {
-            content: '';
-            height: 0px;
-            flex-shrink: 0;
-        }
+    .content-sections>*:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+      margin-bottom: var(--ubits-spacing-lg, 16px);
+    }
 
-        .content-sections > *:last-child {
-            margin-bottom: 0;
-        }
+    .content-sections::after {
+      content: '';
+      height: 0px;
+      flex-shrink: 0;
+    }
 
-        /* ========================================
+    .content-sections>*:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ========================================
            SECTION TYPES
            ======================================== */
-        
-        /* Secciones de widgets - igual que el proyecto UBITS original */
-        .section-single {
-            display: flex;
-            width: 100%;
-            box-sizing: border-box;
-        }
 
-        .section-dual {
-            display: flex;
-            gap: var(--ubits-spacing-xl, 20px);
-            width: 100%;
-            box-sizing: border-box;
-        }
+    /* Secciones de widgets - igual que el proyecto UBITS original */
+    .section-single {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-        .section-triple {
-            display: flex;
-            gap: var(--ubits-spacing-xl, 20px);
-            width: 100%;
-            box-sizing: border-box;
-        }
+    .section-dual {
+      display: flex;
+      gap: var(--ubits-spacing-xl, 20px);
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-        .section-quad {
-            display: flex;
-            gap: var(--ubits-spacing-xl, 20px);
-            width: 100%;
-            box-sizing: border-box;
-        }
+    .section-triple {
+      display: flex;
+      gap: var(--ubits-spacing-xl, 20px);
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-        /* ========================================
+    .section-quad {
+      display: flex;
+      gap: var(--ubits-spacing-xl, 20px);
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ========================================
            WIDGETS
            ======================================== */
-        
-        /* Widgets en secciones - igual que el proyecto UBITS original */
-        .section-single > div,
-        .section-dual > div,
-        .section-triple > div,
-        .section-quad > div {
-            background-color: var(--ubits-bg-1);
-            border: none;
-            border-radius: var(--ubits-border-radius-sm, 8px);
-            padding: var(--ubits-spacing-lg, 16px) !important; /* !important para sobrescribir el reset */
-            width: 100%; /* Ocupar el 100% del ancho de la sección */
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            min-width: 0; /* Permitir que se reduzca si es necesario */
-        }
 
-        /* Distribución de anchos - igual que el proyecto UBITS original */
-        .section-single > div {
-            flex: 1;
-        }
+    /* Widgets en secciones - igual que el proyecto UBITS original */
+    .section-single>div,
+    .section-dual>div,
+    .section-triple>div,
+    .section-quad>div {
+      background-color: var(--ubits-bg-1);
+      border: none;
+      border-radius: var(--ubits-border-radius-sm, 8px);
+      padding: var(--ubits-spacing-lg, 16px) !important;
+      /* !important para sobrescribir el reset */
+      width: 100%;
+      /* Ocupar el 100% del ancho de la sección */
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      /* Permitir que se reduzca si es necesario */
+    }
 
-        .section-dual > div {
-            flex: 1;
-        }
+    /* Distribución de anchos - igual que el proyecto UBITS original */
+    .section-single>div {
+      flex: 1;
+    }
 
-        .section-triple > div {
-            flex: 1;
-        }
+    .section-dual>div {
+      flex: 1;
+    }
 
-        .section-quad > div {
-            flex: 1;
-        }
+    .section-triple>div {
+      flex: 1;
+    }
 
-        /* ========================================
+    .section-quad>div {
+      flex: 1;
+    }
+
+    /* ========================================
            RESPONSIVE
            ======================================== */
-        
-        @media (max-width: 1023px) {
-            .content-sections {
-                padding-bottom: 0;
-            }
-            
-            .section-dual,
-            .section-triple,
-            .section-quad {
-                flex-direction: column;
-                gap: var(--ubits-spacing-lg, 16px);
-            }
-        }
 
-        @media (max-width: 480px) {
-            .section-single > div,
-            .section-dual > div,
-            .section-triple > div,
-            .section-quad > div {
-                padding: var(--ubits-spacing-md, 12px) !important;
-            }
-        }
+    @media (max-width: 1023px) {
+      .content-sections {
+        padding-bottom: 0;
+      }
 
-        /* ========================================
+      .section-dual,
+      .section-triple,
+      .section-quad {
+        flex-direction: column;
+        gap: var(--ubits-spacing-lg, 16px);
+      }
+    }
+
+    @media (max-width: 480px) {
+
+      .section-single>div,
+      .section-dual>div,
+      .section-triple>div,
+      .section-quad>div {
+        padding: var(--ubits-spacing-md, 12px) !important;
+      }
+    }
+
+    /* ========================================
            DARK MODE
            ======================================== */
-        
-        [data-theme="dark"] body {
-            background-color: var(--ubits-bg-2) !important;
-        }
 
-        [data-theme="dark"] .dashboard-container {
-            background-color: var(--ubits-bg-2) !important;
-        }
+    [data-theme="dark"] body {
+      background-color: var(--ubits-bg-2) !important;
+    }
 
-        [data-theme="dark"] .content-area {
-            background-color: transparent !important;
-            border-color: transparent !important;
-        }
+    [data-theme="dark"] .dashboard-container {
+      background-color: var(--ubits-bg-2) !important;
+    }
 
-        body[data-theme="dark"] {
-            background-color: var(--ubits-bg-2) !important;
-        }
+    [data-theme="dark"] .content-area {
+      background-color: transparent !important;
+      border-color: transparent !important;
+    }
 
-        body[data-theme="dark"] .dashboard-container {
-            background-color: var(--ubits-bg-2) !important;
-        }
+    body[data-theme="dark"] {
+      background-color: var(--ubits-bg-2) !important;
+    }
 
-        body[data-theme="dark"] .content-area {
-            background-color: transparent !important;
-            border-color: transparent !important;
-        }
+    body[data-theme="dark"] .dashboard-container {
+      background-color: var(--ubits-bg-2) !important;
+    }
 
-        /* Transiciones suaves para dark mode */
-        body {
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    body[data-theme="dark"] .content-area {
+      background-color: transparent !important;
+      border-color: transparent !important;
+    }
 
-        *[data-theme] {
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-    </style>
+    /* Transiciones suaves para dark mode */
+    body {
+      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *[data-theme] {
+      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
 
   <style>
     /* Fix: Asegurar que el botón activo del sidebar sea visible en dark mode */
@@ -443,13 +497,13 @@
     html[data-theme="dark"] .ubits-sidebar-nav-button.active {
       background: var(--ubits-sidebar-button-bg-active, #ffffff) !important;
     }
-    
+
     /* Asegurar que el icono del botón activo sea visible en dark mode */
     body[data-theme="dark"] .ubits-sidebar-nav-button.active i,
     html[data-theme="dark"] .ubits-sidebar-nav-button.active i {
       color: var(--ubits-sidebar-button-fg-active, #303a47) !important;
     }
-    
+
     /* Fix: Asegurar que el indicador activo del subnav (flechita azul) sea visible */
     /* NO sobrescribir el background-color - dejar que el componente use sus propios tokens:
        - Light mode: --ubits-accent-brand-static (definido en subnav.css línea 118)
@@ -470,7 +524,7 @@
       width: auto !important;
       /* NO sobrescribir background-color - el componente ya lo maneja correctamente */
     }
-    
+
     /* En dark mode, solo asegurar visibilidad - el componente ya usa --modifiers-normal-color-dark-accent-blue */
     body[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     html[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
@@ -480,12 +534,12 @@
       display: block !important;
       /* NO sobrescribir background-color - el componente ya usa --modifiers-normal-color-dark-accent-blue */
     }
-    
+
     /* Asegurar que el contenedor del subnav permita que el indicador sea visible */
     .ubits-sub-nav-tabs {
       overflow: visible !important;
     }
-    
+
     .ubits-sub-nav-tab {
       position: relative !important;
       overflow: visible !important;
@@ -497,49 +551,49 @@
     // PREVENIR CREACIÓN DE HEADERSECTION Y CONTENT-SECTIONS
     // ⚠️ CRÍTICO: Sobrescribir ContentManager ANTES de que se cargue
     // ========================================
-    (function() {
+    (function () {
       console.log('🔵 [Wizard] Iniciando prevención de HeaderSection...');
-      
+
       // Interceptar cuando ContentManager se defina
       Object.defineProperty(window, 'UBITS_ContentManager', {
-        get: function() {
+        get: function () {
           return this._UBITS_ContentManager;
         },
-        set: function(value) {
+        set: function (value) {
           console.log('🔵 [Wizard] ContentManager detectado, sobrescribiendo métodos...');
-          
+
           // 1. Sobrescribir createHeaderSection para que no haga nada
           if (value.createHeaderSection) {
             const originalCreateHeaderSection = value.createHeaderSection;
-            value.createHeaderSection = function() {
+            value.createHeaderSection = function () {
               console.log('🔵 [Wizard] ❌ createHeaderSection() bloqueado - NO se creará HeaderSection');
               return null; // Retornar null en lugar de crear el elemento
             };
           }
-          
+
           // 2. Sobrescribir updateContent para eliminar HeaderSection si se crea
           const originalUpdateContent = value.updateContent;
           if (originalUpdateContent) {
-            value.updateContent = function(section, subSection) {
+            value.updateContent = function (section, subSection) {
               console.log('🔵 [Wizard] updateContent() interceptado para sección:', section);
-              
+
               // Llamar al método original
               const result = originalUpdateContent.call(this, section, subSection);
-              
+
               // Eliminar HeaderSection y content-sections inmediatamente después
               requestAnimationFrame(() => {
                 const contentArea = document.querySelector('.content-area');
                 if (!contentArea) {
                   return;
                 }
-                
+
                 // Eliminar #header-section-container
                 const headerContainer = contentArea.querySelector('#header-section-container');
                 if (headerContainer) {
                   console.log('🔵 [Wizard] ✅ Eliminando #header-section-container');
                   headerContainer.remove();
                 }
-                
+
                 // Eliminar .ubits-header-section
                 const headerSection = contentArea.querySelector('.ubits-header-section');
                 if (headerSection) {
@@ -551,14 +605,14 @@
                     headerSection.remove();
                   }
                 }
-                
+
                 // Eliminar .content-sections
                 const contentSections = contentArea.querySelector('.content-sections');
                 if (contentSections) {
                   console.log('🔵 [Wizard] ✅ Eliminando .content-sections');
                   contentSections.remove();
                 }
-                
+
                 // Eliminar .widget-contenido-principal
                 const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
                 if (widgetPrincipal) {
@@ -566,91 +620,92 @@
                   widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
                 }
               });
-              
+
               return result;
             };
           }
-          
+
           // 3. Sobrescribir handleSectionChange para eliminar HeaderSection
           const originalHandleSectionChange = value.handleSectionChange;
           if (originalHandleSectionChange) {
-            value.handleSectionChange = function(section) {
+            value.handleSectionChange = function (section) {
               console.log('🔵 [Wizard] handleSectionChange() interceptado para sección:', section);
-              
+
               // Llamar al método original
               const result = originalHandleSectionChange.call(this, section);
-              
+
               // Eliminar HeaderSection después
               requestAnimationFrame(() => {
                 const contentArea = document.querySelector('.content-area');
                 if (!contentArea) {
                   return;
                 }
-                
+
                 const headerContainer = contentArea.querySelector('#header-section-container');
                 if (headerContainer) {
                   console.log('🔵 [Wizard] ✅ Eliminando HeaderSection después de handleSectionChange');
                   headerContainer.remove();
                 }
-                
+
                 const contentSections = contentArea.querySelector('.content-sections');
                 if (contentSections) {
                   console.log('🔵 [Wizard] ✅ Eliminando content-sections después de handleSectionChange');
                   contentSections.remove();
                 }
               });
-              
+
               return result;
             };
           }
-          
+
           this._UBITS_ContentManager = value;
           console.log('✅ [Wizard] ContentManager sobrescrito correctamente');
         },
         configurable: true,
         enumerable: true
       });
-      
+
       console.log('✅ [Wizard] Interceptación de ContentManager configurada');
     })();
   </script>
 </head>
+
 <body data-template="administrador" data-module="encuestas" data-product="">
 
   <script>
     // Actualizar enlace del botón del sidebar que cambia entre templates
-    (function() {
+    (function () {
       // Definir targetFileName en el scope global de la función anónima
       const targetFileName = 'canvas-colaborador-encuestas-2026-01-29.html';
       console.log('🔗 [Wizard] Archivo objetivo configurado:', targetFileName);
-      
+
       const updateTemplateLink = () => {
         console.log('🔗 [Wizard] Actualizando enlaces entre templates...');
         console.log('🔗 [Wizard] Archivo objetivo:', targetFileName);
-        
+
         // 1. Buscar el botón del sidebar principal (data-section="admin" o "colaborador")
         // En modo colaborador, el primer botón es "Administrador" con data-section="admin"
         // En modo administrador, no hay botón "Colaborador" en el sidebar principal
         const sidebarButtons = document.querySelectorAll('.ubits-sidebar-nav-button[data-section="admin"], .ubits-sidebar-nav-button[data-section="colaborador"]');
         console.log('🔗 [Wizard] Botones del sidebar encontrados:', sidebarButtons.length);
-        
+
         sidebarButtons.forEach(button => {
           const section = button.getAttribute('data-section');
           console.log('🔗 [Wizard] Botón encontrado con data-section:', section);
-          
+
           // Interceptar el click del botón
-          button.addEventListener('click', function(e) {
+          button.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             console.log('🔗 [Wizard] Click interceptado en botón del sidebar, redirigiendo a:', targetFileName);
             window.location.href = targetFileName;
             return false;
           }, true); // Usar capture phase para interceptar antes que otros handlers
-          
+
           // También actualizar onclick si existe
           if (button.onclick) {
             const originalOnclick = button.onclick;
-            button.onclick = function(e) {
+            button.onclick = function (e) {
               e.preventDefault();
               e.stopPropagation();
               console.log('🔗 [Wizard] onclick interceptado, redirigiendo a:', targetFileName);
@@ -659,7 +714,7 @@
             };
           }
         });
-        
+
         // 2. Buscar el botón del menú de perfil que cambia entre templates
         // El botón puede tener texto "Modo Administrador" o "Modo colaborador"
         // Buscar en múltiples lugares posibles
@@ -674,7 +729,7 @@
           '[class*="profile-menu"] [class*="menu-item"]',
           '[class*="profile-dropdown"] [class*="menu-item"]'
         ];
-        
+
         let menuItems = [];
         selectors.forEach(selector => {
           try {
@@ -686,35 +741,35 @@
             // Ignorar errores de selector
           }
         });
-        
+
         // También buscar por texto en todos los elementos clickeables
         const allClickable = document.querySelectorAll('li, button, a, div[onclick], div[role="button"]');
         allClickable.forEach(item => {
           const text = (item.textContent || item.innerText || '').trim();
-          if (text.includes('Modo Administrador') || 
-              text.includes('Modo administrador') ||
-              text.includes('Modo colaborador') || 
-              text.includes('Modo Colaborador')) {
+          if (text.includes('Modo Administrador') ||
+            text.includes('Modo administrador') ||
+            text.includes('Modo colaborador') ||
+            text.includes('Modo Colaborador')) {
             if (!menuItems.includes(item)) {
               menuItems.push(item);
             }
           }
         });
-        
+
         console.log('🔗 [Wizard] Items del menú de perfil encontrados:', menuItems.length);
-        
+
         menuItems.forEach(item => {
           const text = (item.textContent || item.innerText || '').trim();
-          const isModeButton = 
+          const isModeButton =
             (text.includes('Modo Administrador') || text.includes('Modo administrador')) ||
             (text.includes('Modo colaborador') || text.includes('Modo Colaborador'));
-          
+
           if (isModeButton) {
             console.log('🔗 [Wizard] Botón del menú de perfil encontrado:', text);
             console.log('🔗 [Wizard] Elemento:', item);
             console.log('🔗 [Wizard] Clases:', item.className);
             console.log('🔗 [Wizard] Tag:', item.tagName);
-            
+
             // Actualizar href PRIMERO para que apunte al archivo correcto
             if (item.tagName === 'A') {
               item.href = targetFileName;
@@ -726,14 +781,14 @@
                 link.setAttribute('href', targetFileName);
               }
             }
-            
+
             // También actualizar data-href si existe
             if (item.hasAttribute('data-href')) {
               item.setAttribute('data-href', targetFileName);
             }
-            
+
             // Interceptar el click con capture phase (máxima prioridad)
-            const clickHandler = function(e) {
+            const clickHandler = function (e) {
               console.log('🔗 [Wizard] ✅ Click interceptado en menú de perfil, redirigiendo a:', targetFileName);
               e.preventDefault();
               e.stopPropagation();
@@ -743,15 +798,15 @@
               window.location.href = targetFileName;
               return false;
             };
-            
+
             // Agregar listener con capture (máxima prioridad)
             item.addEventListener('click', clickHandler, { capture: true, passive: false });
-            
+
             // También agregar sin capture como backup
             item.addEventListener('click', clickHandler, { capture: false, passive: false });
-            
+
             // Actualizar onclick si existe (sobrescribir completamente)
-              item.onclick = function(e) {
+            item.onclick = function (e) {
               console.log('🔗 [Wizard] ✅ onclick interceptado en menú, redirigiendo a:', targetFileName);
               if (e) {
                 e.preventDefault();
@@ -759,13 +814,13 @@
                 e.stopImmediatePropagation();
                 e.cancelBubble = true;
               }
-                window.location.href = targetFileName;
-                return false;
-              };
-            
+              window.location.href = targetFileName;
+              return false;
+            };
+
             // Actualizar atributo onclick
             item.setAttribute('onclick', "event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); event.cancelBubble = true; window.location.href='" + targetFileName + "'; return false;");
-            
+
             // Buscar cualquier elemento hijo que pueda ser clickeable
             const clickableChildren = item.querySelectorAll('a, button, [onclick], [role="button"], span, div');
             clickableChildren.forEach(child => {
@@ -777,29 +832,29 @@
             });
           }
         });
-        
+
         console.log('🔗 [Wizard] ✅ Enlaces actualizados');
       };
-      
+
       // Ejecutar cuando el DOM esté listo
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', updateTemplateLink);
       } else {
         updateTemplateLink();
       }
-      
+
       // También ejecutar después de delays para asegurar que el sidebar se haya cargado dinámicamente
       setTimeout(updateTemplateLink, 500);
       setTimeout(updateTemplateLink, 1000);
       setTimeout(updateTemplateLink, 2000);
       setTimeout(updateTemplateLink, 3000);
-      
+
       // Observar cambios en el DOM para cuando el sidebar o menú de perfil se cargue dinámicamente
-      const observer = new MutationObserver(function(mutations) {
+      const observer = new MutationObserver(function (mutations) {
         let shouldUpdate = false;
-        mutations.forEach(function(mutation) {
+        mutations.forEach(function (mutation) {
           if (mutation.addedNodes.length > 0) {
-            mutation.addedNodes.forEach(function(node) {
+            mutation.addedNodes.forEach(function (node) {
               if (node.nodeType === 1) { // Element node
                 if (node.classList && (
                   node.classList.contains('ubits-sidebar') ||
@@ -821,40 +876,40 @@
           setTimeout(updateTemplateLink, 100);
         }
       });
-      
+
       observer.observe(document.body, {
         childList: true,
         subtree: true,
         attributes: true,
         attributeFilter: ['class', 'style']
       });
-      
+
       // Interceptar TODOS los clicks en el documento y verificar si es el botón de cambio de modo
       // Esto es más agresivo pero asegura que funcione incluso si el menú se carga dinámicamente
       // IMPORTANTE: targetFileName debe estar en el scope superior para que esté disponible aquí
       // Usar capture phase con máxima prioridad para interceptar ANTES que components-loader.js
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
         const target = e.target;
         if (!target) return;
-        
+
         // Verificar si el click es en el avatar para abrir el menú
         if (target.closest('.ubits-sidebar-profile-avatar') ||
-            target.closest('[class*="profile-avatar"]') ||
-            target.closest('[class*="user-avatar"]')) {
+          target.closest('[class*="profile-avatar"]') ||
+          target.closest('[class*="user-avatar"]')) {
           // El menú de perfil se está abriendo, actualizar después de un delay
           setTimeout(updateTemplateLink, 200);
           setTimeout(updateTemplateLink, 500);
           return;
         }
-        
+
         // Verificar si el click es en un elemento que contiene "Modo colaborador" o "Modo Administrador"
         const clickedElement = target.closest('li, button, a, div[onclick], div[role="button"], [class*="menu-item"], [class*="profile-menu"]');
         if (clickedElement) {
           const text = (clickedElement.textContent || clickedElement.innerText || '').trim();
-          const isModeButton = 
+          const isModeButton =
             (text.includes('Modo Administrador') || text.includes('Modo administrador')) ||
             (text.includes('Modo colaborador') || text.includes('Modo Colaborador'));
-          
+
           if (isModeButton) {
             console.log('🔗 [Wizard] 🎯 Click detectado en botón de cambio de modo:', text);
             console.log('🔗 [Wizard] Elemento:', clickedElement);
@@ -869,19 +924,19 @@
           }
         }
       }, { capture: true, passive: false }); // Capture phase con máxima prioridad
-      
+
       // También interceptar en el phase de bubbling como backup
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
         const target = e.target;
         if (!target) return;
-        
+
         const clickedElement = target.closest('li, button, a, div[onclick], div[role="button"], [class*="menu-item"], [class*="profile-menu"]');
         if (clickedElement) {
           const text = (clickedElement.textContent || clickedElement.innerText || '').trim();
-          const isModeButton = 
+          const isModeButton =
             (text.includes('Modo Administrador') || text.includes('Modo administrador')) ||
             (text.includes('Modo colaborador') || text.includes('Modo Colaborador'));
-          
+
           if (isModeButton) {
             console.log('🔗 [Wizard] 🎯 Click detectado (bubbling phase) en botón de cambio de modo:', text);
             e.preventDefault();
@@ -897,382 +952,409 @@
     })();
   </script>
 
-    <div class="dashboard-container">
-        <!-- Sidebar Container -->
-        <div id="sidebar-container"></div>
+  <div class="dashboard-container">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Navigation -->
-            <div id="top-nav-container"></div>
-            
-            <!-- Content Area -->
-            <div class="content-area">
-                <!-- Content wrapper con secciones de widgets -->
-                <div class="content-sections">
-                    <!-- Sección contenido principal -->
-                    <div class="section-single">
-                        <div class="widget-contenido-principal">
-                            <p class="ubits-body-md-regular">Contenido principal</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
-                        </div>
-                    </div>
-                </div>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Navigation -->
+      <div id="top-nav-container"></div>
+
+      <!-- Tabs (debajo del SubNav) -->
+      <div id="tabs-container"></div>
+
+      <!-- Tabs secundarios -->
+      <div id="tabs-container-2"></div>
+
+      <!-- Accordion dentro del tab de resultados -->
+      <div id="accordion-resultados" style="margin-top: 24px;"></div>
+
+      <!-- Tabs terciarios -->
+      <div id="tabs-container-3"></div>
+
+      <!-- Accordion dentro del tab de historial (variante box) - Oculto por defecto -->
+      <div id="accordion-historial" style="margin-top: 24px; display: none;"></div>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        <!-- Content wrapper con secciones de widgets -->
+        <div class="content-sections">
+          <!-- Sección contenido principal -->
+          <div class="section-single">
+            <div class="widget-contenido-principal">
+              <p class="ubits-body-md-regular">Contenido principal</p>
+              <br><br><br><br><br><br><br><br><br><br><br>
             </div>
-        </main>
-    </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
-    <!-- Tab Bar Container -->
-    <div id="tab-bar-container"></div>
+  <!-- Tab Bar Container -->
+  <div id="tab-bar-container"></div>
 
-    <!-- System Loaders -->
-    <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="https://ubits-storybook10.vercel.app/templates/engine/template-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="https://ubits-storybook10.vercel.app/templates/engine/content-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    
-    <!-- UBITS Components System -->
-    <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
-    
-    <script>
-        // ========================================
-        // INITIALIZATION
-        // Usando los componentes reales desde components-loader.js
-        // ========================================
-        
-        // ========================================
-        // HELPER FUNCTIONS (Compatibilidad)
-        // ========================================
-        
-        // ========================================
-        // DARK MODE SYNC (para Storybook)
-        // ========================================
-        
-        function syncThemeFromParent() {
-            // Si estamos en un iframe, intentar obtener el tema del parent (Storybook)
-            if (window.parent && window.parent !== window) {
-                try {
-                    const parentBody = window.parent.document.body;
-                    const parentTheme = parentBody.getAttribute('data-theme') || 'light';
-                    document.body.setAttribute('data-theme', parentTheme);
-                    document.documentElement.setAttribute('data-theme', parentTheme);
-                    
-                    // Sincronizar con ThemeManager si está disponible
-                    if (window.UBITS_ThemeManager) {
-                        window.UBITS_ThemeManager.setTheme(parentTheme, false);
-                    }
-                } catch (e) {
-                    // Si hay error de CORS, usar el tema por defecto
-                    console.log('⚠️ No se puede acceder al parent (CORS), usando tema light');
-                }
-            }
-        }
-        
-        // Observar cambios en el tema del parent (Storybook)
-        function observeParentTheme() {
-            if (window.parent && window.parent !== window) {
-                try {
-                    // Observar cambios en el atributo data-theme del body del parent
-                    const observer = new MutationObserver((mutations) => {
-                        mutations.forEach((mutation) => {
-                            if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-                                const parentTheme = window.parent.document.body.getAttribute('data-theme') || 'light';
-                                document.body.setAttribute('data-theme', parentTheme);
-                                document.documentElement.setAttribute('data-theme', parentTheme);
-                                
-                                // Sincronizar con ThemeManager si está disponible
-                                if (window.UBITS_ThemeManager) {
-                                    window.UBITS_ThemeManager.setTheme(parentTheme, false);
-                                }
-                            }
-                        });
-                    });
-                    
-                    observer.observe(window.parent.document.body, {
-                        attributes: true,
-                        attributeFilter: ['data-theme']
-                    });
-                } catch (e) {
-                    // Si hay error de CORS, usar polling como fallback
-                    console.log('⚠️ MutationObserver no disponible (CORS), usando polling');
-                    setInterval(syncThemeFromParent, 500);
-                }
-            }
-        }
-        
-        function toggleDarkMode() {
-            // Solo usar si NO estamos en Storybook (iframe)
-            if (window.parent && window.parent !== window) {
-                // En Storybook, el toggle se maneja desde el parent
-                return;
-            }
-            
-            if (window.UBITS_ThemeManager) {
-                window.UBITS_ThemeManager.toggleTheme();
-            } else {
-                // Fallback si ThemeManager no está disponible
-                const body = document.body;
-                const currentTheme = body.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                body.setAttribute('data-theme', newTheme);
-                localStorage.setItem('ubits-theme', newTheme);
-            }
-        }
+  <!-- System Loaders -->
+  <script
+    src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/components/tabs/dist/tabs.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/components/accordion/dist/accordion.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/components/sidebar/dist/sidebar.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/templates/engine/template-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+  <script
+    src="https://ubits-storybook10.vercel.app/templates/engine/content-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
 
-        // ========================================
-        // INITIALIZATION
-        // ========================================
-        
-        // Función para verificar si los CSS se están cargando
-        function checkLoadedStylesheets() {
-            console.log('🔍 [CSS Check] Verificando hojas de estilo cargadas...');
-            const stylesheets = Array.from(document.styleSheets);
-            console.log(`📊 [CSS Check] Total de hojas de estilo encontradas: ${stylesheets.length}`);
-            
-            const criticalCSS = [
-                'tokens.css',
-                'sidebar.css',
-                'subnav.css',
-                'tabbar.css',
-                'button.css'
-            ];
-            
-            criticalCSS.forEach(cssName => {
-                const found = stylesheets.some(sheet => {
-                    try {
-                        return sheet.href && sheet.href.includes(cssName);
-                    } catch (e) {
-                        return false;
-                    }
-                });
-                console.log(found ? `✅ [CSS Check] ${cssName} encontrado` : `❌ [CSS Check] ${cssName} NO encontrado`);
-            });
-            
-            // Verificar tokens CSS específicamente
-            const tokensSheet = stylesheets.find(sheet => {
-                try {
-                    return sheet.href && sheet.href.includes('tokens.css');
-                } catch (e) {
-                    return false;
-                }
-            });
-            
-            if (tokensSheet) {
-                console.log('✅ [CSS Check] tokens.css encontrado:', tokensSheet.href);
-                try {
-                    const rules = Array.from(tokensSheet.cssRules || []);
-                    console.log(`📊 [CSS Check] Reglas en tokens.css: ${rules.length}`);
-                    if (rules.length > 0) {
-                        const firstRule = rules[0];
-                        console.log('📋 [CSS Check] Primera regla:', firstRule.cssText.substring(0, 100));
-                    }
-                } catch (e) {
-                    console.error('❌ [CSS Check] Error al leer reglas de tokens.css:', e.message);
-                }
-            } else {
-                console.error('❌ [CSS Check] tokens.css NO encontrado en document.styleSheets');
-            }
+  <!-- UBITS Components System -->
+  <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
+
+  <script>
+    // ========================================
+    // INITIALIZATION
+    // Usando los componentes reales desde components-loader.js
+    // ========================================
+
+    // ========================================
+    // HELPER FUNCTIONS (Compatibilidad)
+    // ========================================
+
+    // ========================================
+    // DARK MODE SYNC (para Storybook)
+    // ========================================
+
+    function syncThemeFromParent() {
+      // Si estamos en un iframe, intentar obtener el tema del parent (Storybook)
+      if (window.parent && window.parent !== window) {
+        try {
+          const parentBody = window.parent.document.body;
+          const parentTheme = parentBody.getAttribute('data-theme') || 'light';
+          document.body.setAttribute('data-theme', parentTheme);
+          document.documentElement.setAttribute('data-theme', parentTheme);
+
+          // Sincronizar con ThemeManager si está disponible
+          if (window.UBITS_ThemeManager) {
+            window.UBITS_ThemeManager.setTheme(parentTheme, false);
+          }
+        } catch (e) {
+          // Si hay error de CORS, usar el tema por defecto
+          console.log('⚠️ No se puede acceder al parent (CORS), usando tema light');
         }
-        
-        // ⚠️ PREVENIR múltiples ejecuciones del DOMContentLoaded
-        let domContentLoadedExecuted = false;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Prevenir ejecuciones múltiples
-            if (domContentLoadedExecuted) {
-                console.warn('⚠️ [Template Admin] DOMContentLoaded ya ejecutado, ignorando...');
-                return;
-            }
-            domContentLoadedExecuted = true;
-            
-            // Verificar CSS inmediatamente
-            setTimeout(checkLoadedStylesheets, 100);
-            
-            // Esperar a que todos los sistemas estén listos
-            setTimeout(() => {
-                // Verificar que todos los sistemas estén cargados
-                if (!window.UBITS_ThemeManager || !window.UBITS_ResponsiveManager || !window.UBITS_TemplateLoader) {
-                    return;
+      }
+    }
+
+    // Observar cambios en el tema del parent (Storybook)
+    function observeParentTheme() {
+      if (window.parent && window.parent !== window) {
+        try {
+          // Observar cambios en el atributo data-theme del body del parent
+          const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                const parentTheme = window.parent.document.body.getAttribute('data-theme') || 'light';
+                document.body.setAttribute('data-theme', parentTheme);
+                document.documentElement.setAttribute('data-theme', parentTheme);
+
+                // Sincronizar con ThemeManager si está disponible
+                if (window.UBITS_ThemeManager) {
+                  window.UBITS_ThemeManager.setTheme(parentTheme, false);
                 }
-                
-                // Detectar producto actual
-                const productId = window.detectCurrentProduct();
-                
-                // Obtener configuración del producto
-                const productConfig = window.getProductConfig(productId);
-                
-                // Cargar tema guardado
-                window.UBITS_ThemeManager.init();
-                
-                // Sincronizar tema desde Storybook si estamos en un iframe
-                syncThemeFromParent();
-                observeParentTheme();
-                
-                // ⚠️ IMPORTANTE: Cargar componentes PRIMERO
-                // Luego inicializar responsive para que adapte los componentes ya creados
-                window.UBITS_TemplateLoader.loadProduct(productConfig, {
-                    sidebar: 'sidebar-container',
-                    subnav: 'top-nav-container',
-                    tabbar: 'tab-bar-container'
-                });
-                
-                // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
-                // Esto asegura que adaptComponents() encuentre los componentes
-                setTimeout(() => {
-                    // ⚠️ CRÍTICO: Establecer currentSection ANTES de inicializar ResponsiveManager
-                    // Esto asegura que adaptComponents() pueda acceder a currentSection cuando se ejecuta
-                    const initialSection = productConfig.sidebar.initialActiveSection || 'inicio';
-                    if (window.UBITS_ContentManager) {
-                        window.UBITS_ContentManager.currentSection = initialSection;
-                        console.log('🔍 [Template Admin] ✅ currentSection establecido ANTES de ResponsiveManager.init():', initialSection);
-                    }
-                    
-                    window.UBITS_ResponsiveManager.init();
-                    // Ejecutar adaptComponents manualmente después de que los componentes estén listos
-                    window.UBITS_ResponsiveManager.adaptComponents();
-                    
-                    // ========================================
-                    // DIAGNÓSTICO: Línea divisoria del footer
-                    // ========================================
-                    setTimeout(() => {
-                        console.log('🔍 [Template Debug] ════════════════════════════════════════');
-                        console.log('🔍 [Template Debug] DIAGNÓSTICO LÍNEA DIVISORIA (Template Admin)');
-                        console.log('🔍 [Template Debug] ════════════════════════════════════════');
-                        
-                        const sidebar = document.querySelector('.ubits-sidebar');
-                        if (sidebar) {
-                            const footer = sidebar.querySelector('.ubits-sidebar-footer');
-                            if (footer) {
-                                console.log('✅ [Template Debug] Footer encontrado');
-                                
-                                // Verificar estilos inline
-                                console.log('   - Estilos inline:', footer.style.cssText || '(ninguno)');
-                                
-                                // Verificar estilos computados
-                                const computed = window.getComputedStyle(footer);
-                                console.log('   - Computed position:', computed.position);
-                                console.log('   - Computed padding-top:', computed.paddingTop);
-                                
-                                // Verificar ::before
-                                const before = window.getComputedStyle(footer, '::before');
-                                console.log('   - ::before content:', before.content);
-                                console.log('   - ::before display:', before.display);
-                                console.log('   - ::before width:', before.width);
-                                console.log('   - ::before height:', before.height);
-                                console.log('   - ::before backgroundColor:', before.backgroundColor);
-                                
-                                // Verificar estilos en <style>
-                                const styleTags = document.querySelectorAll('style');
-                                let foundFooterStyle = false;
-                                styleTags.forEach((style, index) => {
-                                    if (style.textContent.includes('ubits-sidebar-footer')) {
-                                        console.log(`   - Estilo encontrado en <style> #${index}`);
-                                        foundFooterStyle = true;
-                                    }
-                                });
-                                if (!foundFooterStyle) {
-                                    console.log('   - ⚠️ No se encontró estilo para .ubits-sidebar-footer en <style> tags');
-                                }
-                            } else {
-                                console.log('❌ [Template Debug] Footer NO encontrado en sidebar');
-                            }
-                        } else {
-                            console.log('❌ [Template Debug] Sidebar NO encontrado');
-                        }
-                        
-                        console.log('🔍 [Template Debug] ════════════════════════════════════════');
-                    }, 1000);
-                    
-                    // Cargar sección inicial después de que todo esté listo
-                    // IMPORTANTE: El SubNav NO se carga aquí porque ContentManager lo maneja
-                    // ⚠️ NOTA: El botón ya se activa automáticamente con initialActiveSection en products.js
-                    // Solo necesitamos cargar el contenido inicial
-                    if (window.UBITS_ContentManager) {
-                        // Usar requestAnimationFrame para asegurar que el DOM esté listo
-                        requestAnimationFrame(() => {
-                            setTimeout(() => {
-                                // El ContentManager actualizará el SubNav y el contenido automáticamente
-                                // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
-                                window.UBITS_ContentManager.handleSectionChange(initialSection);
-                                
-                                // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
-                                const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
-                                if (tooltipElement) {
-                                    tooltipElement.classList.remove('show');
-                                }
-                                
-                                // Asegurar que ningún botón tenga focus (para evitar borde azul)
-                                const sidebarElement = document.querySelector('.ubits-sidebar');
-                                if (sidebarElement) {
-                                    const activeButton = sidebarElement.querySelector('.ubits-sidebar-nav-button.active');
-                                    if (activeButton) {
-                                        activeButton.blur(); // Remover focus si lo tiene
-                                    }
-                                }
-                                
-                                
-                                // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
-                                debugLayout();
-                                
-                                // Escuchar cambios de tamaño de ventana para logs continuos
-                                let resizeTimeout;
-                                window.addEventListener('resize', () => {
-                                    clearTimeout(resizeTimeout);
-                                    resizeTimeout = setTimeout(() => {
-                                        debugLayout();
-                                    }, 300);
-                                });
-                            }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
-                        });
-                    }
-                }, 100);
+              }
             });
+          });
+
+          observer.observe(window.parent.document.body, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+          });
+        } catch (e) {
+          // Si hay error de CORS, usar polling como fallback
+          console.log('⚠️ MutationObserver no disponible (CORS), usando polling');
+          setInterval(syncThemeFromParent, 500);
+        }
+      }
+    }
+
+    function toggleDarkMode() {
+      // Solo usar si NO estamos en Storybook (iframe)
+      if (window.parent && window.parent !== window) {
+        // En Storybook, el toggle se maneja desde el parent
+        return;
+      }
+
+      if (window.UBITS_ThemeManager) {
+        window.UBITS_ThemeManager.toggleTheme();
+      } else {
+        // Fallback si ThemeManager no está disponible
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('ubits-theme', newTheme);
+      }
+    }
+
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+
+    // Función para verificar si los CSS se están cargando
+    function checkLoadedStylesheets() {
+      console.log('🔍 [CSS Check] Verificando hojas de estilo cargadas...');
+      const stylesheets = Array.from(document.styleSheets);
+      console.log(`📊 [CSS Check] Total de hojas de estilo encontradas: ${stylesheets.length}`);
+
+      const criticalCSS = [
+        'tokens.css',
+        'sidebar.css',
+        'subnav.css',
+        'tabbar.css',
+        'button.css'
+      ];
+
+      criticalCSS.forEach(cssName => {
+        const found = stylesheets.some(sheet => {
+          try {
+            return sheet.href && sheet.href.includes(cssName);
+          } catch (e) {
+            return false;
+          }
         });
-        
-        // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
-        function debugLayout() {
-            const windowWidth = window.innerWidth;
-            const mainContent = document.querySelector('.main-content');
-            const sidebar = document.querySelector('.ubits-sidebar');
-            const tabBar = document.querySelector('.ubits-tabbar');
-            
-            if (!mainContent) return;
-            
-            const mainRect = mainContent.getBoundingClientRect();
-            const computedStyle = window.getComputedStyle(mainContent);
-            const sidebarRect = sidebar ? sidebar.getBoundingClientRect() : null;
-            const tabBarVisible = tabBar && window.getComputedStyle(tabBar).display !== 'none';
-            
-            // ⚠️ CRÍTICO: Verificar si está centrado correctamente
-            // NOTA: getComputedStyle devuelve valores calculados en px, no "auto"
-            // Verificamos centrado comparando los espacios laterales (deben estar balanceados)
-            const marginLeftPx = parseFloat(computedStyle.marginLeft) || 0;
-            const marginRightPx = parseFloat(computedStyle.marginRight) || 0;
-            // Calcular espacios laterales (una sola vez)
-            const leftSpace = mainRect.left;
-            const rightSpace = windowWidth - mainRect.right;
-            const imbalance = Math.abs(leftSpace - rightSpace);
-            const isVisuallyCentered = imbalance < 10; // Considerar centrado si el desbalance es menor a 10px
-            const isWideScreen = windowWidth >= 1440;
-            const shouldBeCentered = isWideScreen && (computedStyle.flex === 'none' || computedStyle.flex === '0 0 auto');
-            if (isWideScreen) {
-            }
-            
-            if (sidebarRect) {
-                const sidebarStyle = window.getComputedStyle(sidebar);
-            }
-            
-            if (tabBar) {
-                const tabBarStyle = window.getComputedStyle(tabBar);
-            }
-            
-            // Mostrar espacios laterales
-            
-            
+        console.log(found ? `✅ [CSS Check] ${cssName} encontrado` : `❌ [CSS Check] ${cssName} NO encontrado`);
+      });
+
+      // Verificar tokens CSS específicamente
+      const tokensSheet = stylesheets.find(sheet => {
+        try {
+          return sheet.href && sheet.href.includes('tokens.css');
+        } catch (e) {
+          return false;
         }
-    </script>
+      });
+
+      if (tokensSheet) {
+        console.log('✅ [CSS Check] tokens.css encontrado:', tokensSheet.href);
+        try {
+          const rules = Array.from(tokensSheet.cssRules || []);
+          console.log(`📊 [CSS Check] Reglas en tokens.css: ${rules.length}`);
+          if (rules.length > 0) {
+            const firstRule = rules[0];
+            console.log('📋 [CSS Check] Primera regla:', firstRule.cssText.substring(0, 100));
+          }
+        } catch (e) {
+          console.error('❌ [CSS Check] Error al leer reglas de tokens.css:', e.message);
+        }
+      } else {
+        console.error('❌ [CSS Check] tokens.css NO encontrado en document.styleSheets');
+      }
+    }
+
+    // ⚠️ PREVENIR múltiples ejecuciones del DOMContentLoaded
+    let domContentLoadedExecuted = false;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Prevenir ejecuciones múltiples
+      if (domContentLoadedExecuted) {
+        console.warn('⚠️ [Template Admin] DOMContentLoaded ya ejecutado, ignorando...');
+        return;
+      }
+      domContentLoadedExecuted = true;
+
+      // Verificar CSS inmediatamente
+      setTimeout(checkLoadedStylesheets, 100);
+
+      // Esperar a que todos los sistemas estén listos
+      setTimeout(() => {
+        // Verificar que todos los sistemas estén cargados
+        if (!window.UBITS_ThemeManager || !window.UBITS_ResponsiveManager || !window.UBITS_TemplateLoader) {
+          return;
+        }
+
+        // Detectar producto actual
+        const productId = window.detectCurrentProduct();
+
+        // Obtener configuración del producto
+        const productConfig = window.getProductConfig(productId);
+
+        // Cargar tema guardado
+        window.UBITS_ThemeManager.init();
+
+        // Sincronizar tema desde Storybook si estamos en un iframe
+        syncThemeFromParent();
+        observeParentTheme();
+
+        // ⚠️ IMPORTANTE: Cargar componentes PRIMERO
+        // Luego inicializar responsive para que adapte los componentes ya creados
+        window.UBITS_TemplateLoader.loadProduct(productConfig, {
+          sidebar: 'sidebar-container',
+          subnav: 'top-nav-container',
+          tabbar: 'tab-bar-container'
+        });
+
+        // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
+        // Esto asegura que adaptComponents() encuentre los componentes
+        setTimeout(() => {
+          // ⚠️ CRÍTICO: Establecer currentSection ANTES de inicializar ResponsiveManager
+          // Esto asegura que adaptComponents() pueda acceder a currentSection cuando se ejecuta
+          const initialSection = productConfig.sidebar.initialActiveSection || 'inicio';
+          if (window.UBITS_ContentManager) {
+            window.UBITS_ContentManager.currentSection = initialSection;
+            console.log('🔍 [Template Admin] ✅ currentSection establecido ANTES de ResponsiveManager.init():', initialSection);
+          }
+
+          window.UBITS_ResponsiveManager.init();
+          // Ejecutar adaptComponents manualmente después de que los componentes estén listos
+          window.UBITS_ResponsiveManager.adaptComponents();
+
+          // ========================================
+          // DIAGNÓSTICO: Línea divisoria del footer
+          // ========================================
+          setTimeout(() => {
+            console.log('🔍 [Template Debug] ════════════════════════════════════════');
+            console.log('🔍 [Template Debug] DIAGNÓSTICO LÍNEA DIVISORIA (Template Admin)');
+            console.log('🔍 [Template Debug] ════════════════════════════════════════');
+
+            const sidebar = document.querySelector('.ubits-sidebar');
+            if (sidebar) {
+              const footer = sidebar.querySelector('.ubits-sidebar-footer');
+              if (footer) {
+                console.log('✅ [Template Debug] Footer encontrado');
+
+                // Verificar estilos inline
+                console.log('   - Estilos inline:', footer.style.cssText || '(ninguno)');
+
+                // Verificar estilos computados
+                const computed = window.getComputedStyle(footer);
+                console.log('   - Computed position:', computed.position);
+                console.log('   - Computed padding-top:', computed.paddingTop);
+
+                // Verificar ::before
+                const before = window.getComputedStyle(footer, '::before');
+                console.log('   - ::before content:', before.content);
+                console.log('   - ::before display:', before.display);
+                console.log('   - ::before width:', before.width);
+                console.log('   - ::before height:', before.height);
+                console.log('   - ::before backgroundColor:', before.backgroundColor);
+
+                // Verificar estilos en <style>
+                const styleTags = document.querySelectorAll('style');
+                let foundFooterStyle = false;
+                styleTags.forEach((style, index) => {
+                  if (style.textContent.includes('ubits-sidebar-footer')) {
+                    console.log(`   - Estilo encontrado en <style> #${index}`);
+                    foundFooterStyle = true;
+                  }
+                });
+                if (!foundFooterStyle) {
+                  console.log('   - ⚠️ No se encontró estilo para .ubits-sidebar-footer en <style> tags');
+                }
+              } else {
+                console.log('❌ [Template Debug] Footer NO encontrado en sidebar');
+              }
+            } else {
+              console.log('❌ [Template Debug] Sidebar NO encontrado');
+            }
+
+            console.log('🔍 [Template Debug] ════════════════════════════════════════');
+          }, 1000);
+
+          // Cargar sección inicial después de que todo esté listo
+          // IMPORTANTE: El SubNav NO se carga aquí porque ContentManager lo maneja
+          // ⚠️ NOTA: El botón ya se activa automáticamente con initialActiveSection en products.js
+          // Solo necesitamos cargar el contenido inicial
+          if (window.UBITS_ContentManager) {
+            // Usar requestAnimationFrame para asegurar que el DOM esté listo
+            requestAnimationFrame(() => {
+              setTimeout(() => {
+                // El ContentManager actualizará el SubNav y el contenido automáticamente
+                // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
+                window.UBITS_ContentManager.handleSectionChange(initialSection);
+
+                // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
+                const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
+                if (tooltipElement) {
+                  tooltipElement.classList.remove('show');
+                }
+
+                // Asegurar que ningún botón tenga focus (para evitar borde azul)
+                const sidebarElement = document.querySelector('.ubits-sidebar');
+                if (sidebarElement) {
+                  const activeButton = sidebarElement.querySelector('.ubits-sidebar-nav-button.active');
+                  if (activeButton) {
+                    activeButton.blur(); // Remover focus si lo tiene
+                  }
+                }
+
+
+                // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
+                debugLayout();
+
+                // Escuchar cambios de tamaño de ventana para logs continuos
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                  clearTimeout(resizeTimeout);
+                  resizeTimeout = setTimeout(() => {
+                    debugLayout();
+                  }, 300);
+                });
+              }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
+            });
+          }
+        }, 100);
+      });
+    });
+
+    // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
+    function debugLayout() {
+      const windowWidth = window.innerWidth;
+      const mainContent = document.querySelector('.main-content');
+      const sidebar = document.querySelector('.ubits-sidebar');
+      const tabBar = document.querySelector('.ubits-tabbar');
+
+      if (!mainContent) return;
+
+      const mainRect = mainContent.getBoundingClientRect();
+      const computedStyle = window.getComputedStyle(mainContent);
+      const sidebarRect = sidebar ? sidebar.getBoundingClientRect() : null;
+      const tabBarVisible = tabBar && window.getComputedStyle(tabBar).display !== 'none';
+
+      // ⚠️ CRÍTICO: Verificar si está centrado correctamente
+      // NOTA: getComputedStyle devuelve valores calculados en px, no "auto"
+      // Verificamos centrado comparando los espacios laterales (deben estar balanceados)
+      const marginLeftPx = parseFloat(computedStyle.marginLeft) || 0;
+      const marginRightPx = parseFloat(computedStyle.marginRight) || 0;
+      // Calcular espacios laterales (una sola vez)
+      const leftSpace = mainRect.left;
+      const rightSpace = windowWidth - mainRect.right;
+      const imbalance = Math.abs(leftSpace - rightSpace);
+      const isVisuallyCentered = imbalance < 10; // Considerar centrado si el desbalance es menor a 10px
+      const isWideScreen = windowWidth >= 1440;
+      const shouldBeCentered = isWideScreen && (computedStyle.flex === 'none' || computedStyle.flex === '0 0 auto');
+      if (isWideScreen) {
+      }
+
+      if (sidebarRect) {
+        const sidebarStyle = window.getComputedStyle(sidebar);
+      }
+
+      if (tabBar) {
+        const tabBarStyle = window.getComputedStyle(tabBar);
+      }
+
+      // Mostrar espacios laterales
+
+
+    }
+  </script>
 
   <script>
     // Configuración del módulo y producto activos
@@ -1284,18 +1366,298 @@
       productName: '',
       storybookUrl: 'https://ubits-storybook10.vercel.app'
     };
-    
+
+    // ========================================
+    // 🎯 IMPLEMENTACIÓN DE ACCORDION
+    // ========================================
+    window.createAccordion = function (options, containerId) {
+      const container = containerId
+        ? document.getElementById(containerId) || document.createElement('div')
+        : document.createElement('div');
+
+      if (containerId && !container.id) {
+        container.id = containerId;
+      }
+
+      container.innerHTML = renderAccordion(options);
+
+      requestAnimationFrame(() => {
+        const accordionElement = container.querySelector('.ubits-accordion');
+        if (accordionElement) {
+          initAccordionListeners(accordionElement, options);
+        } else {
+          initAccordionListeners(container, options);
+        }
+      });
+
+      return container;
+    };
+
+    function renderAccordion(options) {
+      const items = options.items || [];
+      const allowMultiple = options.allowMultiple || false;
+      const className = options.className || '';
+      const variant = options.variant || 'list'; // 'list' or 'boxed'
+      const chevronPosition = options.chevronPosition || 'right'; // 'left' or 'right'
+      const showIcons = options.showIcons !== false; // default true
+      const defaultOpen = options.defaultOpen || [];
+
+      if (!items || items.length === 0) {
+        return '<div class="ubits-accordion"></div>';
+      }
+
+      const itemsHTML = items.map((item) => {
+        const isExpanded = item.expanded || defaultOpen.includes(item.id);
+        const disabledClass = item.disabled ? 'ubits-accordion-item--disabled' : '';
+        const boxedClass = variant === 'boxed' ? 'ubits-accordion-item--boxed' : '';
+        const classes = ['ubits-accordion-item', disabledClass, boxedClass].filter(Boolean).join(' ');
+        const headerOpenClass = isExpanded ? 'ubits-accordion-header--open' : '';
+
+        // Icon with style support
+        const iconStyle = item.iconStyle || 'regular'; // regular, solid, light, thin, duotone
+        const iconPrefix = iconStyle === 'solid' ? 'fas' : iconStyle === 'light' ? 'fal' : iconStyle === 'thin' ? 'fat' : iconStyle === 'duotone' ? 'fad' : 'far';
+        const iconHTML = (showIcons && item.icon) ? `<i class="${iconPrefix} fa-${item.icon}"></i>` : '';
+
+        return `
+          <div class="${classes}" data-item-id="${item.id}">
+            <button class="ubits-accordion-header ${headerOpenClass}" ${item.disabled ? 'disabled' : ''}>
+              ${iconHTML ? `<span class="ubits-accordion-icon">${iconHTML}</span>` : ''}
+              <div class="ubits-accordion-header-content">
+                <span class="ubits-accordion-title">${item.title}</span>
+              </div>
+              <i class="far fa-chevron-down ubits-accordion-chevron"></i>
+            </button>
+            <div class="ubits-accordion-body" style="${isExpanded ? '' : 'display: none;'}">
+              <div class="ubits-accordion-body-content">
+                ${item.content}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const containerClasses = [
+        'ubits-accordion',
+        `ubits-accordion--${variant}`,
+        `ubits-accordion--chevron-${chevronPosition}`,
+        className
+      ].filter(Boolean).join(' ');
+
+      return `
+        <div class="${containerClasses}" data-allow-multiple="${allowMultiple}">
+          ${itemsHTML}
+        </div>
+      `.trim();
+    }
+
+    function initAccordionListeners(accordionElement, options) {
+      const items = accordionElement.querySelectorAll('.ubits-accordion-item:not(.ubits-accordion-item--disabled)');
+      const allowMultiple = accordionElement.getAttribute('data-allow-multiple') === 'true';
+
+      const handleItemClick = (itemElement) => {
+        const itemId = itemElement.getAttribute('data-item-id');
+        const header = itemElement.querySelector('.ubits-accordion-header');
+        const isOpen = header.classList.contains('ubits-accordion-header--open');
+
+        console.log('🔵 [Accordion] Item clickeado:', itemId, 'Open:', isOpen);
+
+        if (!allowMultiple && !isOpen) {
+          items.forEach((item) => {
+            if (item !== itemElement) {
+              const otherHeader = item.querySelector('.ubits-accordion-header');
+              const otherBody = item.querySelector('.ubits-accordion-body');
+              if (otherHeader) otherHeader.classList.remove('ubits-accordion-header--open');
+              if (otherBody) otherBody.style.display = 'none';
+            }
+          });
+        }
+
+        header.classList.toggle('ubits-accordion-header--open');
+        const body = itemElement.querySelector('.ubits-accordion-body');
+        if (body) {
+          body.style.display = header.classList.contains('ubits-accordion-header--open') ? 'block' : 'none';
+        }
+
+        if (options.onToggle) {
+          options.onToggle(itemId, !isOpen);
+        }
+
+        const event = new CustomEvent('accordionToggle', {
+          detail: { itemId: itemId, isExpanded: !isOpen }
+        });
+        document.dispatchEvent(event);
+      };
+
+      items.forEach((item) => {
+        const header = item.querySelector('.ubits-accordion-header');
+        if (header) {
+          header.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleItemClick(item);
+          });
+        }
+      });
+    }
+
+    // ========================================
+    // INITIALIZATION DE TABS
+    // ========================================
+    // Esperar a que el sistema UBITS esté cargado
+    setTimeout(function () {
+      if (typeof window.createTabs === 'function') {
+        console.log('✅ Iniciando Tabs component...');
+
+        // Crear tabs para encuestas
+        window.createTabs({
+          tabs: [
+            { id: 'tab-activas', label: 'Activas', icon: 'fa-regular fa-check-circle', active: true },
+            { id: 'tab-programadas', label: 'Programadas', icon: 'fa-regular fa-calendar', active: false },
+            { id: 'tab-finalizadas', label: 'Finalizadas', icon: 'fa-regular fa-flag-checkered', active: false },
+            { id: 'tab-todas', label: 'Todas', icon: 'fa-regular fa-th', active: false }
+          ],
+          activeTabId: 'tab-activas',
+          onTabChange: function (tabId) {
+            console.log('✅ Tab cambiado a:', tabId);
+          }
+        }, 'tabs-container');
+
+        console.log('✅ Tabs component creado exitosamente');
+
+        // Crear segundo grupo de tabs
+        window.createTabs({
+          tabs: [
+            { id: 'tab-resultados', label: 'Resultados', icon: 'fa-regular fa-chart-bar', active: true },
+            { id: 'tab-participantes', label: 'Participantes', icon: 'fa-regular fa-users', active: false },
+            { id: 'tab-configuracion', label: 'Configuración', icon: 'fa-regular fa-cog', active: false }
+          ],
+          activeTabId: 'tab-resultados',
+          onTabChange: function (tabId) {
+            console.log('✅ Tab secundario cambiado a:', tabId);
+          }
+        }, 'tabs-container-2');
+
+        console.log('✅ Tabs secundarios creados exitosamente');
+
+        // Crear accordion para resultados
+        window.createAccordion({
+          items: [
+            {
+              id: 'acc-resumen',
+              title: 'Resumen General',
+              content: '<p style="padding: 16px;">Vista general de los resultados de la encuesta</p>',
+              icon: 'chart-pie',
+              iconStyle: 'regular',
+              expanded: true
+            },
+            {
+              id: 'acc-respuestas',
+              title: 'Respuestas Detalladas',
+              content: '<p style="padding: 16px;">Análisis detallado de todas las respuestas</p>',
+              icon: 'list',
+              iconStyle: 'regular',
+              expanded: false
+            },
+            {
+              id: 'acc-estadisticas',
+              title: 'Estadísticas',
+              content: '<p style="padding: 16px;">Gráficos y métricas estadísticas</p>',
+              icon: 'chart-bar',
+              iconStyle: 'regular',
+              expanded: false
+            }
+          ],
+          allowMultiple: false,
+          variant: 'list',
+          chevronPosition: 'right',
+          showIcons: true,
+          onToggle: function (itemId, isExpanded) {
+            console.log('✅ Accordion toggle:', itemId, isExpanded);
+          }
+        }, 'accordion-resultados');
+
+        console.log('✅ Accordion creado exitosamente');
+
+        // Crear tercer grupo de tabs
+        window.createTabs({
+          tabs: [
+            { id: 'tab-detalle', label: 'Detalle', icon: 'fa-regular fa-file-alt', active: true },
+            { id: 'tab-historial', label: 'Historial', icon: 'fa-regular fa-history', active: false },
+            { id: 'tab-exportar', label: 'Exportar', icon: 'fa-regular fa-download', active: false }
+          ],
+          activeTabId: 'tab-detalle',
+          onTabChange: function (tabId) {
+            console.log('✅ Tab terciario cambiado a:', tabId);
+
+            // Mostrar/ocultar accordion historial según el tab activo
+            const accordionHistorial = document.getElementById('accordion-historial');
+            if (accordionHistorial) {
+              if (tabId === 'tab-historial') {
+                accordionHistorial.style.display = 'block';
+                console.log('✅ Accordion historial mostrado');
+              } else {
+                accordionHistorial.style.display = 'none';
+                console.log('✅ Accordion historial ocultado');
+              }
+            }
+          }
+        }, 'tabs-container-3');
+
+        console.log('✅ Tercer grupo de tabs creado exitosamente');
+
+        // Crear accordion boxed para historial
+        window.createAccordion({
+          items: [
+            {
+              id: 'hist-enero',
+              title: 'Historial Enero 2026',
+              content: '<p style="padding: 16px;">Encuestas realizadas en enero</p>',
+              icon: 'calendar',
+              iconStyle: 'regular',
+              expanded: false
+            },
+            {
+              id: 'hist-febrero',
+              title: 'Historial Febrero 2026',
+              content: '<p style="padding: 16px;">Encuestas realizadas en febrero</p>',
+              icon: 'calendar',
+              iconStyle: 'regular',
+              expanded: false
+            },
+            {
+              id: 'hist-marzo',
+              title: 'Historial Marzo 2026',
+              content: '<p style="padding: 16px;">Encuestas realizadas en marzo</p>',
+              icon: 'calendar',
+              iconStyle: 'regular',
+              expanded: true
+            }
+          ],
+          allowMultiple: true,
+          variant: 'boxed',
+          chevronPosition: 'right',
+          showIcons: true,
+          onToggle: function (itemId, isExpanded) {
+            console.log('✅ Accordion boxed toggle:', itemId, isExpanded);
+          }
+        }, 'accordion-historial');
+
+        console.log('✅ Accordion boxed creado exitosamente');
+      } else {
+        console.error('❌ window.createTabs no está disponible');
+      }
+    }, 800);
+
     // Ajustar rutas de imágenes y sobrescribir initialActiveSection después de que products.js se cargue
-    (function() {
+    (function () {
       const adjustImagePaths = (products) => {
         if (!products) return;
         // Usar ruta relativa o absoluta según corresponda
         const ubitsTemplatesPath = `../vendor/ubits/packages/templates`;
-        
+
         // Función recursiva para ajustar rutas en objetos
         const adjustPaths = (obj) => {
           if (typeof obj !== 'object' || obj === null) return;
-          
+
           for (const key in obj) {
             if (key === 'avatarImage' || key === 'logoImage' || key === 'avatar') {
               // Ajustar rutas de imágenes
@@ -1311,42 +1673,42 @@
             }
           }
         };
-        
+
         adjustPaths(products);
       };
-      
+
       // La clave en products.js es 'template-admin' o 'template-colaborador'
       const templateKey = 'template-admin';
-      
+
       // ⚠️ CRÍTICO: Sobrescritura robusta de detectCurrentProduct y getProductConfig
       // products.js puede sobrescribir estas funciones después de que las definamos,
       // así que necesitamos interceptarlas y corregirlas continuamente
-      
+
       // Función para sobrescribir detectCurrentProduct (se llamará múltiples veces)
       const overrideDetectCurrentProduct = () => {
         const originalDetectCurrentProduct = window.detectCurrentProduct;
-      window.detectCurrentProduct = function() {
-        // Siempre retornar el template correcto
+        window.detectCurrentProduct = function () {
+          // Siempre retornar el template correcto
           console.log('🔍 [Wizard] detectCurrentProduct() llamado, retornando:', templateKey);
-        return templateKey;
+          return templateKey;
         };
         console.log('🔍 [Wizard] ✅ detectCurrentProduct sobrescrito. Original:', typeof originalDetectCurrentProduct);
       };
-      
+
       // Sobrescribir INMEDIATAMENTE (antes de que products.js se cargue)
       overrideDetectCurrentProduct();
-      
+
       // También interceptar cuando products.js lo sobrescriba después
       // Usar Object.defineProperty para interceptar cambios
       let currentDetectCurrentProduct = window.detectCurrentProduct;
       Object.defineProperty(window, 'detectCurrentProduct', {
-        get: function() {
+        get: function () {
           return currentDetectCurrentProduct;
         },
-        set: function(newValue) {
+        set: function (newValue) {
           console.log('🔍 [Wizard] ⚠️ detectCurrentProduct está siendo sobrescrito por products.js');
           // Guardar la función original pero seguir usando nuestra versión
-          currentDetectCurrentProduct = function() {
+          currentDetectCurrentProduct = function () {
             console.log('🔍 [Wizard] detectCurrentProduct() llamado (interceptado), retornando:', templateKey);
             return templateKey;
           };
@@ -1355,12 +1717,12 @@
         configurable: true,
         enumerable: true
       });
-      
+
       // También sobrescribir getProductConfig INMEDIATAMENTE para asegurar que siempre devuelva el producto correcto
       const originalGetProductConfig = window.getProductConfig;
-      window.getProductConfig = function(productId) {
+      window.getProductConfig = function (productId) {
         console.log('🔍 [Wizard] getProductConfig() llamado con productId:', productId, 'templateKey esperado:', templateKey);
-        
+
         // Si UBITS_PRODUCTS aún no está disponible, esperar un poco
         if (!window.UBITS_PRODUCTS) {
           console.warn('🔍 [Wizard] ⚠️ UBITS_PRODUCTS no disponible todavía, esperando...');
@@ -1370,13 +1732,13 @@
           }
           return null;
         }
-        
+
         // Si el productId es el templateKey correcto, forzar su uso
         if (productId === templateKey && window.UBITS_PRODUCTS[templateKey]) {
           console.log('🔍 [Wizard] ✅ getProductConfig() usando templateKey correcto:', templateKey);
           return window.UBITS_PRODUCTS[templateKey];
         }
-        
+
         // Si no coincide, loguear y corregir
         if (productId !== templateKey) {
           console.warn('🔍 [Wizard] ⚠️ getProductConfig() recibió productId incorrecto:', productId, 'esperado:', templateKey);
@@ -1386,7 +1748,7 @@
             return window.UBITS_PRODUCTS[templateKey];
           }
         }
-        
+
         // Usar función original si existe
         if (originalGetProductConfig) {
           const result = originalGetProductConfig(productId);
@@ -1401,17 +1763,17 @@
           }
           return result;
         }
-        
+
         // Fallback: usar templateKey si está disponible
         if (window.UBITS_PRODUCTS && window.UBITS_PRODUCTS[templateKey]) {
           console.warn('🔍 [Wizard] ⚠️ Usando templateKey como fallback:', templateKey);
           return window.UBITS_PRODUCTS[templateKey];
         }
-        
+
         // Fallback final: template-colaborador (comportamiento original)
         return window.UBITS_PRODUCTS ? window.UBITS_PRODUCTS['template-colaborador'] : null;
       };
-      
+
       // Interceptar cuando UBITS_PRODUCTS se define ANTES de que el template lo use
       let productsDefined = false;
       const checkProducts = () => {
@@ -1422,21 +1784,21 @@
           console.log('🔍 [Wizard] templateKey:', templateKey);
           console.log('🔍 [Wizard] Módulo objetivo: encuestas');
           console.log('🔍 [Wizard] Producto objetivo: undefined');
-          
+
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
-          
+
           // ⚠️ CRÍTICO: Volver a sobrescribir detectCurrentProduct después de que products.js se carga
           // products.js define detectCurrentProduct al final, así que necesitamos sobrescribirlo de nuevo
           overrideDetectCurrentProduct();
           console.log('🔍 [Wizard] ✅ detectCurrentProduct vuelto a sobrescribir después de que products.js se cargó');
-          
+
           // Sobrescribir initialActiveSection INMEDIATAMENTE
           if (window.UBITS_PRODUCTS[templateKey]) {
             const productConfig = window.UBITS_PRODUCTS[templateKey];
             console.log('🔍 [Wizard] ProductConfig encontrado:', productConfig.name);
             console.log('🔍 [Wizard] initialActiveSection ANTES:', productConfig.sidebar?.initialActiveSection);
-            
+
             if (productConfig.sidebar) {
               // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
               // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
@@ -1453,10 +1815,10 @@
           }
         }
       };
-      
+
       // Verificar INMEDIATAMENTE (puede que ya esté definido)
       checkProducts();
-      
+
       // Verificar periódicamente con intervalo más corto
       const interval = setInterval(() => {
         checkProducts();
@@ -1472,7 +1834,7 @@
           clearInterval(interval);
         }
       }, 10);
-      
+
       // Limpiar después de 2 segundos
       setTimeout(() => {
         clearInterval(interval);
@@ -1483,7 +1845,7 @@
         }
       }, 2000);
     })();
-    
+
     // Activar el producto DESPUÉS de que el template termine su inicialización
     // El template ya activa el módulo usando initialActiveSection, solo necesitamos activar el producto
     document.addEventListener('DOMContentLoaded', () => {
@@ -1491,28 +1853,28 @@
       console.log('🔍 [Wizard] DOMContentLoaded - Iniciando activación de módulo/producto');
       console.log('🔍 [Wizard] Módulo objetivo: encuestas');
       console.log('🔍 [Wizard] Producto objetivo: undefined');
-      
+
       const activateProduct = () => {
         console.log('🔍 [Wizard] ════════════════════════════════════════');
         console.log('🔍 [Wizard] activateProduct ejecutado');
-        
+
         if (!window.UBITS_ContentManager) {
           console.log('🔍 [Wizard] ⏳ ContentManager no está listo, reintentando...');
           setTimeout(activateProduct, 100);
           return;
         }
-        
+
         console.log('🔍 [Wizard] ✅ ContentManager está listo');
         console.log('🔍 [Wizard] currentSection actual:', window.UBITS_ContentManager.currentSection);
         console.log('🔍 [Wizard] Módulo esperado: encuestas');
-        
+
         // Verificar estado del sidebar
         const sidebarElement = document.querySelector('.ubits-sidebar');
         if (sidebarElement) {
           const activeButton = sidebarElement.querySelector('.ubits-sidebar-nav-button.active');
           console.log('🔍 [Wizard] Sidebar encontrado');
           console.log('🔍 [Wizard] Botón activo en sidebar:', activeButton?.getAttribute('data-section') || 'ninguno');
-          
+
           // Listar todos los botones del sidebar
           const allButtons = sidebarElement.querySelectorAll('.ubits-sidebar-nav-button');
           console.log('🔍 [Wizard] Botones en sidebar:');
@@ -1524,14 +1886,14 @@
         } else {
           console.warn('🔍 [Wizard] ⚠️ Sidebar no encontrado');
         }
-        
+
         // Verificar estado del subnav
         const subNavElement = document.querySelector('.ubits-sub-nav');
         if (subNavElement) {
           console.log('🔍 [Wizard] SubNav encontrado');
           const activeTab = subNavElement.querySelector('.ubits-sub-nav-tab--active');
           console.log('🔍 [Wizard] Tab activo en SubNav:', activeTab?.getAttribute('data-tab') || 'ninguno');
-          
+
           // Listar todos los tabs del subnav
           const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
           console.log('🔍 [Wizard] Tabs en SubNav:');
@@ -1543,29 +1905,29 @@
         } else {
           console.log('🔍 [Wizard] SubNav no encontrado (puede ser normal si el módulo no tiene subnav)');
         }
-        
+
         try {
           // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
           // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
           const normalizedModule = 'encuestas' === 'desempeno' ? 'desempeño' : 'encuestas';
-          
+
           // Esperar a que el template termine su inicialización completa
           // El template usa setTimeout de ~1500ms + requestAnimationFrame
           // Verificar que el módulo ya esté activo (gracias a initialActiveSection)
           if (window.UBITS_ContentManager.currentSection === normalizedModule) {
             console.log('🔍 [Wizard] ✅ Módulo ya está activo:', normalizedModule);
-            
+
             // Verificar si hay un producto
             const product = 'undefined';
             const hasProduct = product && product !== 'undefined' && product !== 'null' && product.trim() !== '';
-            
+
             if (hasProduct) {
               console.log('🔍 [Wizard] 🚀 Activando producto:', product);
               console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "' + product + '")');
-              
+
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
               window.UBITS_ContentManager.handleSectionChange(normalizedModule, product);
-              
+
               // Mapeo de productos a IDs de tabs del SubNav
               // Algunos productos tienen IDs diferentes en el SubNav
               const productToTabIdMap = {
@@ -1588,12 +1950,12 @@
                 'roles-permisos': 'roles-permisos',
                 'comunicaciones': 'comunicaciones'
               };
-              
+
               // Obtener el ID del tab correcto
               const tabId = productToTabIdMap[product] || product;
               console.log('🔍 [Wizard] [SubNav] Producto original:', product);
               console.log('🔍 [Wizard] [SubNav] Tab ID mapeado:', tabId);
-              
+
               // Forzar activación del tab en el SubNav después de que se actualice el contenido
               // Esto es necesario porque el SubNav puede ya existir y no recargarse
               // Usar múltiples intentos porque el SubNav puede tardar en renderizarse
@@ -1605,7 +1967,7 @@
                 console.log('🔍 [Wizard] [SubNav] Intento', attempts, 'de activar tab en SubNav...');
                 console.log('🔍 [Wizard] [SubNav] Producto objetivo:', product);
                 console.log('🔍 [Wizard] [SubNav] Tab ID a buscar:', tabId);
-                
+
                 // Buscar el SubNav de múltiples formas
                 let subNavElement = document.querySelector('.ubits-sub-nav');
                 if (!subNavElement) {
@@ -1620,16 +1982,16 @@
                     subNavElement = topNavContainer.querySelector('.ubits-sub-nav');
                   }
                 }
-                
+
                 console.log('🔍 [Wizard] [SubNav] SubNav encontrado:', !!subNavElement);
-                
+
                 if (subNavElement) {
                   console.log('🔍 [Wizard] [SubNav] SubNav HTML:', subNavElement.outerHTML.substring(0, 500));
-                  
+
                   // Listar todos los tabs disponibles para debug
                   const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
                   console.log('🔍 [Wizard] [SubNav] Tabs encontrados:', allTabs.length);
-                  
+
                   if (allTabs.length === 0) {
                     console.warn('🔍 [Wizard] [SubNav] ⚠️ No se encontraron tabs con selector .ubits-sub-nav-tab');
                     // Intentar otros selectores
@@ -1656,7 +2018,7 @@
                         innerHTML: tab.innerHTML.substring(0, 100)
                       });
                     });
-                    
+
                     // Si no hay producto o es undefined, mantener el tab que ContentManager ya activó
                     const product = 'undefined';
                     if (!product || product === 'undefined' || product.trim() === '') {
@@ -1676,24 +2038,24 @@
                       }
                       return false;
                     }
-                    
+
                     // Remover active de todos los tabs solo si hay un producto específico
                     console.log('🔍 [Wizard] [SubNav] Removiendo active de todos los tabs...');
                     allTabs.forEach(tab => {
                       tab.classList.remove('ubits-sub-nav-tab--active');
                     });
-                    
+
                     // Activar el tab correspondiente al producto
                     // Primero intentar con el tabId mapeado
                     console.log('🔍 [Wizard] [SubNav] Buscando tab con data-tab="' + tabId + '"...');
                     let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
-                    
+
                     // Si no se encuentra, intentar con el producto original
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado con tabId mapeado, intentando con producto original...');
                       targetTab = subNavElement.querySelector('[data-tab="' + product + '"]');
                     }
-                    
+
                     // Si aún no se encuentra, intentar buscar por texto
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado por data-tab, buscando por texto...');
@@ -1701,16 +2063,16 @@
                       Array.from(allTabs).forEach(tab => {
                         const text = tab.textContent?.trim().toLowerCase();
                         // Buscar coincidencias parciales
-                        if (text.includes(productText) || productText.includes(text) || 
-                            (productText.includes('inicio') && text.includes('inicio')) ||
-                            (productText.includes('matriz') && text.includes('matriz')) ||
-                            (productText.includes('talento') && text.includes('talento'))) {
+                        if (text.includes(productText) || productText.includes(text) ||
+                          (productText.includes('inicio') && text.includes('inicio')) ||
+                          (productText.includes('matriz') && text.includes('matriz')) ||
+                          (productText.includes('talento') && text.includes('talento'))) {
                           console.log('🔍 [Wizard] [SubNav] Tab encontrado por texto:', text);
                           targetTab = tab;
                         }
                       });
                     }
-                    
+
                     if (targetTab) {
                       console.log('🔍 [Wizard] [SubNav] ✅ Tab encontrado:', {
                         dataTab: targetTab.getAttribute('data-tab'),
@@ -1719,11 +2081,11 @@
                       });
                       targetTab.classList.add('ubits-sub-nav-tab--active');
                       console.log('🔍 [Wizard] [SubNav] ✅ Clase ubits-sub-nav-tab--active agregada');
-                      
+
                       // Verificar que se agregó correctamente
                       const hasActive = targetTab.classList.contains('ubits-sub-nav-tab--active');
                       console.log('🔍 [Wizard] [SubNav] Verificación - tiene clase active:', hasActive);
-                      
+
                       // Verificar estado final
                       const activeTab = document.querySelector('.ubits-sub-nav-tab--active');
                       console.log('🔍 [Wizard] [SubNav] Tab activo confirmado:', {
@@ -1754,7 +2116,7 @@
                   return false;
                 }
               };
-              
+
               // Iniciar después de que updateContent termine
               console.log('🔍 [Wizard] [SubNav] Programando activación del tab en 300ms...');
               setTimeout(activateTab, 300);
@@ -1774,7 +2136,7 @@
           console.error('🔍 [Wizard] Stack:', error.stack);
         }
       };
-      
+
       // Esperar a que el template termine su inicialización (el template usa setTimeout de ~1500ms)
       console.log('🔍 [Wizard] ⏳ Esperando 2500ms para que el template termine su inicialización...');
       setTimeout(() => {
@@ -1782,29 +2144,29 @@
         activateProduct();
       }, 2500);
     });
-    
+
     // Función para mantener el tab activo después de que ContentManager actualice el subnav
     const maintainActiveTab = () => {
       console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
       console.log('🔵 [SubNav Fix] maintainActiveTab() llamado');
       const product = 'undefined';
       console.log('🔵 [SubNav Fix] Producto objetivo:', product);
-      
-      const subNavElement = document.querySelector('.ubits-sub-nav') || 
-                           document.querySelector('#top-nav-container .ubits-sub-nav');
-      
+
+      const subNavElement = document.querySelector('.ubits-sub-nav') ||
+        document.querySelector('#top-nav-container .ubits-sub-nav');
+
       if (!subNavElement) {
         console.log('🔵 [SubNav Fix] ⚠️ SubNav no encontrado, saliendo');
         return;
       }
-      
+
       const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
       console.log('🔵 [SubNav Fix] Tabs encontrados:', allTabs.length);
-      
+
       // Si no hay producto, mantener el tab que ContentManager ya activó o activar el primero
       if (!product || product === 'undefined' || product === 'null' || product.trim() === '') {
         console.log('🔵 [SubNav Fix] ⚠️ No hay producto específico');
-        
+
         // Verificar si ya hay un tab activo
         const activeTab = subNavElement.querySelector('.ubits-sub-nav-tab--active');
         if (activeTab) {
@@ -1812,23 +2174,23 @@
           console.log('🔵 [SubNav Fix] ✅ Ya hay un tab activo, manteniéndolo:', dataTab);
           // Asegurar que la clase active esté presente (por si acaso)
           activeTab.classList.add('ubits-sub-nav-tab--active');
-          
+
           // Logs de diagnóstico del color
           const styles = window.getComputedStyle(activeTab, '::after');
           const computedBgColor = styles.backgroundColor;
           const rootStyles = getComputedStyle(document.documentElement);
           const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-          
+
           console.log('🔵 [SubNav Fix] 🔍 DIAGNÓSTICO DE COLOR (sin producto):');
           console.log('🔵 [SubNav Fix] Tema actual:', currentTheme);
           console.log('🔵 [SubNav Fix] backgroundColor (computado):', computedBgColor);
           console.log('🔵 [SubNav Fix] --modifiers-normal-color-dark-accent-blue:', rootStyles.getPropertyValue('--modifiers-normal-color-dark-accent-blue').trim() || '(no definido)');
           console.log('🔵 [SubNav Fix] --ubits-accent-brand:', rootStyles.getPropertyValue('--ubits-accent-brand').trim() || '(no definido)');
           console.log('🔵 [SubNav Fix] --ubits-accent-brand-static:', rootStyles.getPropertyValue('--ubits-accent-brand-static').trim() || '(no definido)');
-          
+
           return;
         }
-        
+
         // Si no hay tab activo, activar el primero disponible
         if (allTabs.length > 0) {
           const firstTab = allTabs[0];
@@ -1836,28 +2198,28 @@
           console.log('🔵 [SubNav Fix] Activando primer tab disponible:', dataTab);
           firstTab.classList.add('ubits-sub-nav-tab--active');
           console.log('🔵 [SubNav Fix] ✅ Clase active agregada al primer tab');
-          
+
           // Logs de diagnóstico del color después de activar
           setTimeout(() => {
             const styles = window.getComputedStyle(firstTab, '::after');
             const computedBgColor = styles.backgroundColor;
             const rootStyles = getComputedStyle(document.documentElement);
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            
+
             console.log('🔵 [SubNav Fix] 🔍 DIAGNÓSTICO DE COLOR (primer tab activado):');
             console.log('🔵 [SubNav Fix] Tema actual:', currentTheme);
             console.log('🔵 [SubNav Fix] backgroundColor (computado):', computedBgColor);
             console.log('🔵 [SubNav Fix] --modifiers-normal-color-dark-accent-blue:', rootStyles.getPropertyValue('--modifiers-normal-color-dark-accent-blue').trim() || '(no definido)');
             console.log('🔵 [SubNav Fix] --ubits-accent-brand:', rootStyles.getPropertyValue('--ubits-accent-brand').trim() || '(no definido)');
           }, 100);
-          
+
           return;
         }
-        
+
         console.log('🔵 [SubNav Fix] ⚠️ No hay tabs disponibles');
         return;
       }
-      
+
       // Si hay producto, buscar y activar el tab correspondiente
       const productToTabIdMap = {
         'inicio': 'home',
@@ -1876,10 +2238,10 @@
         'roles-permisos': 'roles-permisos',
         'comunicaciones': 'comunicaciones'
       };
-      
+
       const tabId = productToTabIdMap[product] || product;
       console.log('🔵 [SubNav Fix] Tab ID mapeado:', tabId);
-      
+
       // Log estado antes de remover
       console.log('🔵 [SubNav Fix] Estado ANTES de remover active:');
       allTabs.forEach((tab, idx) => {
@@ -1887,42 +2249,42 @@
         const dataTab = tab.getAttribute('data-tab');
         console.log('   Tab ' + idx + ': data-tab="' + dataTab + '", active=' + isActive);
       });
-      
+
       allTabs.forEach(tab => tab.classList.remove('ubits-sub-nav-tab--active'));
       console.log('🔵 [SubNav Fix] ✅ Clase active removida de todos los tabs');
-      
+
       let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
       console.log('🔵 [SubNav Fix] Buscando tab con data-tab="' + tabId + '":', !!targetTab);
-      
+
       if (!targetTab) {
         console.log('🔵 [SubNav Fix] Tab no encontrado con tabId, buscando con producto original...');
         targetTab = subNavElement.querySelector('[data-tab="' + product + '"]');
         console.log('🔵 [SubNav Fix] Tab encontrado con producto original:', !!targetTab);
       }
-      
+
       if (targetTab) {
         const dataTab = targetTab.getAttribute('data-tab');
         const text = targetTab.textContent?.trim();
         console.log('🔵 [SubNav Fix] ✅ Tab objetivo encontrado:', { dataTab, text });
         targetTab.classList.add('ubits-sub-nav-tab--active');
         console.log('🔵 [SubNav Fix] ✅ Clase ubits-sub-nav-tab--active agregada');
-        
+
         // Verificar que se agregó correctamente
         const hasActive = targetTab.classList.contains('ubits-sub-nav-tab--active');
         console.log('🔵 [SubNav Fix] Verificación - tiene clase active:', hasActive);
-        
+
         // Verificar el ::after y los tokens de color
         const styles = window.getComputedStyle(targetTab, '::after');
         const computedBgColor = styles.backgroundColor;
         const rootStyles = getComputedStyle(document.documentElement);
-        
+
         // Obtener valores de los tokens
         const ubitsAccentBrand = rootStyles.getPropertyValue('--ubits-accent-brand').trim();
         const modifiersNormalLightAccentBrand = rootStyles.getPropertyValue('--modifiers-normal-color-light-accent-brand').trim();
         const modifiersNormalDarkAccentBlue = rootStyles.getPropertyValue('--modifiers-normal-color-dark-accent-blue').trim();
         const ubitsAccentBrandStatic = rootStyles.getPropertyValue('--ubits-accent-brand-static').trim();
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        
+
         console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
         console.log('🔵 [SubNav Fix] 🔍 DIAGNÓSTICO DE COLOR DEL INDICADOR');
         console.log('🔵 [SubNav Fix] Tema actual:', currentTheme);
@@ -1951,13 +2313,13 @@
       }
       console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
     };
-    
+
     // Interceptar llamadas a handleSectionChange y updateSubNav para mantener el tab activo
     const originalHandleSectionChange = window.UBITS_ContentManager?.handleSectionChange;
     const originalUpdateSubNav = window.UBITS_ContentManager?.updateSubNav;
-    
+
     if (originalHandleSectionChange) {
-      window.UBITS_ContentManager.handleSectionChange = function(section, activeTabId) {
+      window.UBITS_ContentManager.handleSectionChange = function (section, activeTabId) {
         console.log('🔍 [Wizard] ════════════════════════════════════════');
         console.log('🔍 [Wizard] 🔄 handleSectionChange INTERCEPTADO');
         console.log('🔍 [Wizard] section:', section);
@@ -1972,9 +2334,9 @@
         return result;
       };
     }
-    
+
     if (originalUpdateSubNav) {
-      window.UBITS_ContentManager.updateSubNav = function(section, activeTabId) {
+      window.UBITS_ContentManager.updateSubNav = function (section, activeTabId) {
         console.log('🔵 [SubNav Fix] updateSubNav INTERCEPTADO');
         console.log('🔵 [SubNav Fix] section:', section, 'activeTabId:', activeTabId);
         const result = originalUpdateSubNav.call(this, section, activeTabId);
@@ -1987,7 +2349,7 @@
         return result;
       };
     }
-    
+
     // Observar cambios en el DOM para mantener el tab activo
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -2000,7 +2362,7 @@
             const hadActive = mutation.oldValue?.includes('ubits-sub-nav-tab--active');
             const hasActive = target.classList.contains('ubits-sub-nav-tab--active');
             console.log('🔵 [SubNav Fix] Tab:', { dataTab, text, hadActive, hasActive });
-            
+
             // Si se removió la clase active, restaurarla si es el tab correcto
             const product = 'undefined';
             if (product) {
@@ -2023,14 +2385,14 @@
               };
               const tabId = productToTabIdMap[product] || product;
               console.log('🔵 [SubNav Fix] Comparando:', { dataTab, tabId, product });
-              
+
               if (dataTab === tabId || dataTab === product) {
                 if (!target.classList.contains('ubits-sub-nav-tab--active')) {
                   console.log('🔵 [SubNav Fix] ⚠️ Clase active removida del tab correcto, restaurando...');
                   setTimeout(() => {
                     target.classList.add('ubits-sub-nav-tab--active');
                     console.log('🔵 [SubNav Fix] ✅ Clase active restaurada');
-                    
+
                     // Verificar estilos después de restaurar
                     const styles = window.getComputedStyle(target, '::after');
                     console.log('🔵 [SubNav Fix] Estilos ::after después de restaurar:', {
@@ -2059,12 +2421,12 @@
         }
       });
     });
-    
+
     // Observar el contenedor del subnav
     setTimeout(() => {
       console.log('🔵 [SubNav Fix] Configurando MutationObserver...');
-      const subNavContainer = document.querySelector('#top-nav-container') || 
-                             document.querySelector('.ubits-sub-nav');
+      const subNavContainer = document.querySelector('#top-nav-container') ||
+        document.querySelector('.ubits-sub-nav');
       if (subNavContainer) {
         console.log('🔵 [SubNav Fix] ✅ Contenedor encontrado, iniciando observación');
         observer.observe(subNavContainer, {
@@ -2078,15 +2440,15 @@
         console.error('🔵 [SubNav Fix] ❌ Contenedor del subnav no encontrado');
       }
     }, 1000);
-    
+
     if (!originalHandleSectionChange) {
       // Si ContentManager aún no existe, interceptarlo cuando se cree
       Object.defineProperty(window, 'UBITS_ContentManager', {
-        set: function(value) {
+        set: function (value) {
           console.log('🔍 [Wizard] UBITS_ContentManager definido');
           if (value && value.handleSectionChange) {
             const original = value.handleSectionChange;
-            value.handleSectionChange = function(section, activeTabId) {
+            value.handleSectionChange = function (section, activeTabId) {
               console.log('🔍 [Wizard] ════════════════════════════════════════');
               console.log('🔍 [Wizard] 🔄 handleSectionChange INTERCEPTADO (desde setter)');
               console.log('🔍 [Wizard] section:', section);
@@ -2097,7 +2459,7 @@
           }
           Object.defineProperty(window, 'UBITS_ContentManager', { value, writable: true, configurable: true });
         },
-        get: function() {
+        get: function () {
           return window._UBITS_ContentManager;
         },
         configurable: true
@@ -2106,17 +2468,147 @@
   </script>
 
   <script>
+    // Desactivar navegación de otros módulos en el sidebar
+    (function () {
+      const currentModule = 'encuestas';
+
+      function disableOtherModules() {
+        const sidebar = document.querySelector('.ubits-sidebar');
+        if (!sidebar) {
+          // Si el sidebar aún no está cargado, reintentar
+          setTimeout(disableOtherModules, 100);
+          return;
+        }
+
+        // Buscar todos los botones del sidebar
+        const allButtons = sidebar.querySelectorAll('.ubits-sidebar-nav-button');
+        let disabledCount = 0;
+
+        allButtons.forEach(button => {
+          const buttonModule = button.getAttribute('data-section');
+
+          // Si el botón NO es del módulo actual, deshabilitarlo
+          if (buttonModule && buttonModule !== currentModule) {
+            // Remover el atributo data-section para que no funcione el click
+            button.removeAttribute('data-section');
+
+            // Deshabilitar el botón visualmente
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+            button.style.pointerEvents = 'none';
+
+            // Prevenir cualquier click
+            button.addEventListener('click', function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }, true);
+
+            disabledCount++;
+          }
+        });
+
+        // Desactivar el logo de UBITS que lleva al inicio
+        const logoElements = sidebar.querySelectorAll('a[href*="inicio"], .ubits-sidebar-logo, .ubits-logo, [data-section="inicio"]');
+        logoElements.forEach(logo => {
+          // Remover atributos de navegación
+          logo.removeAttribute('href');
+          logo.removeAttribute('data-section');
+
+          // Deshabilitar visualmente
+          logo.style.opacity = '0.5';
+          logo.style.cursor = 'not-allowed';
+          logo.style.pointerEvents = 'none';
+
+          // Prevenir cualquier click
+          logo.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }, true);
+
+          disabledCount++;
+        });
+
+        // También buscar el logo por su posición común (primer elemento del sidebar)
+        const sidebarHeader = sidebar.querySelector('.ubits-sidebar-header, .sidebar-header, [class*="header"]');
+        if (sidebarHeader) {
+          const headerLinks = sidebarHeader.querySelectorAll('a');
+          headerLinks.forEach(link => {
+            // Si el enlace apunta al inicio o no tiene data-section específico, desactivarlo
+            const href = link.getAttribute('href') || '';
+            const dataSection = link.getAttribute('data-section') || '';
+            if (href.includes('inicio') || dataSection === 'inicio' || (!dataSection && href !== '#')) {
+              link.removeAttribute('href');
+              link.removeAttribute('data-section');
+              link.style.opacity = '0.5';
+              link.style.cursor = 'not-allowed';
+              link.style.pointerEvents = 'none';
+              link.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+              }, true);
+              disabledCount++;
+            }
+          });
+        }
+
+        if (disabledCount > 0) {
+          console.log('🔒 [Navegación] Desactivados ' + disabledCount + ' elemento(s) del sidebar (módulos + logo)');
+        }
+      }
+
+      // Ejecutar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', disableOtherModules);
+      } else {
+        disableOtherModules();
+      }
+
+      // También ejecutar después de que el sidebar se cargue dinámicamente
+      setTimeout(disableOtherModules, 500);
+      setTimeout(disableOtherModules, 1000);
+      setTimeout(disableOtherModules, 2000);
+
+      // Observar cambios en el DOM para cuando el sidebar se cargue
+      const observer = new MutationObserver((mutations) => {
+        let shouldDisable = false;
+        mutations.forEach((mutation) => {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach((node) => {
+              if (node.nodeType === 1 &&
+                (node.classList?.contains('ubits-sidebar') ||
+                  node.querySelector?.('.ubits-sidebar-nav-button'))) {
+                shouldDisable = true;
+              }
+            });
+          }
+        });
+        if (shouldDisable) {
+          setTimeout(disableOtherModules, 100);
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    })();
+  </script>
+
+  <script>
     // ⭐ SISTEMA AUTOMÁTICO DE PRESERVACIÓN DE COMPONENTES
     // Este script facilita agregar componentes sin que desaparezcan con ContentManager
     // Mantiene todas las funcionalidades del template (sidebar, navbar, responsive)
-    
-    (function() {
+
+    (function () {
       // Sistema simple de preservación automática
       window.AUTORUN_PRESERVE_COMPONENTS = window.AUTORUN_PRESERVE_COMPONENTS || {
         components: new Map(),
-        
+
         // Registrar un componente para preservación automática
-        register: function(componentId, containerId, handlers) {
+        register: function (componentId, containerId, handlers) {
           const key = componentId + '-' + containerId;
           this.components.set(key, {
             componentId,
@@ -2126,40 +2618,40 @@
           });
           console.log('🔒 [AutoPreserve] Componente registrado:', componentId, 'en', containerId);
         },
-        
+
         // Guardar HTML antes de que ContentManager lo limpie
-        saveAll: function() {
+        saveAll: function () {
           this.components.forEach((comp, key) => {
             const container = document.getElementById(comp.containerId);
             if (container) {
-              const block = container.closest('div[style*="margin-top"]') || 
-                           container.closest('div[style*="padding"]') ||
-                           container.parentElement ||
-                           container;
+              const block = container.closest('div[style*="margin-top"]') ||
+                container.closest('div[style*="padding"]') ||
+                container.parentElement ||
+                container;
               if (block) {
                 comp.html = block.outerHTML;
               }
             }
           });
         },
-        
+
         // Restaurar componentes después de ContentManager.updateContent
-        restoreAll: function() {
+        restoreAll: function () {
           const contentArea = document.querySelector('.content-area');
           if (!contentArea) return;
-          
+
           this.components.forEach((comp, key) => {
             const existing = document.getElementById(comp.containerId);
             if (!existing && comp.html) {
               // Buscar contenedor objetivo
               let target = contentArea.querySelector('.widget-contenido-principal') ||
-                          contentArea.querySelector('.section-single') ||
-                          contentArea.querySelector('div[class*="widget"]') ||
-                          contentArea;
-              
+                contentArea.querySelector('.section-single') ||
+                contentArea.querySelector('div[class*="widget"]') ||
+                contentArea;
+
               if (target) {
                 target.insertAdjacentHTML('beforeend', comp.html);
-                
+
                 // Re-agregar event listeners con selectores específicos por componente
                 setTimeout(() => {
                   const restored = document.getElementById(comp.containerId);
@@ -2224,22 +2716,22 @@
           });
         }
       };
-      
+
       // Interceptar ContentManager.updateContent automáticamente
       if (window.UBITS_ContentManager && window.UBITS_ContentManager.updateContent) {
         const originalUpdateContent = window.UBITS_ContentManager.updateContent;
-        window.UBITS_ContentManager.updateContent = function(section, subSection) {
+        window.UBITS_ContentManager.updateContent = function (section, subSection) {
           // Guardar componentes antes de limpiar
           window.AUTORUN_PRESERVE_COMPONENTS.saveAll();
-          
+
           // Llamar método original
           const result = originalUpdateContent.call(this, section, subSection);
-          
+
           // Restaurar componentes después
           setTimeout(() => {
             window.AUTORUN_PRESERVE_COMPONENTS.restoreAll();
           }, 500);
-          
+
           return result;
         };
         console.log('✅ [AutoPreserve] ContentManager.updateContent interceptado automáticamente');
@@ -2247,4 +2739,5 @@
     })();
   </script>
 </body>
+
 </html>

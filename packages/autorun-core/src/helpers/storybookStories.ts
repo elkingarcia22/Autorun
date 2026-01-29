@@ -317,6 +317,38 @@ async function getStoriesFromBrowser(
 export async function mapComponentNameToStorybookId(
   componentName: string
 ): Promise<string> {
+  // ⚠️ NUEVO: Primero intentar usar el mapeo de storybookMCPNameMapper
+  try {
+    const { ADDITIONAL_COMPONENT_NAME_MAPPINGS, COMPONENT_NAME_TO_STORYBOOK_ID } = await import('./storybookMCPNameMapper');
+    
+    // Buscar en el mapeo adicional primero (ej: "SelectionCard" → "Layout/Selection Card")
+    const mappedName = ADDITIONAL_COMPONENT_NAME_MAPPINGS[componentName];
+    if (mappedName) {
+      // Convertir el nombre completo a ID (ej: "Layout/Selection Card" → "layout-selection-card")
+      const mappedId = COMPONENT_NAME_TO_STORYBOOK_ID[mappedName];
+      if (mappedId) {
+        console.log(
+          `✅ [Storybook Stories] ID encontrado usando mapeo: ${componentName} → ${mappedName} → ${mappedId}`
+        );
+        return mappedId;
+      }
+    }
+    
+    // Si no hay mapeo adicional, buscar directamente en COMPONENT_NAME_TO_STORYBOOK_ID
+    const directMappedId = COMPONENT_NAME_TO_STORYBOOK_ID[componentName];
+    if (directMappedId) {
+      console.log(
+        `✅ [Storybook Stories] ID encontrado usando mapeo directo: ${componentName} → ${directMappedId}`
+      );
+      return directMappedId;
+    }
+  } catch (mappingError: any) {
+    console.warn(
+      `⚠️ [Storybook Stories] Error usando mapeo, continuando con otros métodos:`,
+      mappingError.message
+    );
+  }
+
   try {
     // Intentar usar StorybookManager si está disponible
     const { StorybookManager } = await import('./storybookManager');
@@ -380,8 +412,7 @@ export async function mapComponentNameToStorybookId(
     );
   }
 
-  // ⚠️ CRÍTICO: NO usar mapeo estático de UBITS como fallback
-  // En su lugar, usar el sistema de descubrimiento automático
+  // ⚠️ CRÍTICO: Usar el sistema de descubrimiento automático que ahora usa el mapeo
   try {
     const { getCorrectStorybookId } = await import('./storybookIdDiscovery');
     const discoveryResult = await getCorrectStorybookId(

@@ -329,6 +329,15 @@ export class IntelligentComponentParser {
           /(?:implementar|crear|agregar|poner|hacer).*(?:card\s+content|contenido\s+de\s+tarjeta|contentcard)/i,
         ],
       },
+      {
+        name: 'Metric Card',
+        patterns: [
+          /\bmetric\s+card\b/i,
+          /\bmetriccard\b/i,
+          /\btarjeta\s+de\s+m[eé]trica\b/i,
+          /\btext\s+metric\s+card\b/i,
+        ],
+      },
     ];
   }
 

@@ -7,9 +7,12 @@
  * y que todos los tools estén disponibles.
  */
 
-import { startAutorunMCPServer } from '../packages/autorun-core/src/mcp-server/autorunMCPServer.js';
+// ⚠️ ACTUALIZADO: Usar MCP v2
+import { startAutorunMCPServerV2 } from '../packages/autorun-core/src/mcp-server-v2/server.js';
 
 async function testMCPServer() {
+  // ⚠️ ACTUALIZADO: Usar MCP v2
+  console.log('🚀 [Test] Probando Autorun MCP Server v2...');
 	console.log('\n🧪 [Test Autorun MCP] Iniciando prueba del servidor MCP...\n');
 
 	try {
@@ -18,12 +21,12 @@ async function testMCPServer() {
 
 		// El servidor se ejecuta en modo stdio, así que necesitamos simular entrada
 		// Por ahora solo verificamos que se puede importar y que la función existe
-		const serverFunction = startAutorunMCPServer;
+		const serverFunction = startAutorunMCPServerV2;
 
 		if (typeof serverFunction === 'function') {
-			console.log('✅ [Test] Función startAutorunMCPServer está disponible');
+			console.log('✅ [Test] Función startAutorunMCPServerV2 está disponible');
 		} else {
-			console.error('❌ [Test] Función startAutorunMCPServer NO está disponible');
+			console.error('❌ [Test] Función startAutorunMCPServerV2 NO está disponible');
 			process.exit(1);
 		}
 

@@ -40,18 +40,59 @@ export async function getAutorunHub(): Promise<AutorunHub> {
 async function initializeAutorunHub(): Promise<AutorunHub> {
 	try {
 		console.log('🚀 AutorunAgent: Inicializando AutorunHub...');
+		console.log(`   🔍 [DEBUG] ========================================`);
+		console.log(`   🔍 [DEBUG] AutorunAgent: INICIANDO BÚSQUEDA`);
+		console.log(`   🔍 [DEBUG] process.cwd(): ${process.cwd()}`);
+		console.log(`   🔍 [DEBUG] __dirname: ${typeof __dirname !== 'undefined' ? __dirname : 'undefined'}`);
 
-		// Verificar que existe la configuración
-		const configPath = path.join(process.cwd(), '.ubits/project-config.json');
-		try {
-			await fs.access(configPath);
-		} catch {
+		// ⚠️ CRÍTICO: Buscar el directorio del proyecto (que contiene .ubits/project-config.json)
+		// Empezar desde process.cwd() y subir hasta encontrar el archivo
+		let configPath: string | null = null;
+		let currentDir = process.cwd();
+		
+		console.log(`   🔍 [DEBUG] Buscando config desde: ${currentDir}`);
+		
+		// Buscar en el árbol de directorios hacia arriba
+		for (let i = 0; i < 10; i++) {
+			const testPath = path.join(currentDir, '.ubits', 'project-config.json');
+			console.log(`   🔍 [DEBUG]   [${i}] Intentando: ${testPath}`);
+			try {
+				await fs.access(testPath);
+				configPath = testPath;
+				console.log(`   ✅ [DEBUG] ✅✅✅ Config encontrada en: ${configPath}`);
+				// ⚠️ CRÍTICO: Cambiar process.cwd() al directorio del proyecto
+				if (currentDir !== process.cwd()) {
+					console.log(`   🔄 [DEBUG] Cambiando process.cwd() de ${process.cwd()} a ${currentDir}`);
+					process.chdir(currentDir);
+					console.log(`   ✅ [DEBUG] ✅✅✅ process.cwd() ahora es: ${process.cwd()}`);
+				}
+				break;
+			} catch (err: any) {
+				console.log(`   🔍 [DEBUG]   [${i}] No encontrado: ${err.code || err.message}`);
+				// No encontrado, intentar directorio padre
+				const parent = path.dirname(currentDir);
+				if (parent === currentDir) {
+					// Llegamos a la raíz del sistema
+					console.log(`   ⚠️ [DEBUG] Llegamos a la raíz del sistema: ${currentDir}`);
+					break;
+				}
+				currentDir = parent;
+			}
+		}
+		
+		if (!configPath) {
+			console.error(`   ❌ [DEBUG] ❌❌❌ NO SE ENCONTRÓ .ubits/project-config.json`);
+			console.error(`   ❌ [DEBUG] Último directorio intentado: ${currentDir}`);
+			console.error(`   🔍 [DEBUG] ========================================`);
 			console.warn('⚠️ AutorunAgent: No se encontró configuración en .ubits/project-config.json');
 			console.warn('   Ejecuta "npm run init" para configurar Autorun');
 			throw new Error('Autorun no está configurado. Ejecuta "npm run init" primero.');
 		}
+		
+		console.log(`   🔍 [DEBUG] ========================================`);
 
 		// Crear e inicializar hub
+		console.log(`   🔍 [DEBUG] Usando config path final: ${configPath}`);
 		const hub = new AutorunHub(configPath);
 
 		// ⚠️ CRÍTICO: Registrar add-ons disponibles ANTES de inicializar
