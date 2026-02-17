@@ -41,7 +41,11 @@
 		"deploy:index": "bash scripts/deploy-index.sh",
 		"deploy:index:preview": "cd deploy && npx vercel",
 		"deploy": "vercel --prod",
-		"deploy:preview": "vercel"
+		"deploy:preview": "vercel",
+		"autorun:boot:impl": "tsx scripts/verify-boot-impl.ts",
+		"autorun:scope:impl": "tsx scripts/verify-scope-impl.ts",
+		"autorun:scope:ci": "tsx scripts/verify-scope-impl.ts --strict-untracked",
+		"autorun:session:impl": "tsx scripts/verify-session-impl.ts"
 	},
 	"bin": {
 		"autorun-init": "./packages/autorun-core/dist/cli/autorun-init.js"
