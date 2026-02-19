@@ -15,3 +15,15 @@ export type {
 	FloatingMenuSection,
 	ProfileMenuItem,
 } from './types/TabBarOptions';
+
+// Auto-inicializar si se importa directamente
+// if (typeof window !== 'undefined') {
+// 	window.UBITS = window.UBITS || {};
+// 	window.UBITS.TabBar = { renderTabBar, createTabBar };
+// 
+// 	// Exponer globalmente para compatibilidad
+// 	(window as any).createTabBar = createTabBar;
+// 	(window as any).renderTabBar = renderTabBar;
+// 
+// 	console.log('✅ UBITS TabBar component ready');
+// }

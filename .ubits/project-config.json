@@ -47,9 +47,9 @@
     "projectType": "ubits",
     "ubits": {
       "template": "administrador",
-      "module": "encuestas",
+      "module": "inicio",
       "product": "",
-      "canvasPath": "/Users/ub-col-pro-lf4/Desktop/Autorun/prototypes/canvas-administrador-encuestas-2026-01-29.html"
+      "canvasPath": "/Users/ub-col-pro-lf4/Desktop/Autorun/prototypes/canvas-administrador-inicio-2026-02-19.html"
     }
   }
 }

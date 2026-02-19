@@ -7,11 +7,12 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const COMPONENTS_DIR = path.resolve(ROOT, 'vendor/ubits/packages/components');
-const OUTPUT_DIR = path.resolve(ROOT, 'vendor/ubits/packages/templates/dist');
+const OUTPUT_DIR = path.resolve(ROOT, 'packages/autorun-core/dist');
+
+// ... (rest of imports)
 
 async function main() {
     console.log('🚀 Starting Component Build...');
-
     // 1. Scan Components
     if (!fs.existsSync(COMPONENTS_DIR)) {
         console.error(`❌ Components directory not found: ${COMPONENTS_DIR}`);
@@ -40,29 +41,29 @@ async function main() {
 
         // Check if index.ts exists
         if (fs.existsSync(indexPath)) {
-            // PascalCase converter for namespace
+            // ... (namespace logic)
             const namespace = component
                 .split('-')
                 .map(part => part.charAt(0).toUpperCase() + part.slice(1))
                 .join('');
 
-            // Import JS
+            // Import JS and export globals
             entryContent += `
             import * as ${namespace} from '${indexPath}';
             window.UBITS.${namespace} = ${namespace};
-            `;
-
-            // Scan for CSS files in src/styles/
-            const stylesDir = path.join(srcPath, 'styles');
-            if (fs.existsSync(stylesDir) && fs.statSync(stylesDir).isDirectory()) {
-                const cssFiles = fs.readdirSync(stylesDir).filter(f => f.endsWith('.css'));
-                for (const css of cssFiles) {
-                    const cssPath = path.join(stylesDir, css);
-                    entryContent += `import '${cssPath}';\n`;
-                }
+            if (typeof window !== 'undefined') {
+                window['create${namespace}'] = ${namespace}.create${namespace};
+                window['render${namespace}'] = ${namespace}.render${namespace};
+                /* Helper for button which might be Button or UbitsButton */
+                // if (!window['create${namespace}'] && ${namespace}.create) {
+                //      window['create${namespace}'] = ${namespace}.create;
+                // }
             }
+            `;
+            // ... (css logic)
         }
     }
+
 
     entryContent += `console.log('✅ UBITS Components Bundle Loaded.', window.UBITS);`;
 

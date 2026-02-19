@@ -6,13 +6,8 @@ export default defineConfig({
 		lib: {
 			entry: resolve(__dirname, 'src/index.ts'),
 			name: 'UBITSButton',
-			formats: ['es', 'umd'],
-			fileName: (format) => {
-				if (format === 'es') {
-					return 'button.es.js';
-				}
-				return 'button.umd.js';
-			},
+			formats: ['iife'],
+			fileName: () => 'index.js',
 		},
 		rollupOptions: {
 			external: ['@ubits/icons', '@ubits/tokens'],

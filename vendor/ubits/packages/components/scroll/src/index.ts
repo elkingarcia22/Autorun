@@ -5,7 +5,7 @@ import './styles/scroll.css';
 export { createScrollbar, renderScrollbar };
 export type { ScrollOptions };
 
-if (typeof window !== 'undefined') {
-	(window as any).createScrollbar = createScrollbar;
-	(window as any).renderScrollbar = renderScrollbar;
-}
+// if (typeof window !== 'undefined') {
+// 	(window as any).createScrollbar = createScrollbar;
+// 	(window as any).renderScrollbar = renderScrollbar;
+// }

@@ -14,8 +14,16 @@ export type {
 } from './types/ButtonOptions';
 
 // Auto-inicializar si se importa directamente
-if (typeof window !== 'undefined') {
-	import('./ButtonComponent').then(() => {
-		console.log('✅ UBITS Button component registered');
-	});
-}
+// Auto-inicializar si se importa directamente
+// if (typeof window !== 'undefined') {
+// 	window.UBITS = window.UBITS || {};
+// 	window.UBITS.Button = { renderButton, createButton, ButtonAddon, UBITSButton };
+// 
+// 	// Exponer globalmente para compatibilidad
+// 	(window as any).createButton = createButton;
+// 	(window as any).renderButton = renderButton;
+// 
+// 	import('./ButtonComponent').then(() => {
+// 		console.log('✅ UBITS Button component registered');
+// 	});
+// }

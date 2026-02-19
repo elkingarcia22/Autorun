@@ -38,7 +38,7 @@ class TemplateLoader {
 	 * @param {object} config - Configuración del componente
 	 * @param {string} containerId - ID del contenedor donde renderizar
 	 */
-	loadComponent(componentName, config, containerId) {
+	async loadComponent(componentName, config, containerId) {
 		console.log(`📦 Cargando componente: ${componentName} en contenedor: ${containerId}`);
 		console.log(`[loadComponent] Verificando contenedor "${containerId}"...`);
 
@@ -53,7 +53,23 @@ class TemplateLoader {
 			switch (componentName.toLowerCase()) {
 				case 'sidebar':
 					console.log('[loadComponent] Verificando window.createSidebar...');
-					console.log('[loadComponent] typeof createSidebar:', typeof window.createSidebar);
+
+					// Esperar a que createSidebar esté disponible
+					if (typeof window.createSidebar !== 'function') {
+						console.log('[loadComponent] ⏳ Esperando a window.createSidebar...');
+						try {
+							await this.waitForGlobal('createSidebar');
+						} catch (e) {
+							console.error(`[loadComponent] ❌ Timeout esperando a createSidebar: ${e.message}`);
+							// Report failure to Autorun Boot Report if possible
+							if (window.__AUTORUN_BOOT_REPORT__) {
+								window.__AUTORUN_BOOT_REPORT__.errors.push("Missing global: createSidebar");
+								window.__AUTORUN_BOOT_REPORT__.status = "FAILED";
+							}
+							return null;
+						}
+					}
+
 					if (typeof window.createSidebar === 'function') {
 						console.log('[loadComponent] ✅ createSidebar es una función, llamando...');
 						const sidebarOptions = {
@@ -81,7 +97,7 @@ class TemplateLoader {
 						return sidebarElement;
 					} else {
 						console.error(
-							'[loadComponent] ❌ window.createSidebar NO es una función:',
+							'[loadComponent] ❌ window.createSidebar NO es una función (incluso después de esperar):',
 							typeof window.createSidebar,
 						);
 					}
@@ -105,7 +121,23 @@ class TemplateLoader {
 				case 'tabbar':
 				case 'tab-bar':
 					console.log('[loadComponent] Verificando window.createTabBar...');
-					console.log('[loadComponent] typeof createTabBar:', typeof window.createTabBar);
+
+					// Esperar a que createTabBar esté disponible
+					if (typeof window.createTabBar !== 'function') {
+						console.log('[loadComponent] ⏳ Esperando a window.createTabBar...');
+						try {
+							await this.waitForGlobal('createTabBar');
+						} catch (e) {
+							console.error(`[loadComponent] ❌ Timeout esperando a createTabBar: ${e.message}`);
+							// Report failure to Autorun Boot Report if possible
+							if (window.__AUTORUN_BOOT_REPORT__) {
+								window.__AUTORUN_BOOT_REPORT__.errors.push("Missing global: createTabBar");
+								window.__AUTORUN_BOOT_REPORT__.status = "FAILED";
+							}
+							return null;
+						}
+					}
+
 					if (typeof window.createTabBar === 'function') {
 						console.log('[loadComponent] ✅ createTabBar es una función, llamando...');
 						const tabBarConfig = {
@@ -140,7 +172,7 @@ class TemplateLoader {
 						return tabBarElement;
 					} else {
 						console.error(
-							'[loadComponent] ❌ window.createTabBar NO es una función:',
+							'[loadComponent] ❌ window.createTabBar NO es una función (incluso después de esperar):',
 							typeof window.createTabBar,
 						);
 					}
@@ -162,7 +194,7 @@ class TemplateLoader {
 	 * @param {object} productConfig - Configuración del producto
 	 * @param {object} containerIds - IDs de los contenedores
 	 */
-	loadProduct(productConfig, containerIds) {
+	async loadProduct(productConfig, containerIds) {
 		console.log(`🚀 Cargando producto: ${productConfig.name}`);
 		console.log('[TemplateLoader] ProductConfig:', JSON.stringify(productConfig, null, 2));
 		console.log('[TemplateLoader] ContainerIds:', containerIds);
@@ -176,7 +208,7 @@ class TemplateLoader {
 				'[TemplateLoader] Sidebar config:',
 				JSON.stringify(productConfig.sidebar, null, 2),
 			);
-			results.sidebar = this.loadComponent('sidebar', productConfig.sidebar, containerIds.sidebar);
+			results.sidebar = await this.loadComponent('sidebar', productConfig.sidebar, containerIds.sidebar);
 			console.log('[TemplateLoader] ✅ Sidebar resultado:', results.sidebar);
 		} else {
 			console.warn('[TemplateLoader] ⚠️ No se puede cargar sidebar:', {
@@ -203,7 +235,7 @@ class TemplateLoader {
 		if (containerIds.tabbar && productConfig.tabbar) {
 			console.log('[TemplateLoader] 📦 Intentando cargar tabbar...');
 			console.log('[TemplateLoader] Tabbar config:', JSON.stringify(productConfig.tabbar, null, 2));
-			results.tabbar = this.loadComponent('tabbar', productConfig.tabbar, containerIds.tabbar);
+			results.tabbar = await this.loadComponent('tabbar', productConfig.tabbar, containerIds.tabbar);
 			console.log('[TemplateLoader] ✅ Tabbar resultado:', results.tabbar);
 		} else {
 			console.warn('[TemplateLoader] ⚠️ No se puede cargar tabbar:', {
@@ -237,6 +269,33 @@ class TemplateLoader {
 
 		// El componente debería recargarse desde la configuración del producto
 		// Esto se implementaría con hot-reload
+	}
+
+	/**
+	 * Espera a que una variable global esté disponible
+	 * @param {string} name - Nombre de la variable global
+	 * @param {number} timeout - Timeout en ms (default 10000)
+	 */
+	waitForGlobal(name, timeout = 10000) {
+		return new Promise((resolve, reject) => {
+			if (typeof window[name] !== 'undefined') {
+				resolve(window[name]);
+				return;
+			}
+
+			console.log(`⏳ Waiting for global: ${name}`);
+			const startTime = Date.now();
+			const interval = setInterval(() => {
+				if (typeof window[name] !== 'undefined') {
+					clearInterval(interval);
+					console.log(`✅ Global found: ${name}`);
+					resolve(window[name]);
+				} else if (Date.now() - startTime > timeout) {
+					clearInterval(interval);
+					reject(new Error(`Timeout waiting for global: ${name}`));
+				}
+			}, 100);
+		});
 	}
 }
 

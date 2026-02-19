@@ -6,8 +6,8 @@ export default defineConfig({
 		lib: {
 			entry: resolve(__dirname, 'src/index.ts'),
 			name: 'UBITSTabBar',
-			fileName: 'index',
-			formats: ['es'],
+			fileName: () => 'index.js',
+			formats: ['iife'],
 		},
 		rollupOptions: {
 			external: [],

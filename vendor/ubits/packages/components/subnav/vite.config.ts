@@ -6,8 +6,8 @@ export default defineConfig({
 		lib: {
 			entry: resolve(__dirname, 'src/index.ts'),
 			name: 'UBITSSubNav',
-			fileName: 'index',
-			formats: ['es'],
+			fileName: () => 'index.js',
+			formats: ['iife'],
 		},
 		rollupOptions: {
 			external: ['@ubits/tokens', '@ubits/typography', '@ubits/icons'],
