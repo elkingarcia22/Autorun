@@ -712,7 +712,7 @@ function initFloatingMenuListeners(
 		});
 
 		// Soporte para teclado
-		treeElement.addEventListener('keydown', (e) => {
+		treeElement.addEventListener('keydown', (e: KeyboardEvent) => {
 			const target = e.target as HTMLElement;
 			const content = target.closest('.ubits-tree-node__content') as HTMLElement;
 
@@ -755,7 +755,7 @@ function initProfileMenuListeners(
 	items: ProfileMenuItem[],
 	onProfileMenuItemClick?: (itemId: string, item: ProfileMenuItem) => void,
 ): void {
-	const profileMenu = container.querySelector('.ubits-profile-menu');
+	const profileMenu = container.querySelector('.ubits-profile-menu') as HTMLElement;
 	if (!profileMenu) return;
 
 	// Tree menu nodes (expandible/collapsible)

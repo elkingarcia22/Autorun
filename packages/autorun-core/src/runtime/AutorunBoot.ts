@@ -254,6 +254,7 @@ npm run autorun:preview -- ./prototypes/${window.location.pathname.split('/').po
       report.status = 'READY';
       (window as any).__AUTORUN_CATALOG__ = this.catalog;
       (window as any).__AUTORUN_BOOTED__ = true;
+      (window as any).__AUTORUN_BOOT_STATE__ = { ready: true, ts: Date.now(), version: 'v2' };
       (window as any).__AUTORUN_BOOT_REPORT__ = report;
       this.logger.info('🎉 Boot complete - System READY');
     } else if (report.errors.length > 0) {
@@ -275,23 +276,29 @@ npm run autorun:preview -- ./prototypes/${window.location.pathname.split('/').po
    * @param timeout - Timeout in milliseconds
    */
   async waitForUBITS(timeout: number) {
-    const checkUBITS = () => {
-      const ubits = (window as any).UBITS;
-      if (!ubits) return false;
-      const keys = Object.keys(ubits);
-      return true;
+    const isReady = () => {
+      const w = window as any;
+      const ubits = w.UBITS;
+      const isUbitsPopulated = ubits && (Object.keys(ubits).length > 0 || ubits.Accordion || ubits.Card);
+      const areGlobalsExposed = typeof w.createSidebar === 'function' && typeof w.createTabBar === 'function';
+      return isUbitsPopulated || areGlobalsExposed;
     };
-    try {
-      await waitForDependencies(['window.UBITS'], {
-        timeout,
-        checkInterval: 100,
-      });
-      if (!checkUBITS()) {
-        throw new Error('UBITS object exists but has no modules');
-      }
-    } catch (error: any) {
-      throw new Error(`UBITS not ready after ${timeout}ms: ${error.message}`);
-    }
+
+    const startTime = Date.now();
+    return new Promise<void>((resolve, reject) => {
+      const check = () => {
+        if (isReady()) {
+          resolve();
+          return;
+        }
+        if (Date.now() - startTime > timeout) {
+          reject(new Error(`UBITS or globals not ready after ${timeout}ms`));
+          return;
+        }
+        setTimeout(check, 100);
+      };
+      check();
+    });
   }
 
   /**
@@ -336,23 +343,21 @@ Schema Version: ${report.schemaVersion}
   - No Storybook APIs: ${report.rules.noStorybookAPIs ? '✅ ON' : '❌ OFF'}
   - Registry only: ${report.rules.registryOnly ? '✅ ON' : '❌ OFF'}
 
-${
-  report.warnings.length > 0
-    ? `
+${report.warnings.length > 0
+        ? `
 ⚠️  Warnings:
 ${report.warnings.map((w) => `  • ${w}`).join('\n')}
 `
-    : ''
-}
+        : ''
+      }
 
-${
-  report.errors.length > 0
-    ? `
+${report.errors.length > 0
+        ? `
 ❌ Errors:
 ${report.errors.map((e) => `  • ${e}`).join('\n')}
 `
-    : ''
-}
+        : ''
+      }
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     `);
   }

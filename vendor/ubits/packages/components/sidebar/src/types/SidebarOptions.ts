@@ -50,12 +50,12 @@ export interface ProfileMenuItem {
 	/**
 	 * Icono FontAwesome
 	 */
-	icon: string;
+	icon?: string;
 
 	/**
 	 * Texto del item
 	 */
-	label: string;
+	label?: string;
 
 	/**
 	 * URL a la que redirige (opcional)

@@ -3,7 +3,9 @@
  * Export público del add-on Sidebar
  */
 
-export { renderSidebar, createSidebar, updateActiveSidebarButton } from './SidebarProvider';
+import { renderSidebar, createSidebar, updateActiveSidebarButton } from './SidebarProvider';
+
+export { renderSidebar, createSidebar, updateActiveSidebarButton };
 export type {
 	SidebarOptions,
 	SidebarButton,
@@ -14,17 +16,16 @@ export type {
 } from './types/SidebarOptions';
 
 // Auto-inicializar si se importa directamente
-// Auto-inicializar si se importa directamente
-// if (typeof window !== 'undefined') {
-// 	window.UBITS = window.UBITS || {};
-// 	window.UBITS.Sidebar = { renderSidebar, createSidebar, updateActiveSidebarButton };
-// 
-// 	// Exponer globalmente para compatibilidad
-// 	(window as any).createSidebar = createSidebar;
-// 	(window as any).renderSidebar = renderSidebar;
-// 	(window as any).updateActiveSidebarButton = updateActiveSidebarButton;
-// 
-// 	console.log('✅ [DEBUG] UBITS Sidebar component ready (IIFE executed)');
-// 	console.log('✅ [DEBUG] window.UBITS.Sidebar exists:', !!window.UBITS.Sidebar);
-// 	console.log('✅ [DEBUG] window.createSidebar exists:', !!(window as any).createSidebar);
-// }
+if (typeof window !== 'undefined') {
+	let w = window as any;
+	w.UBITS = w.UBITS || {};
+	w.UBITS.Sidebar = { ...(w.UBITS.Sidebar || {}), renderSidebar, createSidebar, updateActiveSidebarButton };
+
+	// Exponer globalmente para compatibilidad
+	w.createSidebar = createSidebar;
+	w.renderSidebar = renderSidebar;
+	w.updateActiveSidebarButton = updateActiveSidebarButton;
+
+	console.log('✅ [DEBUG] UBITS Sidebar component ready');
+	window.dispatchEvent(new Event('ubits:ready'));
+}

@@ -103,6 +103,7 @@ export class CanvasCreator {
 
       // Agregar carga del UMD de data-table usando proxy
       templateContent = this.addDataTableUMD(templateContent, vercelBaseUrl);
+      templateContent = this.addAutorunRuntime(templateContent);
 
       // Personalizar el template con el módulo y producto seleccionados
       // Para customizeTemplate, pasamos una ruta relativa vacía ya que todo usa proxy
@@ -161,6 +162,7 @@ export class CanvasCreator {
 
       // Agregar carga del UMD de data-table
       templateContent = this.addDataTableUMD(templateContent, relativePath);
+      templateContent = this.addAutorunRuntime(templateContent);
 
       // Personalizar el template
       templateContent = this.customizeTemplate(
@@ -213,6 +215,7 @@ export class CanvasCreator {
 
         // Agregar carga del UMD de data-table
         templateContent = this.addDataTableUMD(templateContent, absolutePath);
+        templateContent = this.addAutorunRuntime(templateContent);
 
         // Personalizar el template
         templateContent = this.customizeTemplate(
@@ -518,6 +521,26 @@ export class CanvasCreator {
     } else {
       // Si no encuentra components-loader.js, agregar antes del cierre de </body>
       content = content.replace(/(<\/body>)/i, `    ${dataTableScript}\n$1`);
+    }
+
+    return content;
+  }
+
+  /**
+   * Agrega la carga del runtime core de Autorun V2 a los templates
+   */
+  private addAutorunRuntime(content: string): string {
+    const runtimeScript = `<script src="../packages/autorun-core/dist/runtime/runtime-bundle.js"></script>`;
+
+    // Agregar ANTES de components-loader.js para asegurar que boot inicie a tiempo
+    if (content.includes('components-loader.js')) {
+      content = content.replace(
+        /(<script[^>]*src="[^"]*components-loader\.js[^"]*"[^>]*><\/script>)/i,
+        `${runtimeScript}\n    $1`
+      );
+    } else {
+      // Si no encuentra components-loader.js, agregar antes del cierre de head o body
+      content = content.replace(/(<\/body>)/i, `    ${runtimeScript}\n$1`);
     }
 
     return content;
@@ -1030,8 +1053,8 @@ export class CanvasCreator {
         <h2 class="sidebar-title">UBITS</h2>
         <ul class="sidebar-menu">
           ${templateConfig.modules
-            .map(
-              (m: string) => `
+        .map(
+          (m: string) => `
             <li class="sidebar-item ${m === module ? 'active' : ''}" data-module="${m}">
               <a href="#${m}" class="sidebar-link">
                 <span class="sidebar-icon">📦</span>
@@ -1039,8 +1062,8 @@ export class CanvasCreator {
               </a>
             </li>
           `
-            )
-            .join('')}
+        )
+        .join('')}
         </ul>
       </nav>
     </aside>
@@ -2496,7 +2519,7 @@ export class CanvasCreator {
     const moduleName = moduleConfig?.name || module;
     const productName = product
       ? moduleConfig?.products?.find((p: any) => p.id === product)?.name ||
-        product
+      product
       : null;
 
     // Determinar ruta base a vendor/ubits/packages/
@@ -2821,8 +2844,8 @@ export class CanvasCreator {
         <h2 class="sidebar-title">UBITS</h2>
         <ul class="sidebar-menu">
           ${templateConfig.modules
-            .map(
-              (m: string) => `
+        .map(
+          (m: string) => `
             <li class="sidebar-item ${m === module ? 'active' : ''}" data-module="${m}">
               <a href="#${m}" class="sidebar-link">
                 <span class="sidebar-icon">📦</span>
@@ -2830,8 +2853,8 @@ export class CanvasCreator {
               </a>
             </li>
           `
-            )
-            .join('')}
+        )
+        .join('')}
         </ul>
       </nav>
     </aside>

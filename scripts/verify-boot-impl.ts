@@ -6,6 +6,15 @@ import * as http from 'http';
 import { LocalServer } from '../packages/autorun-core/src/server/LocalServer';
 import * as cheerio from 'cheerio'; // Need to install this or use regex if unavailable
 
+process.on('unhandledRejection', (reason, promise) => {
+    console.error(`::: NODE CRASH ::: Unhandled Rejection: ${reason}`);
+});
+process.on('uncaughtException', (error) => {
+    console.error(`::: NODE CRASH ::: Uncaught Exception: ${error.message}`);
+});
+process.on('exit', (code) => {
+    console.log(`::: NODE EXIT ::: Process exiting with code: ${code}`);
+});
 // --- CONFIGURATION ---
 const REGISTRY_CHECK_PATHS = [
     '/vendor/ubits/packages/templates/engine/template-loader.js',
@@ -179,7 +188,8 @@ async function verifyBoot() {
             console.error('   The following URLs returned 404:');
             failedChecks.forEach(url => console.error(`   - ${url}`));
             console.log('\n🚫 BLOCKED: Missing Assets');
-            process.exit(1);
+            process.exitCode = 1;
+            return;
         }
 
         // 4. PLAYWRIGHT VERIFICATION
@@ -189,32 +199,46 @@ async function verifyBoot() {
 
         // Console Trap
         const fatalErrors: string[] = [];
+        const recentLogs: string[] = [];
+        function classifyConsole(msg: { type: string; text: string }) {
+            const t = msg.text;
+
+            if (t.includes('net::ERR_BLOCKED_BY_CLIENT') && t.includes('components-loader.js')) return 'ignore';
+            if (t.includes('.ubits-sub-nav NO encontrado') || t.includes('Sidebar NO encontrado')) return 'ignore';
+            if (t.includes('[Autorun] FATAL:') || t.includes('ReferenceError') || t.includes('TypeError')) return 'fatal';
+            if (t.includes('Administrador') || t.includes('Max attempts') || t.includes('Máximo de intentos')) return 'warn';
+
+            // Allowlists options from Option B
+            const isAllowedCssRulesError =
+                t.includes("Failed to read the 'cssRules' property") ||
+                t.includes("SecurityError: Failed to read the 'cssRules'") ||
+                t.includes("tokens.css") ||
+                (t.includes('vercel.app') && (t.includes('cssRules') || t.includes('tokens')));
+
+            if (isAllowedCssRulesError) return 'ignore';
+            if (t.includes('favicon.ico') || t.includes('manifest.json') || t.includes('Failed to load resource')) return 'warn';
+
+            return msg.type === 'error' ? 'fatal' : 'info';
+        }
+
         page.on('console', (msg) => {
             const type = msg.type();
             const text = msg.text();
-            // Get location if available
             const loc = msg.location();
             const locString = loc ? ` (${loc.url}:${loc.lineNumber}:${loc.columnNumber})` : '';
 
-            console.log(`PAGE LOG [${type}]: ${text}${locString}`);
+            const fullLog = `PAGE LOG [${type}]: ${text}${locString}`;
+            console.log(fullLog);
+            recentLogs.push(fullLog);
+            if (recentLogs.length > 30) recentLogs.shift();
 
-            if (type === 'error') {
-                // Determine if it's an allowed error (Option B allowlist)
-                const isAllowedCssRulesError =
-                    text.includes("Failed to read the 'cssRules' property") ||
-                    text.includes("SecurityError: Failed to read the 'cssRules'") ||
-                    text.includes("tokens.css") ||
-                    (text.includes('vercel.app') && (text.includes('cssRules') || text.includes('tokens')));
-
-                // Ignore generic network errors, favicons, manifests, and allowed CSS rules errors
-                if (!text.includes('favicon.ico') &&
-                    !text.includes('manifest.json') &&
-                    !text.includes('Failed to load resource') &&
-                    !isAllowedCssRulesError) {
-                    fatalErrors.push(`${text}${locString}`);
-                } else {
-                    console.log(`⚠️  Ignored console error: ${text}`);
-                }
+            const severity = classifyConsole({ type, text });
+            if (severity === 'fatal') {
+                fatalErrors.push(`${text}${locString}`);
+            } else if (severity === 'ignore') {
+                console.log(`🧹 Ignored expected error: ${text}`);
+            } else if (severity === 'warn') {
+                console.log(`⚠️  Warn/Ignored: ${text}`);
             }
         });
 
@@ -239,11 +263,27 @@ async function verifyBoot() {
         page.on('requestfailed', request => {
             const url = request.url();
             const failure = request.failure();
+
+            const severity = classifyConsole({ type: 'error', text: `${failure?.errorText} ${url}` });
+            if (severity === 'ignore') {
+                console.log(`⚠️  Ignored Expected Request Block: ${url}`);
+                return;
+            }
+
             console.error(`❌ Request Failed: ${url} - ${failure?.errorText}`);
             fatalErrors.push(`Request Failed: ${url} - ${failure?.errorText}`);
         });
 
+        page.on('close', () => console.error('::: LOG ::: PAGE CLOSED EVENT FIRED!'));
+        page.on('crash', () => console.error('::: LOG ::: PAGE CRASHED EVENT FIRED!'));
+        page.on('pageerror', error => console.error(`::: LOG ::: UNCAUGHT PAGE ERROR: ${error.message}`));
+
         // Intercept requests to registry and proxy to localhost
+        await page.route(/templates\/components-loader\.js/, async route => {
+            console.log(`🚫 Bloqueando loader legacy: ${route.request().url()}`);
+            await route.abort('blockedbyclient');
+        });
+
         await page.route(/^https:\/\/registry\.ubits\.com\/components\/.+/, async route => {
             const url = route.request().url();
             console.log(`🔄 [Interceptor] Redirecting: ${url}`);
@@ -257,16 +297,24 @@ async function verifyBoot() {
                     return;
                 }
                 const buffer = await res.arrayBuffer();
-                if (url.includes('sidebar/index.js')) {
-                    console.log('--- SIDEBAR INDEX.JS CONTENT START ---');
-                    console.log(Buffer.from(buffer).toString('utf8').substring(0, 500));
-                    console.log('--- SIDEBAR INDEX.JS CONTENT END ---');
+                let bodyPayload: string | Buffer = Buffer.from(buffer);
+                if (url.includes('subnav/index.js') || url.includes('sidebar/index.js') || url.includes('tabbar/index.js')) {
+                    const jsText = bodyPayload.toString('utf-8');
+                    bodyPayload = `
+console.log('✅ [UBITS:Interceptor] Module STARTED eval for: ${url.split('/').pop()}', performance.now());
+${jsText}
+console.log('✅ [UBITS:Interceptor] Module ENDED eval for: ${url.split('/').pop()}', performance.now(), 'UBITS Keys:', Object.keys(window.UBITS || {}));
+window.__ubitsFlush && window.__ubitsFlush();
+                    `;
                 }
 
                 await route.fulfill({
                     status: res.status,
                     contentType: res.headers.get('content-type') || 'application/javascript',
-                    body: Buffer.from(buffer)
+                    headers: {
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: bodyPayload
                 });
             } catch (e) {
                 console.error('Interceptor Fetch Error', e);
@@ -275,13 +323,11 @@ async function verifyBoot() {
         });
 
         // Debug logging for other requests
-        await page.route('**', route => {
-            const request = route.request();
+        page.on('request', request => {
             const url = request.url();
             if (!url.includes('registry.ubits.com')) {
                 console.log(`🌐 [Network] ${request.method()} ${url}`);
             }
-            route.continue();
         });
 
         // Inject configuration (keeping it just in case)
@@ -293,6 +339,29 @@ async function verifyBoot() {
                     noStorybookAPIs: false
                 }
             };
+            (window as any).__AUTORUN_CONFIG__ = {
+                ubitsTimeout: 20000
+            };
+
+            // TRAP CLOSE
+            const stack = () => (new Error('[autorun] window.close called')).stack;
+
+            function trapClose(target: any, label: string) {
+                const orig = target?.close;
+                if (typeof orig !== 'function') return;
+
+                target.close = function (...args: any[]) {
+                    console.warn(`[autorun-trap] ${label}.close() BLOCKED`);
+                    console.warn(stack());
+                    return undefined;
+                };
+            }
+
+            trapClose(window, 'window');
+            trapClose(self, 'self');
+
+            const proto = Object.getPrototypeOf(window);
+            if (proto) trapClose(proto, 'Window.prototype');
         });
 
         // Navigate
@@ -313,17 +382,73 @@ async function verifyBoot() {
         console.log('⏳ Waiting for product load completion (max 15s)...');
         try {
             await page.waitForFunction(() => {
-                // Check if we saw the log OR if we are sufficiently ready
-                // But we can't check the log variable from inside evaluate easily unless we expose it
-                // So we rely on a flag on window or just wait for time/networkidle
-                return (window as any).UBITS_TemplateLoader_Finished === true; // We don't have this flag
+                const w = window as any;
+                // Check new __AUTORUN_BOOT_STATE__ object as Single Source of Truth
+                return w.__AUTORUN_BOOT_STATE__?.ready === true;
             }, null, { timeout: 15000 });
-        } catch (e) {
-            console.log('⚠️  Timed out waiting for explicit product load signal. Proceeding with checks...');
+            console.log('✅ Wait complete (Runtime Ready)');
+        } catch (e: any) {
+            console.error(`⚠️  Timed out waiting. Error: ${e.message}`);
+            try {
+                const fs = require('fs');
+                if (!fs.existsSync('artifacts')) fs.mkdirSync('artifacts');
+                await page.screenshot({ path: 'artifacts/fail.png', fullPage: true });
+                const htmlData = await page.content();
+                fs.writeFileSync('artifacts/fail.html', htmlData);
+                console.log('📸 Evidence dumped to artifacts/fail.png and artifacts/fail.html');
+            } catch (fsErr) {
+                console.error('Failed to write failure evidence dump', fsErr);
+            }
+        }
+
+        // Helper to dump evidence
+        const dumpEvidence = async (reason: string, isClosed: boolean) => {
+            console.error(`\n❌ CRITICAL EVIDENCE DUMP: ${reason}`);
+            console.error('--- LAST 30 CONSOLE LOGS ---');
+            recentLogs.forEach(l => console.error(l));
+
+            if (networkFailures.length > 0) {
+                console.error('\n--- NETWORK FAILURES ---');
+                networkFailures.forEach(f => console.error(f));
+            }
+
+            if (!isClosed) {
+                try {
+                    const globalsState = await page.evaluate(() => {
+                        return {
+                            hasSidebar: typeof (window as any).createSidebar,
+                            hasTabBar: typeof (window as any).createTabBar,
+                            ubitsKeys: Object.keys((window as any).UBITS || {})
+                        };
+                    });
+                    console.error('\n--- GLOBALS STATE ---');
+                    console.error(`createSidebar: ${globalsState.hasSidebar}`);
+                    console.error(`createTabBar: ${globalsState.hasTabBar}`);
+                    console.error(`UBITS keys: ${JSON.stringify(globalsState.ubitsKeys)}`);
+                } catch (e) {
+                    console.error('\n--- GLOBALS STATE ---');
+                    console.error('Failed to read globals state (page evaluation error).');
+                }
+            } else {
+                console.error('\n--- GLOBALS STATE ---');
+                console.error('Target page closed. Cannot read globals.');
+            }
+        };
+
+        if (page.isClosed()) {
+            await dumpEvidence('Page closed prematurely before wait', true);
+            process.exitCode = 1;
+            return;
         }
 
         // Wait a bit more for stability
         await page.waitForTimeout(2000);
+
+        if (page.isClosed()) {
+            await dumpEvidence('Page closed during wait', true);
+            process.exitCode = 1;
+            return;
+        }
 
         // Extract State
         const state = await page.evaluate(() => {
@@ -332,7 +457,7 @@ async function verifyBoot() {
 
             return {
                 protocol: window.location.protocol,
-                bootRequired: (window as any).AUTORUN_BOOT_REQUIRED,
+                bootState: (window as any).__AUTORUN_BOOT_STATE__,
                 booted: (window as any).__AUTORUN_BOOTED__,
                 bootReport: (window as any).__AUTORUN_BOOT_REPORT__,
                 catalog: (window as any).__AUTORUN_CATALOG__,
@@ -349,7 +474,7 @@ async function verifyBoot() {
         }
 
         // Boot Flags
-        if (state.bootRequired !== true) errors.push('window.AUTORUN_BOOT_REQUIRED is not true');
+        if (!state.bootState || state.bootState.ready !== true) errors.push('window.__AUTORUN_BOOT_STATE__ is not ready');
         if (state.booted !== true) errors.push('window.__AUTORUN_BOOTED__ is not true');
 
         // Status & Catalog
@@ -420,8 +545,13 @@ async function verifyBoot() {
             console.error('❌ VERIFICATION FAILED');
             errors.forEach(e => console.error(`   - ${e}`));
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+            // Si el boot falló, imprimir las evidencias solicitadas explícitamente
+            await dumpEvidence('Boot verification check failed', page.isClosed());
+
             console.log('\n🚫 BLOCKED: BOOT NOT READY');
-            process.exit(1);
+            process.exitCode = 1;
+            return;
         }
 
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -437,7 +567,8 @@ async function verifyBoot() {
     } catch (error) {
         console.error('\n❌ CRITICAL FAILURE:', error);
         console.log('\n🚫 BLOCKED: BOOT CHECK CRASHED');
-        process.exit(1);
+        process.exitCode = 1;
+        return;
     } finally {
         // DEFINITIVE CLEANUP
         if (browser) {

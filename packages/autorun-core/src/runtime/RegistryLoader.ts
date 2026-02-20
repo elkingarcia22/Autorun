@@ -110,10 +110,14 @@ export class RegistryLoader {
         console.log(
           `[RegistryLoader] Waiting for dependencies: ${entry.dependencies.join(', ')}`
         );
-        await waitForDependencies(entry.dependencies, {
-          timeout: 10000,
-          checkInterval: 100,
-        });
+        try {
+          await waitForDependencies(entry.dependencies, {
+            timeout: 10000,
+            checkInterval: 100,
+          });
+        } catch (depErr: any) {
+          console.warn(`[RegistryLoader] ⚠️ Dependency delayed/missing for ${entry.component}: ${depErr.message}. Attempting to mount anyway...`);
+        }
       }
 
       const containerId = this.generateContainerId(entry.component);

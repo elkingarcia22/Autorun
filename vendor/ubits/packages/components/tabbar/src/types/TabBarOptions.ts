@@ -112,4 +112,6 @@ export interface TabBarOptions {
 	onProfileMenuItemClick?: (itemId: string, item: ProfileMenuItem) => void;
 	/** Tamaño del tree menu (xs, sm, md, lg) - matching List component */
 	treeMenuSize?: 'xs' | 'sm' | 'md' | 'lg';
+	/** Clases CSS adicionales */
+	className?: string;
 }

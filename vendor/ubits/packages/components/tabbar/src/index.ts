@@ -4,11 +4,14 @@
  * Incluye Floating Menu (accordions) y Profile Menu como subcomponentes
  */
 
-export { renderTabBar, createTabBar } from './TabBarProvider';
-export {
+import { renderTabBar, createTabBar } from './TabBarProvider';
+import {
 	defaultFloatingMenuSections,
 	defaultProfileMenuItems,
 } from './configs/defaultFloatingMenu';
+
+export { renderTabBar, createTabBar };
+export { defaultFloatingMenuSections, defaultProfileMenuItems };
 export type {
 	TabBarOptions,
 	TabBarItem,
@@ -17,13 +20,15 @@ export type {
 } from './types/TabBarOptions';
 
 // Auto-inicializar si se importa directamente
-// if (typeof window !== 'undefined') {
-// 	window.UBITS = window.UBITS || {};
-// 	window.UBITS.TabBar = { renderTabBar, createTabBar };
-// 
-// 	// Exponer globalmente para compatibilidad
-// 	(window as any).createTabBar = createTabBar;
-// 	(window as any).renderTabBar = renderTabBar;
-// 
-// 	console.log('✅ UBITS TabBar component ready');
-// }
+if (typeof window !== 'undefined') {
+	let w = window as any;
+	w.UBITS = w.UBITS || {};
+	w.UBITS.TabBar = { ...(w.UBITS.TabBar || {}), renderTabBar, createTabBar };
+
+	// Exponer globalmente para compatibilidad
+	w.createTabBar = createTabBar;
+	w.renderTabBar = renderTabBar;
+
+	console.log('✅ UBITS TabBar component ready');
+	window.dispatchEvent(new Event('ubits:ready'));
+}

@@ -49,12 +49,13 @@ try {
 }
 
 if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', async () => {
+  const initAutorun = async () => {
     console.log('🚀 Autorun V2 Runtime initializing...');
     try {
+      const config = (window as any).__AUTORUN_CONFIG__ || {};
       const report = await boot({
         debug: true,
-        ubitsTimeout: 10000,
+        ubitsTimeout: config.ubitsTimeout || 10000,
       });
       (window as any).__AUTORUN_BOOT_REPORT__ = report;
       if (report.status !== 'READY') {
@@ -70,7 +71,14 @@ if (typeof window !== 'undefined') {
       );
       (window as any).__AUTORUN_BOOT_ERROR__ = error;
     }
-  });
+  };
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initAutorun);
+  } else {
+    // Si se inyecta deferido o al final del body, el DOM ya puede estar listo
+    initAutorun();
+  }
 }
 
 // Export everything
